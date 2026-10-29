@@ -1,0 +1,3 @@
+# les données de la veille ne sont servies que par la fonction
+/veille/data/*   /   404
+/netlify/*       /   404

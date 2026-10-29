@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Veille permis de construire — Cap Encre</title>
+<meta name="robots" content="noindex">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="4d385258-635b-476a-b26a-f96fae2d3959"></script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f3f0e8'/%3E%3Crect x='9' y='9' width='14' height='14' fill='%23e8b33a' transform='rotate(45 16 16)'/%3E%3C/svg%3E">
 <style>
@@ -64,6 +65,21 @@ footer{max-width:1180px;margin:0 auto;padding:0 20px 40px;color:var(--grey);font
 .kv dt{color:var(--grey)}
 .kv dd{margin:0;font-weight:600}
 
+#gate{min-height:calc(100vh - 58px);display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.gate-box{max-width:430px;width:100%}
+.gate-box h1{font-size:clamp(26px,4vw,36px);letter-spacing:-.035em;line-height:1.05;margin:0 0 12px;font-weight:800}
+.gate-box p{color:var(--grey);font-size:14px;margin:0 0 22px}
+.gate-box label{display:block;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--grey);font-weight:700;margin-bottom:6px}
+.gate-box input{width:100%;background:#fff;border:1px solid var(--line);border-radius:6px;padding:13px 14px;font-size:16px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+.gate-box input:focus{outline:none;border-color:var(--accent-ink)}
+.gate-box button{width:100%;margin-top:12px;background:var(--ink);color:var(--paper);border:0;border-radius:6px;padding:14px;font-size:14.5px;font-weight:700;cursor:pointer}
+.gate-box button:hover{background:#000}
+.gate-box button:disabled{opacity:.55;cursor:default}
+.gate-err{margin-top:12px;font-size:13px;color:#a8321c;min-height:18px;font-weight:600}
+.gate-note{margin-top:26px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--grey)}
+.gate-note a{color:var(--ink);text-decoration:underline}
+main[hidden],footer[hidden]{display:none}
+
 @media (max-width:820px){
   .bar{gap:8px;height:54px}
   .logo{font-size:14px;letter-spacing:-.02em}
@@ -86,13 +102,28 @@ footer{max-width:1180px;margin:0 auto;padding:0 20px 40px;color:var(--grey);font
   <div class="bar">
     <div class="logo"><i></i>CAP ENCRE <small>· veille permis</small></div>
     <div class="right">
-      <button class="btn" id="reset">Réinitialiser</button>
-      <button class="btn primary" id="export">Exporter</button>
+      <button class="btn" id="lock" hidden>Verrouiller</button>
+      <button class="btn" id="reset" hidden>Réinitialiser</button>
+      <button class="btn primary" id="export" hidden>Exporter</button>
     </div>
   </div>
 </header>
 
-<main>
+<section id="gate">
+  <form class="gate-box" id="gate-form">
+    <h1>Cet outil est réservé aux clients Cap Encre.</h1>
+    <p>La veille des permis de construire autour de votre dépôt, mise à jour chaque mois. Elle est comprise dans votre abonnement.</p>
+    <label for="code">Votre code d'accès</label>
+    <input id="code" name="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="CAP-XXXX-XXXX" required>
+    <button type="submit" id="gate-btn">Entrer</button>
+    <div class="gate-err" id="gate-err"></div>
+    <div class="gate-note">
+      Pas encore client ? <a href="/artisan/">Voir l'offre artisan</a> — ou appelez le <a href="tel:+33662674414">06 62 67 44 14</a>.
+    </div>
+  </form>
+</section>
+
+<main id="app" hidden>
   <div class="filters">
     <div class="f">
       <label for="commune">Autour de</label>
@@ -127,7 +158,7 @@ footer{max-width:1180px;margin:0 auto;padding:0 20px 40px;color:var(--grey);font
   <div id="more" style="color:var(--grey);font-size:12px;padding:14px 2px 0"></div>
 </main>
 
-<footer id="foot"></footer>
+<footer id="foot" hidden></footer>
 
 <div class="sheet" id="sheet">
   <div class="box">
@@ -137,14 +168,13 @@ footer{max-width:1180px;margin:0 auto;padding:0 20px 40px;color:var(--grey);font
   </div>
 </div>
 
-<script src="data/communes.js"></script>
-<script src="data/permis.js"></script>
 <script>
 const MOIS = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
-const NATURES = ["Maison","Extension","Piscine","Garage","Abri de jardin","Bâtiment agricole","Local / bâtiment"];
-const CLE = "capencre.veille.v1";
+const CLE_STATE = "capencre.veille.v1";
+const CLE_CODE = "capencre.veille.code";
 
-let state = Object.assign({commune:"", rayon:15, periode:12, natures:[]}, JSON.parse(localStorage.getItem(CLE) || "{}"));
+let PERMIS = [], COMMUNES = {};
+let state = Object.assign({commune:"", rayon:15, periode:12, natures:[]}, JSON.parse(localStorage.getItem(CLE_STATE) || "{}"));
 
 const byId = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -267,7 +297,9 @@ byId("sheet").onclick = e => { if (e.target.id === "sheet") byId("sheet").classL
 byId("commune").onchange = e => { state.commune = e.target.value; render(); };
 byId("rayon").onchange = e => { state.rayon = +e.target.value; render(); };
 byId("periode").onchange = e => { state.periode = +e.target.value; render(); };
-byId("reset").onclick = () => { localStorage.removeItem(CLE); location.reload(); };
+byId("reset").onclick = () => { localStorage.removeItem(CLE_STATE); location.reload(); };
+byId("lock").onclick = () => { localStorage.removeItem(CLE_CODE); location.reload(); };
+byId("gate-form").onsubmit = e => { e.preventDefault(); const c = byId("code").value.trim().toUpperCase(); if (c) deverrouiller(c); };
 
 byId("export").onclick = () => {
   const items = filtrer();
@@ -284,10 +316,44 @@ byId("export").onclick = () => {
   a.click();
 };
 
-initCommunes();
-initChips();
-render();
-byId("foot").textContent = `Source : Sitadel / SDES — autorisations d'urbanisme, données ouvertes (mise à jour mensuelle). ${PERMIS.length.toLocaleString("fr-FR")} autorisations en Vendée sur les 30 derniers mois. Distances calculées depuis le centre de la commune.`;
+async function chargerDonnees(code){
+  const r = await fetch("/.netlify/functions/veille-data", { headers: { "x-veille-code": code } });
+  if (r.status === 401) return false;
+  if (!r.ok) throw new Error(r.status);
+  const d = await r.json();
+  PERMIS = d.permis; COMMUNES = d.communes;
+  return true;
+}
+
+function demarrer(){
+  initCommunes(); initChips(); render();
+  byId("foot").textContent = `Source : Sitadel / SDES — autorisations d'urbanisme, données ouvertes (mise à jour mensuelle). ${PERMIS.length.toLocaleString("fr-FR")} autorisations en Vendée sur les 30 derniers mois. Distances calculées depuis le centre de la commune.`;
+  byId("gate").hidden = true;
+  byId("app").hidden = false;
+  byId("foot").hidden = false;
+  ["lock","reset","export"].forEach(id => byId(id).hidden = false);
+}
+
+async function deverrouiller(code, silencieux){
+  const btn = byId("gate-btn");
+  btn.disabled = true;
+  if (!silencieux) byId("gate-err").textContent = "";
+  try {
+    if (await chargerDonnees(code)) {
+      localStorage.setItem(CLE_CODE, code);
+      demarrer();
+    } else if (!silencieux) {
+      byId("gate-err").textContent = "Code refusé. Vérifiez celui reçu avec votre abonnement.";
+    }
+  } catch (e) {
+    if (!silencieux) byId("gate-err").textContent = "Service momentanément indisponible. Réessayez dans un instant.";
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+const memorise = localStorage.getItem(CLE_CODE);
+if (memorise) deverrouiller(memorise, true);
 </script>
 </body>
 </html>

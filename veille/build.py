@@ -9,6 +9,7 @@ from datetime import date
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
+SORTIE = os.path.join(HERE, "..", "netlify", "functions", "_data")
 MOIS = int(os.environ.get("MOIS", "30"))
 
 def limitrophe(annee, mois):
@@ -132,14 +133,18 @@ def communes():
 def main():
     permis = construire()
     comm = communes()
-    if not permis: print("Rien à écrire."); return 1
-    with open(os.path.join(DATA, "permis.js"), "w", encoding="utf-8") as f:
-        f.write("window.PERMIS="); json.dump(permis, f, ensure_ascii=False, separators=(",", ":")); f.write(";\n")
-    with open(os.path.join(DATA, "communes.js"), "w", encoding="utf-8") as f:
-        f.write("window.COMMUNES="); json.dump(comm, f, ensure_ascii=False, separators=(",", ":")); f.write(";\n")
-    print(f"  permis.js : {os.path.getsize(os.path.join(DATA,'permis.js'))/1024:.0f} Ko")
-    print(f"  communes.js : {os.path.getsize(os.path.join(DATA,'communes.js'))/1024:.0f} Ko")
+    if not permis:
+        print("Rien à écrire.")
+        return 1
+    os.makedirs(SORTIE, exist_ok=True)
+    with open(os.path.join(SORTIE, "permis.json"), "w", encoding="utf-8") as f:
+        json.dump(permis, f, ensure_ascii=False, separators=(",", ":"))
+    with open(os.path.join(SORTIE, "communes.json"), "w", encoding="utf-8") as f:
+        json.dump(comm, f, ensure_ascii=False, separators=(",", ":"))
+    print(f"  permis.json : {os.path.getsize(os.path.join(SORTIE,'permis.json'))/1024:.0f} Ko")
+    print(f"  communes.json : {os.path.getsize(os.path.join(SORTIE,'communes.json'))/1024:.0f} Ko")
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())
