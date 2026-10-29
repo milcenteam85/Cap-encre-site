@@ -1,0 +1,22 @@
+Polices utilisées par ce site
+=============================
+
+Toutes sont sous SIL Open Font License 1.1 — libres d'usage, y compris
+commercial, et libres d'être redistribuées avec un site revendu.
+Le texte complet de la licence est dans OFL.txt, à côté de ce fichier,
+et doit y rester : c'est une obligation de la licence.
+
+· Inter — graisse(s) 4 et 0 et 0 et . et . et 6 et 0 et 0
+    fichiers : inter-*.woff2
+    https://fonts.google.com/specimen/Inter
+
+· Cormorant Garamond — graisse(s) 5 et 0 et 0
+    fichiers : cormorant-garamond-*.woff2
+    https://fonts.google.com/specimen/Cormorant+Garamond
+
+· Marcellus — graisse(s) 4 et 0 et 0
+    fichiers : marcellus-*.woff2
+    https://fonts.google.com/specimen/Marcellus
+
+Ce qui a été téléchargé, et rien d'autre : le sous-ensemble « latin »,
+qui couvre tout le français, « œ » compris. Ni grec, ni cyrillique.

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Cap Encre">
+  <title>Cap Encre</title>
+  <!-- Fond : carré arrondi aux couleurs du site -->
+  <rect width="64" height="64" rx="15" fill="#0B6B5B"/>
+  <!-- Le C, dessiné comme un arc : aucune police n'est requise, donc le rendu
+       est identique partout. Épais et large pour rester lisible à 16 pixels. -->
+  <path d="M39.2 18.3 A16.5 16.5 0 1 0 39.2 45.7"
+        fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round"/>
+  <!-- Le point final : « Cap Encre. » -->
+  <circle cx="50.5" cy="45.5" r="5" fill="#FFFFFF"/>
+</svg>

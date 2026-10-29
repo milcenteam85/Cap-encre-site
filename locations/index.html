@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sites pour locations saisonnières — Cap Encre</title>
+<meta name="description" content="Site internet pour locations saisonnières en Vendée : réservation directe sans commission, fiche Google, mise en ligne en huit jours. À partir de 590 €.">
+<meta name="theme-color" content="#2E3A2C">
+<meta name="author" content="Benjamin Milcent">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cap Encre — Votre logement, trouvable directement.">
+<meta property="og:description" content="Création de site internet pour meublés de tourisme, logements atypiques et locations saisonnières, en Vendée. Réservation directe, sans commission.">
+<meta property="og:image" content="images/hero.jpg">
+<meta property="og:locale" content="fr_FR">
+
+<link rel="stylesheet" href="styles.css">
+
+<!-- La police des titres est chargée en avance : c'est elle qui porte le titre
+     d'accueil, la première chose que le visiteur voit. crossorigin est
+     obligatoire pour une police, même servie depuis le même site. -->
+<link rel="preload" href="polices/cormorant-garamond-500.woff2"
+      as="font" type="font/woff2" crossorigin>
+
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="canonical" href="https://capencre.fr/locations/">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Cap Encre",
+  "description": "Création de site internet pour les meublés de tourisme, les logements atypiques et la locations saisonnières, en Vendée et à distance.",
+  "founder": { "@type": "Person", "name": "Benjamin Milcent" },
+  "telephone": "+33662674414",
+  "email": "milcent-benjamin@orange.fr",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "rue de la Faïencerie",
+    "addressLocality": "Le Champ-Saint-Père",
+    "postalCode": "85540",
+    "addressRegion": "Vendée",
+    "addressCountry": "FR"
+  },
+  "areaServed": [
+    { "@type": "AdministrativeArea", "name": "Vendée" },
+    { "@type": "Country", "name": "France" }
+  ],
+  "knowsLanguage": "fr"
+}
+</script>
+<!-- Mesure de fréquentation : anonyme, sans cookie, aucun bandeau requis.
+     Détail dans les mentions légales. -->
+<script defer src="https://cloud.umami.is/script.js" data-website-id="4d385258-635b-476a-b26a-f96fae2d3959"></script>
+</head>
+<body>
+
+<a class="skip" href="#pourquoi">Aller au contenu</a>
+
+<!-- ===================== EN-TÊTE ===================== -->
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a class="brand" href="/">Cap Encre</a>
+
+    <nav class="nav" aria-label="Sections du site">
+      <a href="#pourquoi">Pourquoi</a>
+      <a href="#prestations">Prestations</a>
+      <a href="#formules">Formules</a>
+      <a href="#deroulement">Déroulement</a>
+      <a href="#exemple">Exemple</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <a class="head-tel" href="tel:+33662674414">06 62 67 44 14</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===================== 1. ACCUEIL ===================== -->
+  <section id="accueil" class="hero">
+    <!-- Deux versions de la même photo : c'est le navigateur qui choisit.
+         Sur téléphone, l'écran est haut et étroit — la photo verticale y entre
+         entière. Sur ordinateur, la bannière est large — c'est le recadrage
+         horizontal qui sert. Aucune ligne de JavaScript : juste <picture>. -->
+    <picture>
+      <source media="(min-width: 768px)" sizes="100vw"
+              srcset="images/hero-900.jpg 900w, images/hero.jpg 1920w">
+      <img class="hero-img"
+           src="images/hero-portrait.jpg"
+           alt="Rangée de cabanes de plage aux couleurs vives alignées au bord de l'eau, sous un ciel bleu, sable mouillé et coquillages au premier plan">
+    </picture>
+    <div class="hero-scrim" aria-hidden="true"></div>
+
+    <div class="wrap hero-content">
+      <p class="hero-loc">Vendée · et à distance</p>
+      <h1>Votre logement, trouvable directement.</h1>
+      <p class="hero-facts">
+        Création de site internet pour les meublés de tourisme,<br>logements atypiques
+        et locations saisonnières.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#contact">Demander un devis gratuit</a>
+        <a class="btn btn-ghost" href="#exemple">Voir un exemple</a>
+      </div>
+      <p class="hero-open">Aucune commission sur vos réservations.</p>
+    </div>
+  </section>
+
+  <!-- ===================== 2. POURQUOI ===================== -->
+  <section id="pourquoi" class="section">
+    <div class="wrap">
+      <p class="eyebrow">Pourquoi maintenant</p>
+      <h2>À partir du 13 octobre 2026, la commission change de camp.</h2>
+
+      <div class="cols">
+        <div>
+          <p class="lead">
+            À compter du 13 octobre 2026, Airbnb prélève une commission unique de 15,5 % —
+            soit 18,6 % une fois la TVA ajoutée — entièrement à la charge de l'hôte.
+          </p>
+          <p>
+            Sur 8 000 € de locations dans l'année, la commission vous prélève 1 488 €.
+            Avant le 13 octobre, elle vous en prenait 288 €.
+          </p>
+          <p>
+            Un site à votre nom ne prend <strong>aucune commission</strong>. La réservation
+            vous arrive directement, et le prix que vous affichez est le prix que vous
+            encaissez.
+          </p>
+        </div>
+
+        <div class="compare" role="img"
+             aria-label="Comparaison sur 100 € de location : 100 € avec un site à votre nom, 96,40 € avec Airbnb avant le 13 octobre, 81,40 € à partir du 13 octobre 2026">
+          <p class="compare-titre">Ce qu'il vous reste sur 100 € de location</p>
+
+          <div class="compare-ligne">
+            <span class="compare-label">Avec un site à votre nom</span>
+            <span class="compare-barre"><span class="compare-remplissage accent" style="width:100%"></span></span>
+            <span class="compare-valeur accent">100 €</span>
+          </div>
+
+          <div class="compare-ligne">
+            <span class="compare-label">Airbnb, avant le 13 octobre</span>
+            <span class="compare-barre"><span class="compare-remplissage" style="width:96.4%"></span></span>
+            <span class="compare-valeur">96,40 €</span>
+          </div>
+
+          <div class="compare-ligne">
+            <span class="compare-label">Airbnb, à partir du 13 octobre 2026</span>
+            <span class="compare-barre"><span class="compare-remplissage" style="width:81.4%"></span></span>
+            <span class="compare-valeur">81,40 €</span>
+          </div>
+
+          <p class="compare-note">
+            La commission est de <strong>15,5 % hors taxes</strong>, soit 84,50 € sur 100 €.
+            Airbnb la facture depuis l'Irlande et y ajoute la TVA de 20 % : comme vous ne la
+            récupérez pas, le prélèvement réel atteint <strong>18,6 %</strong>, soit
+            <strong>81,40 €</strong> pour 100 € affichés.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 3. PRESTATIONS ===================== -->
+  <section id="prestations" class="section section-alt">
+    <div class="wrap">
+      <p class="eyebrow">Ce que je fais</p>
+      <h2>Cinq choses, faites correctement.</h2>
+
+      <div class="cards">
+        <article class="card">
+          <h3>Site vitrine une page</h3>
+          <p>
+            Vos photos, vos tarifs, vos disponibilités, votre plan d'accès. Rapide à charger,
+            lisible sur téléphone, compréhensible en une minute.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Demande de réservation directe</h3>
+          <p>
+            Un bouton et un formulaire qui vous envoient les demandes directement, sans
+            intermédiaire. Aucune commission sur ces réservations.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Être trouvé sur Google</h3>
+          <p>
+            Votre fiche Google — photos, plan, téléphone — mise en place et tenue à jour. Et un
+            site écrit avec les mots que vos voyageurs tapent vraiment&nbsp;: «&nbsp;location
+            vacances à Saint-Jean-de-Monts avec piscine&nbsp;». Votre nom, personne ne le connaît
+            encore&nbsp;: ce sont ces recherches-là qui vous amènent vos premiers clients.
+          </p>
+          <p class="card-precision">
+            La fiche Google est créée une fois pour toutes, avec le site. La tenir à jour chaque
+            mois — nouvelles photos, nouvelles périodes — fait partie de la formule
+            «&nbsp;Sérénité&nbsp;».
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Maintenance et mise à jour</h3>
+          <p>
+            Vos tarifs, vos disponibilités et vos photos changent. Vous m'appelez, c'est fait.
+            Vous parlez toujours à la même personne.
+          </p>
+        </article>
+
+        <article class="card card-large">
+          <h3>Planning connecté à Airbnb et Booking</h3>
+          <p>
+            Vos disponibilités sont relues automatiquement depuis votre calendrier Airbnb
+            ou Booking, lorsque la plateforme le permet, et mises à jour plusieurs fois
+            par jour. Les dates affichées sont indicatives&nbsp;: la réservation se confirme
+            par téléphone ou par e-mail.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 4. FORMULES ===================== -->
+  <section id="formules" class="section">
+    <div class="wrap">
+      <p class="eyebrow">Mes formules</p>
+      <h2>Trois formules, un prix affiché.</h2>
+      <p class="lead">Devis gratuit et sans engagement. Aucun pourcentage sur vos réservations, jamais.</p>
+
+      <div class="formules">
+
+        <article class="formule">
+          <h3>Essentiel</h3>
+          <p class="formule-prix">590 €<small> une fois</small></p>
+          <ul>
+            <li>Site d'une page, à votre image</li>
+            <li>30 photos de votre bien mises en valeur</li>
+            <li>Tarifs et disponibilités</li>
+            <li>Bouton d'appel et formulaire de contact</li>
+            <li>Plan d'accès et fiche Google mise à jour</li>
+            <li>Impeccable sur téléphone</li>
+          </ul>
+        </article>
+
+        <article class="formule formule-choisie">
+          <p class="formule-tag">Le plus choisi</p>
+          <h3>Direct</h3>
+          <p class="formule-prix">990 €<small> une fois</small></p>
+          <ul>
+            <li>Tout ce que contient « Essentiel »</li>
+            <li>Site complet : le bien, les espaces, les alentours</li>
+            <li><strong>Demande de réservation directe</strong></li>
+            <li>
+              <strong>Calendrier des disponibilités</strong>, repris automatiquement
+              de votre calendrier Airbnb ou Booking lorsque la plateforme le permet,
+              et mis à jour plusieurs fois par jour.
+              <span class="formule-precision">Les disponibilités affichées sont
+              données à titre indicatif&nbsp;: la réservation se confirme par
+              téléphone ou par e-mail.</span>
+            </li>
+            <li>Vous suivez les demandes vous-même</li>
+            <li>Mise en ligne en 10 jours</li>
+          </ul>
+        </article>
+
+        <article class="formule">
+          <h3>Sérénité</h3>
+          <p class="formule-prix">35 €<small> par mois</small></p>
+          <ul>
+            <li>Avec la formule « Direct »</li>
+            <li>Hébergement et nom de domaine gérés</li>
+            <li>Tarifs et calendrier tenus à jour</li>
+            <li>Modifications illimitées</li>
+            <li>Sauvegardes et surveillance</li>
+            <li>Sans engagement</li>
+          </ul>
+        </article>
+
+      </div>
+
+      <p class="formules-mention">
+        Tarifs en euros. <strong>TVA non applicable</strong>, article 293 B du Code
+        général des impôts : aucun supplément de TVA ne s'ajoute aux montants ci-dessus.
+      </p>
+
+      <div class="engagements">
+        <h3>Trois réponses claires, avant de signer</h3>
+        <ul>
+          <li>
+            <strong>Après la livraison, aucune modification n'est incluse.</strong>
+            Le site est livré fini et validé. Ensuite, chaque modification est facturée
+            40 €, ou illimitée avec la formule « Sérénité ».
+          </li>
+          <li>
+            <strong>Si vous arrêtez la formule « Sérénité »&nbsp;:</strong>
+            le site reste en ligne trois mois, sans mise à jour. Passé ce délai, je vous
+            remets les fichiers du site et les accès de votre nom de domaine, et je le
+            débranche de mon hébergement&nbsp;: l'adresse ne montre plus rien, mais le site
+            et l'adresse restent à vous.
+          </li>
+          <li>
+            <strong>Le nom de domaine vous appartient.</strong>
+            Toujours, sans exception. Il est enregistré à votre nom.
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 5. DÉROULEMENT ===================== -->
+  <section id="deroulement" class="section section-alt">
+    <div class="wrap">
+      <p class="eyebrow">Comment ça se passe</p>
+      <h2>Quatre étapes, et vous voyez le résultat avant de payer.</h2>
+
+      <ol class="etapes">
+        <li class="etape">
+          <span class="etape-num">1</span>
+          <h3>Vous me montrez le bien</h3>
+          <p>On parle de votre logement, de vos voyageurs et de ce qui les séduit. Une heure suffit.</p>
+        </li>
+        <li class="etape">
+          <span class="etape-num">2</span>
+          <h3>Je vous montre un aperçu en ligne</h3>
+          <p>Votre site, déjà fait, à une adresse que vous ouvrez sur votre téléphone. Avant tout engagement.</p>
+        </li>
+        <li class="etape">
+          <span class="etape-num">3</span>
+          <h3>Vous validez le devis</h3>
+          <p>J'intègre vos photos, vos tarifs et vos textes. Vous relisez, vous corrigez, je modifie.</p>
+        </li>
+        <li class="etape">
+          <span class="etape-num">4</span>
+          <h3>Mise en ligne et formation</h3>
+          <p>Votre site est en ligne. Vingt minutes au téléphone pour vous montrer comment tout faire vous-même.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===================== 6. EXEMPLE ===================== -->
+  <section id="exemple" class="section">
+    <div class="wrap">
+      <p class="eyebrow">À quoi ça ressemble</p>
+      <h2>Gabarit de démonstration</h2>
+      <p class="lead">
+        Ce qui suit est un <strong>exemple de gabarit</strong>, monté sur un logement fictif
+        (« La Maison dans les Dunes »). Aucun de mes clients n'y figure : vous voyez exactement
+        la structure que je vous propose, avant d'y mettre vos photos et vos tarifs.
+      </p>
+
+      <!-- UNE SEULE CAPTURE, ET C'EST VOULU.
+           Il y en avait trois : l'accueil sur ordinateur, l'accueil sur
+           téléphone, le calendrier. Une seule suffit, et elle est simple à
+           remplacer — c'est ce fichier, et rien d'autre. Utile le jour où un
+           deuxième gabarit arrive. -->
+      <div class="apercu">
+        <figure class="apercu-principal">
+          <img src="images/gabarit-ordi.jpg" loading="lazy" width="1440" height="900"
+               alt="La page d'accueil de la démonstration sur ordinateur : la ligne de lieu, le nom du logement, la photo de la maison dans la dune, puis les deux boutons pour découvrir la maison ou demander une disponibilité">
+          <figcaption>La page d'accueil, sur ordinateur</figcaption>
+        </figure>
+      </div>
+
+      <div class="apercu-actions">
+        <a class="btn btn-primary" href="demo/logement/">Ouvrir la démonstration en entier</a>
+      </div>
+
+      <p>
+        Les blocs surlignés en jaune dans la démonstration sont les contenus que
+        vous aurez à fournir. C'est volontaire : cela vous montre exactement ce
+        dont j'ai besoin de votre part.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== 7. ENGAGEMENTS ===================== -->
+  <section id="mes-engagements" class="section section-alt">
+    <div class="wrap">
+      <p class="eyebrow">Mes engagements</p>
+      <h2>Ce que vous pouvez attendre de moi.</h2>
+      <p class="lead">
+        Je travaille en direct avec vous, du premier appel à la mise en ligne.
+        Je travaille en Vendée comme à distance : tout se fait par téléphone,
+        par mail, et en visio quand vous préférez.
+      </p>
+
+      <ul class="engagements-liste">
+        <li>
+          <strong>Vous parlez à moi.</strong>
+          Pas de standard, pas de service client.
+        </li>
+        <li>
+          <strong>Vous restez propriétaire.</strong>
+          De votre site et de votre nom de domaine.
+        </li>
+        <li>
+          <strong>Zéro commission.</strong>
+          Aucun pourcentage sur vos réservations, jamais.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== 8. CONTACT ===================== -->
+  <section id="contact" class="section">
+    <div class="wrap">
+      <p class="eyebrow">Contact</p>
+      <h2>Demander un devis gratuit</h2>
+      <p class="lead">
+        Décrivez votre bien en quelques lignes. Je vous réponds sous 24 heures,
+        et le devis ne vous engage à rien.
+      </p>
+
+      <div class="cols cols-contact">
+
+        <div class="coordonnees">
+          <p class="co-label">Téléphone</p>
+          <p class="co-valeur"><a href="tel:+33662674414">06 62 67 44 14</a></p>
+
+          <p class="co-label">E-mail</p>
+          <p class="co-valeur"><a href="mailto:milcent-benjamin@orange.fr">milcent-benjamin@orange.fr</a></p>
+
+          <p class="co-label">Adresse de l'établissement</p>
+          <p class="co-valeur">rue de la Faïencerie<br>85540 Le Champ-Saint-Père<br>Vendée</p>
+
+          <p class="co-label">Entreprise</p>
+          <p class="co-valeur">Cap Encre — entrepreneur individuel<br>
+            SIRET 814 225 454 000 28</p>
+        </div>
+
+        <form class="form" id="form-devis" name="devis" method="POST"
+              data-form-en-ligne="true"
+              data-netlify="true" netlify-honeypot="bot-field" action="/merci.html">
+
+          <!-- Deux champs techniques exigés par Netlify. Ne pas les supprimer :
+               sans eux, les demandes n'arrivent pas dans votre tableau de bord. -->
+          <input type="hidden" name="form-name" value="devis">
+          <p class="form-piege">
+            <label>Ne remplissez pas ce champ : <input name="bot-field"></label>
+          </p>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="nom">Nom et prénom</label>
+              <input type="text" id="nom" name="nom" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="email">E-mail</label>
+              <input type="email" id="email" name="email" autocomplete="email" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="telephone">Téléphone</label>
+              <input type="tel" id="telephone" name="telephone" autocomplete="tel">
+            </div>
+            <div class="field">
+              <label for="commune">Commune du bien</label>
+              <input type="text" id="commune" name="commune"
+                     placeholder="Le nom de votre commune">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="message">Votre message</label>
+            <textarea id="message" name="message" required
+                      placeholder="Votre bien, le nombre de personnes, ce que vous attendez du site…"></textarea>
+          </div>
+
+          <button class="btn btn-primary btn-block" type="submit">Envoyer ma demande</button>
+
+          <p class="form-aide">
+            Réponse sous 24 heures. Vous pouvez aussi appeler le
+            <a href="tel:+33662674414">06 62 67 44 14</a> ou écrire à
+            <a href="mailto:milcent-benjamin@orange.fr">milcent-benjamin@orange.fr</a>.
+          </p>
+        </form>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== PIED DE PAGE ===================== -->
+<footer class="site-foot">
+  <div class="wrap foot-inner">
+    <div>
+      <p class="foot-name">Cap Encre</p>
+      <p>Création de site internet pour les meublés de tourisme,<br>logements atypiques et locations saisonnières.</p>
+      <p>Vendée · et à distance · <a href="tel:+33662674414">06 62 67 44 14</a></p>
+    </div>
+    <div>
+      <p class="foot-mentions">
+        Cap Encre — entrepreneur individuel<br>
+        rue de la Faïencerie, 85540 Le Champ-Saint-Père<br>
+        SIRET 814 225 454 000 28
+      </p>
+      <p>© <span id="annee">2026</span> Cap Encre.
+         <a class="foot-lien" href="/mentions-legales">Mentions légales</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

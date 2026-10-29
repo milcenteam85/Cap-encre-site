@@ -1,0 +1,18 @@
+POLICES DE CE SITE — TOUTES LIBRES (licence OFL, Open Font License)
+====================================================================
+Le gabarit est revendu a plusieurs clients : une police commerciale se facture
+au nombre de visites. Aucune police commerciale n'est donc utilisee ici.
+
+Playfair Display .................... licence OFL 1.1
+  auteur  : Claus Eggers Sørensen
+  source  : https://fonts.google.com/specimen/Playfair+Display
+  fichiers: playfair-400.woff2, playfair-700.woff2 (sous-ensemble latin)
+
+Jost ............................... licence OFL 1.1
+  auteur  : indestructible type* (Owen Earl)
+  source  : https://fonts.google.com/specimen/Jost
+  fichiers: jost-400.woff2, jost-500.woff2 (sous-ensemble latin)
+
+La licence OFL autorise l'usage commercial, la modification et la redistribution,
+y compris dans un produit vendu, a condition de ne pas vendre la police
+elle-meme. Elle ne se facture pas au nombre de visites.

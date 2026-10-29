@@ -1,0 +1,413 @@
+/* ============================================================================
+   LE BEURRE NOISETTE — gabarit RESTAURANT de Cap Encre
+   ----------------------------------------------------------------------------
+   Meme convention que le gabarit logement : l'attribut data-palette sur <html>
+   choisit le jeu de couleurs, et TOUT est regle ici, a un seul endroit.
+   Regle qui protege le prix : chaque variation doit rester un REGLAGE. Si une
+   variation oblige a reecrire la page, elle sort du gabarit.
+
+   Aucune bibliotheque, aucun framework. Le site est lu sur un telephone en 4G.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- POLICES --
+   Libres uniquement (licence OFL, Open Font License). Le gabarit est revendu a
+   plusieurs clients : une police commerciale se facture au nombre de visites.
+   Hebergees ici, jamais sur un serveur tiers. Sous-ensemble latin.
+   Playfair Display pour les titres, Jost pour le texte : un couple different de
+   celui du gabarit logement (Cormorant Garamond + Inter), pour que les deux
+   demonstrations ne se ressemblent pas. */
+@font-face {
+  font-family: "Playfair"; font-style: normal; font-weight: 700;
+  font-display: swap; src: url("polices/playfair-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Playfair"; font-style: normal; font-weight: 400;
+  font-display: swap; src: url("polices/playfair-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Jost"; font-style: normal; font-weight: 400;
+  font-display: swap; src: url("polices/jost-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Jost"; font-style: normal; font-weight: 500;
+  font-display: swap; src: url("polices/jost-500.woff2") format("woff2");
+}
+
+/* --------------------------------------------------------------- PALETTES --
+   Trois couleurs au maximum : un fond, une encre, un accent.
+   Jamais de blanc pur : #FFFFFF sur un ecran de telephone est agressif, et il
+   trahit le site bricole. Le fond le plus clair est une creme.
+
+   CONTRASTES MESURES — une valeur chiffree par paire, jamais estimee a l'oeil.
+   Jeu « table » (par defaut) :
+     encre #2E211A sur fond #F7F1E6 ....... 13,85:1   texte courant
+     doux  #6B5A4C sur fond #F7F1E6 .......  5,85:1   texte secondaire
+     accent #A4603A sur fond #F7F1E6 ......  4,33:1   GRAND TEXTE ET BOUTONS
+     accent #A4603A sur encre #2E211A .....  3,20:1   boutons sur fond sombre
+   ⚠️ L'accent a 4,33:1 n'a PAS le droit de porter du petit texte sur la creme.
+   Il reste aux grands textes et aux boutons, comme le laiton du gabarit logement. */
+:root,
+[data-palette="table"] {
+  --fond: #F7F1E6;        /* creme chaude */
+  --fond-alt: #EFE6D6;    /* creme plus dense, pour detacher un bloc */
+  --surface: #FCF8F1;     /* cartes et champs */
+  --encre: #2E211A;       /* brun profond : titres, textes, fonds sombres */
+  --texte: #2E211A;
+  --texte-doux: #6B5A4C;
+  --accent: #A4603A;      /* cuivre : FONDS ET BOUTONS seulement (3,20:1 sur brun) */
+  --accent-clair: #C98A5B; /* cuivre clair : sur fond sombre (5,39:1) */
+  --accent-texte: #8B4A28; /* cuivre sombre : LE TEXTE sur fond clair (6,01:1) */
+  --filet: #D9CCBA;
+  --erreur: #A33A22;
+}
+/* Jeu « nuit » : pour un lieu qui se vit surtout le soir. */
+[data-palette="nuit"] {
+  --fond: #1B1613;
+  --fond-alt: #241D18;
+  --surface: #241D18;
+  --encre: #F2E9DC;
+  --texte: #F2E9DC;
+  --texte-doux: #C4B4A2;
+  --accent: #C98A5B;
+  --accent-clair: #DDA57A;
+  --accent-texte: #C98A5B;  /* sur fond sombre, le texte accent s'eclaircit (6,21:1) */
+  --filet: #3A2F27;
+  --erreur: #E08A78;
+}
+/* Jeu « olive » : un troisieme reglage, pour montrer que le systeme tient. */
+[data-palette="olive"] {
+  --fond: #EFEAE0;
+  --fond-alt: #E4DED1;
+  --surface: #F6F2EA;
+  --encre: #2A2E22;
+  --texte: #2A2E22;
+  --texte-doux: #5C604F;
+  --accent: #8A7A3C;
+  --accent-clair: #A89A5E;
+  --accent-texte: #8B4A28;  /* le cuivre sombre passe aussi sur l'olive (5,64:1) */
+  --filet: #CCC6B8;
+  --erreur: #A33A22;
+}
+
+/* ------------------------------------------------------------------ BASE -- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--fond);
+  color: var(--texte);
+  font-family: "Jost", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 17px;            /* un peu plus gros que le defaut : on lit mal une carte a 16 px */
+  line-height: 1.65;
+  -webkit-text-size-adjust: 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--accent-texte); }
+a:focus-visible, button:focus-visible {
+  outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 2px;
+}
+
+main { display: block; }
+
+/* ------------------------------------------------------------------ TYPES -- */
+h1, h2, h3 { font-family: "Playfair", Georgia, serif; font-weight: 700; line-height: 1.15; margin: 0; }
+.surtitre {
+  font-size: .78rem; font-weight: 500; letter-spacing: .34em; text-transform: uppercase;
+  color: var(--texte-doux); margin: 0 0 1.4rem;
+}
+.titre-section {
+  font-size: clamp(1.9rem, 4.4vw, 3rem); margin-bottom: 2.4rem;
+}
+.titre-section::after {          /* un filet court, un seul cote : jamais deux */
+  content: ""; display: block; width: 3.4rem; height: 2px;
+  background: var(--accent); margin-top: 1rem;
+}
+section { padding: clamp(3.4rem, 8vw, 6.5rem) clamp(1.2rem, 4vw, 2.4rem); }
+/* Le bandeau d'image, lui, va vraiment jusqu'aux bords : c'est tout son interet.
+   Un filet n'appartient qu'a un seul cote — ici, le haut et le bas. */
+.bandeau-img { padding: 0; }
+
+/* --------------------------------------------------------------- BANDEAU -- */
+/* La demonstration DIT qu'elle est une demonstration, et que les images sont
+   generees. Ce n'est pas une precaution : c'est une promesse tenue. */
+.bandeau-demo {
+  background: var(--encre); color: var(--fond);
+  font-size: .8rem; letter-spacing: .08em; text-align: center;
+  padding: .7rem 1rem;
+}
+[data-palette="nuit"] .bandeau-demo { background: var(--accent); color: #1B1613; }
+
+/* ------------------------------------------------------------------ TETE -- */
+.site-tete {
+  display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+  padding: 1.1rem clamp(1.2rem, 4vw, 2.4rem);
+  border-bottom: 1px solid var(--filet);
+}
+.marque { display: flex; align-items: center; gap: .7rem; text-decoration: none; color: var(--encre); }
+.marque-mono {
+  width: 38px; height: 38px; border-radius: 50%; flex: none;
+  border: 1.5px solid var(--accent); color: var(--accent-texte);
+  display: grid; place-items: center;
+  font-family: "Playfair", serif; font-size: .95rem; letter-spacing: .04em;
+}
+.marque-nom { font-family: "Playfair", serif; font-size: 1.12rem; }
+.site-nav { display: flex; gap: 1.6rem; }
+.site-nav a {
+  color: var(--texte-doux); text-decoration: none; font-size: .93rem;
+  padding: .35rem 0; border-bottom: 1px solid transparent;
+}
+.site-nav a:hover { color: var(--encre); border-bottom-color: var(--accent-texte); }
+.tete-tel {
+  background: var(--accent); color: #FBF7F0; text-decoration: none;
+  padding: .68rem 1.15rem; border-radius: 2px; font-size: .93rem; font-weight: 500;
+  min-height: 44px; display: inline-flex; align-items: center;     /* zone tactile */
+}
+
+/* ---------------------------------------------------- 1. L'OUVERTURE ----
+   Typographique, sur fond sombre. PAS la photo plein ecran avec zoom lent :
+   c'est la signature du gabarit logement, et deux demos qui se ressemblent font
+   un portfolio de clones. Bonus : elle ne pese presque rien, donc elle
+   s'affiche instantanement en 4G. */
+.ouv {
+  background: var(--encre); color: var(--fond);
+  padding: clamp(4rem, 12vw, 8rem) clamp(1.2rem, 4vw, 2.4rem) clamp(3.4rem, 9vw, 6rem);
+  text-align: left;
+}
+[data-palette="nuit"] .ouv { background: var(--fond-alt); color: var(--texte); }
+.ouv .surtitre { color: var(--accent-clair); }
+.ouv-nom {
+  font-size: clamp(2.9rem, 9vw, 6.4rem);
+  letter-spacing: -.01em;
+  max-width: 16ch;
+  margin-bottom: 1.6rem;
+}
+.ouv-accroche {
+  font-size: clamp(1.02rem, 1.7vw, 1.22rem); line-height: 1.7;
+  max-width: 52ch; margin: 0 0 2.6rem;
+}
+[data-palette="table"] .ouv-accroche,
+[data-palette="olive"] .ouv-accroche { color: #D8CCBA; }
+[data-palette="nuit"] .ouv-accroche { color: var(--texte-doux); }
+.ouv-actions { display: flex; flex-wrap: wrap; gap: .9rem; }
+.bouton {
+  text-decoration: none; padding: .95rem 1.7rem; border-radius: 2px;
+  font-weight: 500; font-size: 1rem; letter-spacing: .02em;
+  min-height: 48px; display: inline-flex; align-items: center;
+  border: 1.5px solid var(--accent);
+}
+.bouton-plein { background: var(--accent); color: #FBF7F0; }
+.bouton-vide { background: transparent; color: var(--accent-clair); }
+[data-palette="nuit"] .bouton-vide { color: var(--accent-texte); }
+.bouton:hover { filter: brightness(1.08); }
+
+/* --------------------------------------------------- 2. L'ESSENTIEL ----- */
+.essentiel { background: var(--fond); border-top: 1px solid var(--filet); }
+.essentiel-grille {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 2.6rem;
+}
+.essentiel h3 {
+  font-family: "Jost", sans-serif; font-weight: 500; font-size: .78rem;
+  letter-spacing: .28em; text-transform: uppercase; color: var(--accent-texte);
+  margin-bottom: 1rem;
+}
+.horaires { width: 100%; border-collapse: collapse; font-size: .96rem; }
+.horaires th {
+  text-align: left; font-weight: 400; color: var(--texte-doux);
+  padding: .3rem 0; width: 42%;
+}
+.horaires td { padding: .3rem 0; }
+.adresse { color: var(--texte); margin: 0 0 1.6rem; }
+.services { list-style: none; margin: 0; padding: 0; }
+.services li { padding: .22rem 0; color: var(--texte); }
+.services li + li { }
+
+/* --------------------------------------------------------- 3. LA CARTE --
+   LA PIECE MAITRESSE. Elle doit avoir l'air d'une carte, pas d'une liste.
+   Deux colonnes, prix alignes a droite, points de conduite entre le plat et
+   son prix. En HTML : jamais une image, jamais un PDF — c'est ce que Google
+   lit, et c'est lisible sur un telephone en 4G. */
+.carte { background: var(--fond-alt); }
+.menu-jour {
+  border: 1px solid var(--accent); padding: 1.5rem 1.7rem; margin-bottom: 3rem;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: .6rem 1.4rem;
+  justify-content: space-between;
+}
+.menu-jour-titre {
+  font-family: "Playfair", serif; font-size: 1.35rem; margin: 0;
+}
+.menu-jour-texte { margin: 0; color: var(--texte-doux); max-width: 46ch; }
+.menu-jour-prix { color: var(--accent-texte); font-weight: 500; }
+
+.carte-colonnes {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3rem 4rem;
+}
+.carte-groupe {
+  font-family: "Jost", sans-serif; font-weight: 500; font-size: .78rem;
+  letter-spacing: .28em; text-transform: uppercase; color: var(--accent-texte);
+  margin: 0 0 .9rem; padding-bottom: .5rem; border-bottom: 1px solid var(--filet);
+}
+.carte-colonne .carte-groupe:not(:first-child) { margin-top: 2.6rem; }
+
+.plats { list-style: none; margin: 0; padding: 0; }
+.plats li {
+  display: flex; align-items: baseline; gap: .6rem;
+  padding: .34rem 0; font-size: 1rem;
+}
+.plat { flex: 0 1 auto; }
+/* Les points de conduite : un filet pointille qui pousse le prix a droite.
+   C'est ce detail qui fait « carte » plutot que « liste ». */
+.points {
+  flex: 1 1 auto; min-width: 1.5rem;
+  border-bottom: 1.5px dotted var(--filet);
+  transform: translateY(-.32em);
+}
+.prix {
+  flex: none; color: var(--texte); font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.carte-note {
+  font-size: .85rem; color: var(--texte-doux); margin: 2.6rem 0 0; max-width: 70ch;
+}
+.emporter { margin-top: 2.6rem; }
+
+/* -------------------------------------------------------- 4. GALERIE ---- */
+.galerie-grille {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  /* Les hauteurs suivent la FORME des photos, pour que le cadrage reste naturel
+     au lieu de couper brutalement :
+       large  : 2 colonnes x 2 rangees -> 595 x 335 px, soit exactement du 16/9
+       haute  : 1 colonne  x 3 rangees -> 291 x 505 px, soit 0,58 — la forme
+                meme des photos verticales (576 x 1024).
+     Une case qui ne correspond pas a la photo oblige a la rogner : c'est ce qui
+     fait qu'une galerie a l'air fabriquee. */
+  grid-auto-rows: auto; gap: .8rem;
+}
+
+/* La case du figure EST la case de la grille : l'image la remplit entierement.
+   object-fit: cover recadre au lieu de deformer — une photo ecrasee se voit
+   tout de suite, et c'est ce qui trahit un site bacle.
+   Une case sans image (avant d'avoir la photo) garde la meme hauteur : la mise
+   en page ne bouge donc pas le jour ou la photo arrive. */
+.galerie figure { margin: 0; display: flex; overflow: hidden; }
+.galerie img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 3 / 2; }
+.galerie figure { margin: 0; display: flex; flex-direction: column; }
+.g-large { grid-column: span 2; grid-row: span 2; }
+.g-tall { grid-row: span 3; }
+.g-image {
+  flex: 1; background: var(--fond-alt);
+  border: 1px solid var(--filet);
+  display: grid; place-items: center; text-align: center;
+  color: var(--texte-doux); font-size: .84rem; padding: .8rem;
+}
+
+/* ----------------------------------------------------------- 5. AVIS ---- */
+.avis { background: var(--fond-alt); }
+.avis-grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.6rem; }
+.avis-bloc {
+  margin: 0; background: var(--surface); border: 1px solid var(--filet);
+  padding: 1.6rem 1.5rem;
+}
+.avis-bloc p { margin: 0 0 1rem; font-family: "Playfair", serif; font-size: 1.08rem; line-height: 1.5; }
+.avis-bloc cite { font-style: normal; font-size: .84rem; color: var(--texte-doux); letter-spacing: .06em; }
+
+/* ---------------------------------------------------------- 6. ACCES ---- */
+.acces-grille { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 3rem; align-items: start; }
+.lien-tel { font-size: 1.3rem; font-family: "Playfair", serif; text-decoration: none; }
+.acces-liens { list-style: none; margin: 1.6rem 0 0; padding: 0; }
+.acces-liens li { padding: .3rem 0; }
+.acces-carte iframe { border: 1px solid var(--filet); display: block; }
+.acces-carte-note { font-size: .84rem; color: var(--texte-doux); margin-top: .7rem; }
+
+/* -------------------------------------------------------- 7. BANDEAU ---- */
+.bandeau-img { padding: 0; }
+.bandeau-img-interieur {
+  min-height: clamp(200px, 34vw, 380px);
+  background: var(--fond-alt); border-block: 1px solid var(--filet);
+  display: grid; place-items: center; color: var(--texte-doux); font-size: .88rem;
+}
+
+/* ------------------------------------------------------------- 8. PIED -- */
+.site-pied { background: var(--encre); color: #D8CCBA; padding: 3.2rem 0 4.6rem; }
+.pied-contenu {
+  width: min(1180px, 100% - 3rem); margin-inline: auto;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2.2rem;
+}
+.pied-nom { font-family: "Playfair", serif; color: var(--fond); font-size: 1.15rem; margin: 0 0 .5rem; }
+.pied-siret, .pied-mentions, .pied-credits, .pied-allergenes { font-size: .88rem; margin: 0 0 .5rem; }
+.site-pied a { color: var(--accent-clair); }
+.pied-demo { font-size: .84rem; color: #B9A895; margin: 0; }
+
+/* ------------------------------------------------------ BARRE D'APPEL --
+   Telephones uniquement, apres une hauteur d'ecran de defilement, masquee des
+   que la section contact apparait. env(safe-area-inset-bottom) evite qu'elle
+   passe sous la barre du navigateur sur iPhone. */
+.barre-appel {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+  display: none; align-items: center; justify-content: center; gap: .6rem;
+  background: var(--accent); color: #FBF7F0; text-decoration: none;
+  font-weight: 500; min-height: 52px;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  transform: translateY(110%); transition: transform .28s ease;
+  box-shadow: 0 -2px 14px rgba(0, 0, 0, .18);
+}
+.barre-appel.visible { transform: translateY(0); }
+@media (max-width: 720px) { .barre-appel { display: flex; } }
+@media (prefers-reduced-motion: reduce) { .barre-appel { transition: none; } }
+@media (max-width: 900px) {
+  /* La barre recouvrirait les derniers mots du pied de page. */
+  .site-pied { padding-bottom: 6.4rem; }
+}
+
+/* -------------------------------------------------- OUVERTURE MONOGRAMME --
+   Construite par le JavaScript : sans script, elle n'existe pas. Deux secondes
+   et demie au maximum, une fois par session, et un filet de securite : quoi
+   qu'il arrive, l'ecran ne reste pas en travers. */
+.ouverture {
+  position: fixed; inset: 0; z-index: 90;
+  background: var(--encre); color: var(--fond);
+  display: none; place-items: center; text-align: center; gap: .5rem;
+  flex-direction: column;
+}
+.js .ouverture { display: grid; }
+.ouverture-mono {
+  width: 74px; height: 74px; border-radius: 50%;
+  /* L'ouverture est SOMBRE : le monogramme y prend le cuivre clair (5,39:1).
+     Le meme cercle, dans l'en-tete clair, prend le cuivre sombre (6,01:1).
+     Meme reglage, deux fonds : c'est exactement pourquoi la variable existe. */
+  border: 1.5px solid var(--accent-clair);
+  display: grid; place-items: center;
+  font-family: "Playfair", serif; font-size: 1.5rem; letter-spacing: .06em;
+  color: var(--accent-clair);
+  animation: mono 1.3s ease both;
+}
+.ouverture-nom { font-family: "Playfair", serif; font-size: 1.4rem; margin: 1.2rem 0 0; }
+.ouverture-lieu {
+  font-size: .76rem; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--accent-clair); margin: .5rem 0 0;
+}
+@keyframes mono { from { opacity: 0; transform: scale(.82); } to { opacity: 1; transform: scale(1); } }
+.ouverture.part { opacity: 0; transition: opacity .4s ease; }
+@keyframes ouv { to { opacity: 0; visibility: hidden; } }
+.js .ouverture { animation: ouv .4s ease 2.1s forwards; }
+@media (prefers-reduced-motion: reduce) {
+  .ouverture-mono { animation: none; }
+  .js .ouverture { animation: none; }
+}
+
+/* -------------------------------------------------------------- TELEPHONE -- */
+@media (max-width: 900px) {
+  .carte-colonnes { grid-template-columns: 1fr; gap: 2.4rem; }
+  .acces-grille { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  body { font-size: 16.5px; }
+  .site-nav { display: none; }          /* la navigation passe au pied de page */
+  .galerie-grille { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 150px; }
+  .g-large { grid-column: span 2; }
+  .g-tall { grid-row: span 1; }          /* sur telephone, on empile sans trou */
+  .essentiel-grille { gap: 2rem; }
+  .marque-nom { font-size: 1rem; }
+}

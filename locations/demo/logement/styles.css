@@ -1,0 +1,2407 @@
+/* =========================================================================
+   LA MAISON DANS LES DUNES — feuille de style unique
+   -------------------------------------------------------------------------
+   • Aucun framework, aucun service extérieur : les polices elles-mêmes sont
+     hébergées sur le site (voir juste en dessous).
+   • Tout est pensé pour le téléphone d'abord, puis élargi pour l'ordinateur.
+
+   POUR CHANGER D'IDENTITÉ : une seule ligne pour les couleurs (data-palette
+   dans index.html) et un seul endroit pour les polices (--serif / --sans dans
+   le bloc « Réglages communs » plus bas).
+   ========================================================================= */
+
+/* =========================================================================
+   LES POLICES
+   -------------------------------------------------------------------------
+   Trois fichiers, hébergés sur le site. JAMAIS de lien vers un service
+   extérieur : c'est plus lent, cela transmet l'adresse IP du visiteur à un
+   tiers, et cela casse le jour où le service ferme.
+
+   Licence Open Font (SIL OFL 1.1) : libres, y compris pour un usage commercial
+   et pour la revente d'un gabarit. C'est la seule licence acceptable ici — une
+   police commerciale se facture au nombre de visites, et un contrôle de licence
+   sur le site d'un client est un problème qui n'appartient pas au client.
+   Les licences sont dans public/polices/, avec leur texte complet.
+
+   Poids total : 72 Ko pour les trois, sous-ensemble français seulement (ni
+   grec, ni cyrillique), et Inter en police variable — un seul fichier couvre
+   les graisses 400 à 600.
+   ========================================================================= */
+@font-face {
+  font-family: "Inter";
+  src: url("polices/inter-400-600.woff2") format("woff2");
+  font-weight: 400 600;      /* police variable : tout ce qui va de 400 à 600 */
+  font-style: normal;
+  font-display: swap;        /* le texte s'affiche aussitôt, dans la police de secours */
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("polices/cormorant-garamond-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Archivo Elargi";
+  src: url("polices/archivo-elargi-400-600.woff2") format("woff2");
+  font-weight: 400 600;
+  /* ⚠️ « normal », et pas « 125 % » : le fichier contient DÉJÀ la version
+     large d'Archivo (demandée à Google avec l'axe « wdth » à 125). Déclarer
+     « font-stretch: 125 % » obligerait à répéter « font-stretch » partout où
+     on l'utilise — et le jour où on l'oublie, la police ne s'applique plus,
+     sans aucun message d'erreur. */
+  font-stretch: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Marcellus";
+  src: url("polices/marcellus-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* =========================================================================
+   JEUX DE COULEURS — trois identités complètes et interchangeables
+   -------------------------------------------------------------------------
+   Le jeu actif se choisit sur UNE SEULE LIGNE, au tout début de index.html :
+
+       <html lang="fr" data-palette="foret">
+
+   Valeurs possibles :   foret  (par défaut)   ·   sable   ·   atlantique
+   Sans attribut, c'est « Forêt » qui s'applique.
+
+   Chaque jeu fournit TOUT : les fonds, les textes et l'accent. Aucune
+   couleur n'est écrite en dur ailleurs dans cette feuille — tout passe par
+   les variables ci-dessous. Pour créer un quatrième jeu, copier un bloc
+   entier et changer les valeurs : rien d'autre à toucher.
+
+   Les contrastes ont été vérifiés par le calcul sur les trois jeux
+   (outils/verif-contrastes.py). L'accent ne sert JAMAIS de texte sur fond
+   clair — 2,4:1 pour le laiton — d'où --accent-texte, sa version assombrie,
+   prévue exactement pour ça.
+   ========================================================================= */
+
+/* ---------- Réglages communs : ils ne changent pas d'un jeu à l'autre --- */
+:root {
+  --rayon: 10px;
+  --largeur: 1140px;
+  --marge: clamp(1.15rem, 4vw, 2.5rem);
+  --bloc-y: clamp(5rem, 12vw, 9.5rem);   /* bien plus d'air entre les sections */
+
+  /* ---------------------------------------------------------------------
+     LE COUPLE DE POLICES — LE SEUL ENDROIT À CHANGER
+
+     --serif  : la police des titres (accueil, titres de section)
+     --sans   : la police des textes (paragraphes, boutons, petites capitales)
+     --initiales : la police des initiales du monogramme (dans le SVG)
+
+     Pour un couple différent : modifier la liste POLICES en tête de
+     outils/telecharger-polices.py, relancer ce script, puis reporter les noms
+     ci-dessous. Voir le README, section « Les polices ».
+
+     Les polices de secours qui suivent prennent le relais si le fichier ne se
+     charge pas : le site reste lisible et correctement mis en page.
+     --------------------------------------------------------------------- */
+  --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+  --initiales: "Marcellus", "Cormorant Garamond", Georgia, serif;
+
+  /* Repères visuels « à compléter » : volontairement visibles. */
+  --note-fond: #FFF6E6;
+  --note-trait: #E3BC74;
+  --note-encre: #7A4F00;
+
+  /* Le texte posé SUR la couleur d'accent (une pastille, un jour sélectionné).
+     Presque noir : il tient sur les trois laiton, ocre et cuivre (5,0 à 7,4). */
+  --sur-accent: #12100C;
+
+  /* LE ROUGE — UN SEUL USAGE : le champ mal rempli. Voir plus bas. */
+  --erreur: #963636;
+}
+
+/* ---------- FORÊT — vert pin, sable chaud, laiton. Jeu par défaut. ------ */
+:root,
+[data-palette="foret"] {
+  --fond:            #F7F4EF;   /* sable chaud : le fond général */
+  --surface:         #ECE9E4;   /* un ton plus bas : un bloc posé sur le fond */
+  --fond-alt:        #2E3A2C;   /* vert pin profond : les zones sombres */
+  --surface-sombre:  #394538;   /* un ton plus haut : un bloc posé sur le sombre */
+  --accent:          #B99E6A;   /* laiton doré — petits éléments seulement */
+  --accent-appui:    #A88C55;   /* laiton plus dense, pour les survols */
+  --accent-texte:    #766544;   /* laiton assombri : lisible comme texte (4,7 à 5,2) */
+  --encre:           #26302A;   /* texte principal, sur fond clair */
+  --encre-sur-clair:  #26302A;   /* un bloc CLAIR posé dans une zone sombre
+                                    garde cette encre : elle ne bascule pas */
+  --gris-sur-clair:   #5A6357;
+  --gris:            #5C6657;   /* texte secondaire, sur fond clair */
+  --sur-sombre:      #FAF8F5;   /* texte principal, sur fond sombre */
+  --sur-sombre-doux: #CFD4C7;   /* texte secondaire, sur fond sombre */
+  --trait:           rgba(38, 48, 42, 0.16);
+  --trait-sombre:    rgba(247, 244, 239, 0.22);
+
+  /* Le grain n'est plus une variable : c'est un FICHIER, posé directement sur
+     les fonds sombres. Voir outils/generer-grain.py — c'est là-bas, et nulle
+     part ailleurs, que se règle sa force. */
+  --voile:           22, 30, 22;      /* teinte du voile posé sur les photos */
+  --filet:           #DDD8D0;   /* trait de 1 px, pour séparer */
+  --accent-sur-sombre: oui;   /* l'accent est clair : il se lit sur le sombre */
+  --accent-lien:     #B99E6A;   /* le laiton passe ici : 4,64:1 */
+}
+
+/* ---------- SABLE — terracotta, sable, ocre ---------------------------- */
+[data-palette="sable"] {
+  --fond:            #F6EFE3;
+  --surface:         #EBE4D9;
+  --fond-alt:        #5E3527;
+  --surface-sombre:  #6B4436;
+  --accent:          #C08A3E;
+  --accent-appui:    #A87430;
+  --accent-texte:    #835E2A;
+  --encre:           #2E241C;
+  --encre-sur-clair:  #2E241C;
+  --gris-sur-clair:   #6B5A4A;
+  --gris:            #6B5B4B;
+  --sur-sombre:      #F9F5ED;
+  --sur-sombre-doux: #D9C7B3;
+  --trait:           rgba(46, 36, 28, 0.16);
+  --trait-sombre:    rgba(249, 245, 237, 0.24);
+  --voile:           52, 26, 16;
+  --filet:           #DED5C6;   /* trait de 1 px, pour séparer */
+  --accent-sur-sombre: oui;   /* l'accent est clair : il se lit sur le sombre */
+  --accent-lien:     #F9F5ED;   /* l'ocre tombe à 3,45:1 — on prend le crème */
+}
+
+/* ---------- ATLANTIQUE — bleu profond, écru, cuivre -------------------- */
+[data-palette="atlantique"] {
+  --fond:            #F2EFE6;
+  --surface:         #E7E4DB;
+  --fond-alt:        #16323F;
+  --surface-sombre:  #234050;
+  --accent:          #B87333;
+  --accent-appui:    #9E6229;
+  --accent-texte:    #8C5727;
+  --encre:           #1E2A31;
+  --encre-sur-clair:  #1E2A31;
+  --gris-sur-clair:   #4E5A63;
+  --gris:            #55636B;
+  --sur-sombre:      #F7F5EF;
+  --sur-sombre-doux: #C3CDD4;
+  --trait:           rgba(30, 42, 49, 0.16);
+  --trait-sombre:    rgba(247, 245, 239, 0.24);
+  --voile:           10, 26, 34;
+  --filet:           #D9D5CA;   /* trait de 1 px, pour séparer */
+  --accent-sur-sombre: oui;   /* l'accent est clair : il se lit sur le sombre */
+  --accent-lien:     #F7F5EF;   /* le cuivre tombe à 3,55:1 — on prend l'écru */
+}
+
+/* ---------- PIERRE — la palette de la référence fournie par le client ---
+   Beige chaud, vert forêt très sombre (kaki), rouge brique en accent. Les
+   valeurs sont relevées dans leur feuille de style.
+
+   ⚠️ UN ÉCART ASSUMÉ AVEC LA RÉFÉRENCE.
+   Chez eux, le texte courant est leur gris #7b7e7c : mesuré 2,83:1 sur le
+   beige, et 2,46:1 sur le beige appuyé. Le minimum lisible est 4,5:1 — LEUR
+   TEXTE COURANT EST SOUS LE SEUIL. On ne recopie donc pas ce défaut : ici, le
+   texte courant prend leur VERT FORÊT #2f3431, qui donne 8,74:1. Leur gris
+   #7b7e7c ne sert plus qu'aux bordures et aux états inactifs, jamais à du
+   texte. C'est la seule chose qu'on s'autorise à corriger de leur palette.
+
+   L'ACCENT ne colore aucun titre ni aucun bouton plein : c'est le lien actif
+   du panneau et un soulignement au survol. Rien de plus — s'il se voit, c'est
+   qu'il y en a trop. */
+[data-palette="pierre"] {
+  /* ---------------------------------------------------------------------
+     LA PAGE ENTIÈRE SUR UN SEUL FOND SOMBRE
+     ---------------------------------------------------------------------
+     Couleurs relevées sur les captures du client :
+       fond               #272928
+       texte principal    #cccecd   (9,26:1)
+       texte secondaire   #9ca19d   (5,58:1)
+
+     ⚠️ LEUR TEXTE COURANT N'EST PAS REPRIS : #6e706f donne 4,32:1 sur leur
+     propre fond, sous le seuil de 4,5, comme leur gris sur beige (2,83:1).
+     Le texte courant prend leur couleur d'étiquette, qui passe.
+
+     ⚠️ LA TUILE DE GRAIN DOIT SUIVRE. Elle est opaque : elle REMPLACE la
+     couleur. Une tuile sombre posée sur un fond beige ferait une plaque.
+     Voir outils/generer-grain.py, TUILES.
+
+     --fond et --fond-alt portent la MÊME valeur : il n'y a plus qu'un seul
+     fond, de haut en bas. --cellule, elle, reste CLAIRE : les jours du
+     calendrier ont besoin d'un fond clair pour se lire.
+     --------------------------------------------------------------------- */
+  --fond:            #272928;
+  --surface:         #2f312f;
+  --fond-alt:        #272928;
+  --surface-sombre:  #333634;
+  --accent:          #963636;
+  --accent-appui:    #7d2c2c;
+  --accent-texte:    #8a3232;
+  --encre:           #cccecd;
+  --encre-sur-clair:  #2f3431;
+  --gris-sur-clair:   #565956;
+  --gris:            #9ca19d;
+  --sur-sombre:      #cccecd;
+  --sur-sombre-doux: #9ca19d;
+  --trait:           rgba(204, 206, 205, 0.18);
+  --trait-sombre:    rgba(204, 206, 205, 0.22);
+  --voile:           24, 28, 25;
+  --filet:           #3a3d3b;
+
+  /* LES CASES CLAIRES DU CALENDRIER. Elles ne dépendent plus de --fond, qui
+     est devenu sombre : un jour libre sur fond sombre ne se lirait pas. */
+  --cellule:         #d9d6d0;
+  --cellule-encre:   #2f3431;
+  --cellule-vide:    #e7e5e4;
+
+  /* Le lien accentué du panneau. Le rouge brique donnerait 1,74:1 sur ce fond :
+     l'accent ne porte JAMAIS de texte ici, et la feuille de style le déclare
+     pour que le contrôle ne devine pas à notre place. */
+  --accent-lien:     #cccecd;
+  --accent-sur-sombre: non;
+
+  /* LE ROUGE D'ERREUR, sur ce fond-là. Le rouge de la palette commune (#963636)
+     ne donne que 2,01:1 sur #272928 : un champ mal rempli passerait inaperçu.
+     Cette version claire en donne 5,63 — assez pour une bordure ET pour le
+     texte de l'étiquette. */
+  --erreur:          #e08a78;
+}
+
+* { box-sizing: border-box; }
+
+/* L'attribut « hidden » doit TOUJOURS l'emporter. Sans cette règle, un
+   élément dont le CSS fixe un « display » reste affiché malgré hidden :
+   le calendrier resterait visible alors qu'il doit disparaître. */
+[hidden] { display: none !important; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--fond);
+  color: var(--encre);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.9;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+
+a { color: var(--encre); }
+
+h1, h2, h3 { font-family: var(--serif); font-weight: 400; letter-spacing: -0.015em; }
+/* Le titre d'accueil : 46 px sur un téléphone, 54 px sur ordinateur — la
+   fourchette demandée. Interligne serré : c'est ce qui donne l'allure d'un
+   titre de magazine plutôt que d'un bandeau publicitaire. */
+h1 { font-size: clamp(2.875rem, 6vw, 3.375rem); line-height: 1.08; margin: 0 0 0.7rem; }
+h2 { font-size: clamp(1.9rem, 4.8vw, 2.85rem); line-height: 1.12; margin: 0 0 1.1rem; }
+h3 { font-size: 1.2rem; margin: 0 0 0.5rem; }
+
+p { margin: 0 0 1rem; }
+p:last-child { margin-bottom: 0; }
+
+.wrap { width: min(var(--largeur), 100% - (var(--marge) * 2)); margin-inline: auto; }
+
+/* -------------------------------------------------------------------------
+   LES DEUX FONDS DE LA PAGE
+       .section      fond sable, texte foncé
+       .section-alt  fond vert pin, texte clair
+   Tout ce qui vit dans une zone sombre bascule ici, en une seule fois :
+   titres, texte secondaire, filets, liens. C'est ce qui évite de répéter la
+   bascule dans chaque bloc — et donc d'en oublier un.
+   ------------------------------------------------------------------------- */
+.section { padding: var(--bloc-y) 0; }
+
+/* La grande image pleine largeur qui ouvre une section : elle est remontée
+   jusqu'au bord haut, malgré l'espace intérieur de la section, pour être
+   vraiment bord à bord. */
+.bande-image {
+  position: relative;
+  overflow: hidden;
+  margin: calc(var(--bloc-y) * -1) 0 var(--bloc-y);
+  line-height: 0;
+}
+.bande-image img {
+  /* LA PHOTO ENTIERE.
+     C'etait le SEUL endroit du site qui recadrait : cette bande avait une
+     hauteur fixe, et l'image la remplissait en coupant ce qui depassait.
+     Mesure sur telephone : 47 % de la photo visible, donc coupee en deux.
+     Ici l'image garde son rapport naturel et se plafonne par la hauteur de
+     l'ecran. Sur telephone elle reste bord a bord ; sur ordinateur, une photo
+     verticale ne peut pas faire toute la largeur sans faire deux ecrans de
+     haut : elle se centre, entiere, sur le fond. */
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 84vh;
+  object-fit: contain;
+  margin: 0 auto;
+}
+.section,
+.section-alt {
+  /* Le grain sur les sections sombres — et ici, TOUTES le sont. La tuile est
+     opaque : elle porte donc la couleur du fond, et --fond-alt doit valoir la
+     même chose. Voir outils/generer-grain.py. */
+  background-color: var(--fond-alt);
+  /* LA TUILE DE GRAIN. Un PNG de bruit pixel par pixel, répété en tuile, peint
+     DANS notre vert sombre — et non plus un filtre SVG posé en voile. La
+     différence n'est pas la force, c'est la NATURE : feTurbulence fabrique des
+     nuages lisses, un PNG de bruit fabrique du grain. C'est mesuré, ce n'était
+     pas une impression.
+     La tuile est OPAQUE : elle REMPLACE la couleur de fond. On garde quand même
+     le background-color dessous — si l'image ne charge pas, la section reste
+     vert sombre au lieu de devenir blanche.
+     background-size: auto — on ne redimensionne pas, on n'interpole pas : une
+     tuile de bruit agrandie devient une flaque. */
+  background-image: url("images/grain.png");
+  background-repeat: repeat;
+  background-size: auto;
+  color: var(--sur-sombre);
+
+  /* ICI, LES VARIABLES DE TEXTE BASCULENT — une fois pour toutes.
+     Tout ce qui est écrit dans une zone sombre prend alors les couleurs
+     claires, y compris les éléments auxquels on ne pense pas : légendes de
+     photos, notes, listes, petites précisions. C'est exactement ce qui
+     manquait : les six légendes de la galerie gardaient --gris, prévu pour le
+     fond clair, et tombaient à 1,99:1 — invisibles.
+
+     Corriger au cas par cas ne suffit pas : le prochain élément ajouté
+     retomberait dans le même piège. En basculant les variables, on ne peut
+     plus hériter du clair par accident. Le contrôle automatique
+     (outils/audit-contrastes.py) vérifie que la règle tient. */
+  --encre: var(--sur-sombre);
+  --encre-douce: var(--sur-sombre-doux);
+  --gris: var(--sur-sombre-doux);
+  --trait: var(--trait-sombre);
+}
+.section-alt h1,
+.section-alt h2,
+.section-alt h3 { color: var(--sur-sombre); }
+.section-alt .eyebrow,
+.section-alt .lead { color: var(--sur-sombre-doux); }
+.section-alt a { color: var(--sur-sombre); }
+.section-alt .specs li { border-bottom-color: var(--trait-sombre); }
+
+/* Tout ce qui vit dans une zone sombre fixe EXPLICITEMENT sa couleur. Ne
+   jamais compter sur l'héritage : un texte qui garde la couleur prévue pour le
+   fond clair devient invisible sur le fond sombre. Mesuré : les six légendes
+   de la galerie étaient à 1,99:1 — illisibles, et personne ne l'avait vu. Seul
+   un contrôle automatique pouvait le dire : voir outils/audit-contrastes.py,
+   qui refuse la publication si un seul texte passe sous le seuil. */
+.section[id] { scroll-margin-top: 1rem; }
+
+/* Le surtitre : petites capitales très espacées. L'élégance vient de
+   l'écart entre ce minuscule et le grand titre serif qui le suit — pas
+   d'une couleur vive. L'accent est trop clair pour du texte ici (2,4:1 sur
+   le sable), d'où --accent-texte, sa version assombrie. */
+/* LES ÉTIQUETTES.
+   Chez la référence : majuscules, 11 à 13 px, graisse 500, interlettre 0,30 à
+   0,35 em — c'est ÉNORME, et c'est l'espacement qui fait tout l'effet. La
+   police n'y est pour rien. Le contraste entre ces petites capitales très
+   espacées et les grands titres serif, voilà ce qui fait « haut de gamme ».
+   Toutes les étiquettes du site passent par ici : sur-titres de section,
+   intitulés du panneau, étiquettes du calendrier. */
+.eyebrow {
+  font-size: clamp(0.69rem, 1.05vw, 0.81rem);   /* 11 à 13 px */
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gris);
+  margin: 0 0 0.9rem;
+}
+
+.lead { font-size: clamp(1.05rem, 2.2vw, 1.2rem); }
+
+/* Repère de contenu manquant ------------------------------------------- */
+/* Les liens DANS un encadré jaune. Le style général des liens prend la couleur
+   du texte principal — qui est CLAIRE sur cette palette. Sur le fond crème
+   d'un encadré, ce serait du clair sur du clair : 1,47:1, mesuré. Ces liens
+   prennent donc la couleur de l'encadré, et rien d'autre. */
+.todo a { color: inherit; text-decoration: underline; }
+.todo code { color: inherit; }
+
+/* Le bloc « A COMPLETER » est un ENCADRE, pas du texte nu : il a son propre
+   fond clair, et c'est LUI qu'il faut mesurer, pas le fond de la page.
+   #7A4F00 sur #FFF6E6 = 8,05:1 — largement au-dessus du seuil. Il est le meme
+   sur toutes les palettes, puisqu'il porte son fond avec lui.
+   (Verifie le 13 octobre : un controle trop rapide avait compare cette encre
+   au fond SOMBRE DE LA PAGE et crié a l'illisibilite. C'etait faux : le fond
+   de l'encadre est clair.) */
+.todo {
+  color: var(--note-encre);
+  background: var(--note-fond);
+  border: 1px dashed var(--note-trait);
+  border-radius: 6px;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+p.todo { display: block; margin: 1rem 0 0; }
+span.todo { display: inline-block; }
+.todo code { font-size: 0.92em; }
+
+/* Lien d'évitement (accessibilité clavier) ------------------------------ */
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 100;
+  background: var(--fond-alt); color: var(--sur-sombre); padding: 0.7rem 1rem;
+  border-radius: 0 0 var(--rayon) 0; text-decoration: none;
+}
+.skip:focus { left: 0; }
+
+/* ======================= En-tête ====================================== */
+.site-head {
+  position: absolute; inset: 0 0 auto 0; z-index: 20;
+  padding: 0.9rem 0;
+  color: #fff;
+}
+.head-inner {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.brand {
+  font-family: var(--serif); font-size: 1.15rem; color: var(--sur-sombre);
+  text-decoration: none; letter-spacing: 0.01em;
+  padding: 0.55rem 0;
+}
+.nav { display: none; gap: 1.6rem; }
+.nav a {
+  color: rgba(255, 255, 255, 0.88); text-decoration: none;
+  font-size: 0.95rem; padding: 0.55rem 0;
+  border-bottom: 1px solid transparent;
+}
+.nav a:hover { color: var(--sur-sombre); border-bottom-color: var(--trait-sombre); }
+.nav .nav-cta {
+  color: var(--sur-sombre); border: 1px solid var(--trait-sombre);
+  border-radius: 99px; padding: 0.5rem 1rem;
+}
+/* =====================================================================
+   LE BOUTON À DEUX TRAITS ET LE PANNEAU
+   =====================================================================
+   Le bouton et le panneau sont créés par script.js : rien de tout ceci
+   n'existe sans JavaScript, et les liens restent alors sagement dans
+   l'en-tête. C'est voulu — voir le commentaire du script.
+   ===================================================================== */
+
+/* L'en-tete vit maintenant sur le fond sombre : la pastille du telephone
+   prenait --fond-alt, c'est-a-dire la couleur du fond. Elle disparaissait.
+   Sur ce fond-la, elle est claire. Et le nom, plus long qu'avant, ne doit pas
+   se casser en quatre lignes. */
+.site-head .head-tel::before { background-color: var(--sur-sombre); }
+/* PAS de « nowrap » : mesuré, le nom ne tient pas sur une ligne à côté du
+   téléphone et du bouton du menu, et forcer la ligne provoquait un débordement
+   horizontal de la page. Il se coupe donc en deux — c'est un défaut assumé, et
+   le moindre des trois. */
+.brand { text-wrap: balance; }
+/* Sur téléphone, le nom tient sur UNE ligne : il est plus long qu'avant, et
+   l'en-tête porte aussi le téléphone et le bouton du menu. Mesuré : 0,85 rem
+   laisse la place aux trois, sans casser le nom en trois. */
+@media (max-width: 700px) {
+  .head-inner { gap: 0.4rem; }
+  .brand { font-size: 0.9rem; }
+  .head-tel { font-size: 0.85rem; }
+}
+
+.bouton-panneau {
+  /* 44 px : la taille d'un doigt. */
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 44px; min-height: 44px; padding: 0;
+  background: none; border: 0; border-radius: 0;
+  color: inherit; cursor: pointer;
+}
+.bouton-panneau:hover, .bouton-panneau:focus-visible { color: var(--accent-lien); }
+
+.panneau {
+  position: fixed; top: 0; right: 0; bottom: 0; left: auto;
+  width: 50%; max-width: 40rem;
+  background-color: var(--fond-alt); background-image: url("images/grain.png");
+  background-repeat: repeat; background-size: auto;
+  color: var(--sur-sombre);
+  padding: clamp(1.6rem, 4vw, 3rem);
+  overflow-y: auto;
+  z-index: 90;
+  transform: translateX(100%);
+  /* 400 ms, courbe douce. La seule animation de tout le site avec le fondu
+     du carrousel et son zoom — la référence n'en a aucune, et c'est
+     précisément pour ça qu'elle paraît calme. */
+  transition: transform 400ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.panneau.ouvert { transform: translateX(0); }
+
+@media (max-width: 719px) {
+  .panneau { width: 100%; max-width: none; }
+}
+
+.panneau-fermer {
+  position: absolute; top: 0.9rem; right: 0.9rem;
+  width: 44px; height: 44px; padding: 0;
+  background: none; border: 0; color: var(--sur-sombre);
+  font-family: var(--sans); font-size: 1.9rem; line-height: 1;
+  cursor: pointer;
+}
+.panneau-fermer:hover, .panneau-fermer:focus-visible { color: var(--accent-lien); }
+
+.panneau-titre {
+  font-family: var(--sans); font-size: 0.75rem; font-weight: 500;
+  letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--sur-sombre-doux);
+  margin: 0 0 2rem;
+}
+
+.panneau-liens { display: grid; }
+.panneau-liens a {
+  display: block; padding: 0.95rem 0;
+  font-family: var(--sans); font-weight: 500;
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--sur-sombre); text-decoration: none;
+  border-bottom: 1px solid var(--trait-sombre);
+}
+/* L'accent, ici et nulle part ailleurs dans le panneau : le soulignement au
+   survol. Il ne colore ni un titre ni un aplat — s'il se voit, c'est qu'il y
+   en a trop. */
+.panneau-liens a:hover, .panneau-liens a:focus-visible {
+  color: var(--accent-lien);
+  border-bottom-color: var(--accent-lien);
+}
+/* Le lien de la section où l'on se trouve. --accent-lien, et non --accent :
+   sur trois des quatre palettes, l'accent posé sur le fond sombre du panneau
+   descend sous 4,5:1 (ocre 3,45, cuivre 3,55, brique 1,74). La feuille de
+   style dit laquelle des deux employer — le contrôle le vérifie. */
+.panneau-liens a.actif { color: var(--accent-lien); }
+
+@media (prefers-reduced-motion: reduce) {
+  .panneau { transition: none; }
+}
+
+/* Sur ordinateur, trois liens restent dans l'en-tête et le reste passe dans le
+   panneau. En dessous de 960 px, l'en-tête garde le nom, le téléphone et le
+   bouton — rien d'autre. */
+@media (min-width: 960px) {
+  .nav a:nth-child(n+4):not(.nav-cta) { display: none; }
+}
+
+.site-head { padding-right: 0.2rem; }
+/* Le numéro de l'en-tête, dans son carré de laiton. Le pictogramme est une
+   image SVG insérée par le CSS : aucun caractère ajouté au contenu de la
+   page, donc aucun texte qui bouge. */
+.head-tel {
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  color: #fff; text-decoration: none;
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  /* ⚠️ On réduit le VISUEL, pas la CIBLE DU DOIGT : c'est ce lien qui fait
+     sonner le téléphone. 44 px de haut au minimum, quoi qu'il arrive. */
+  padding: 0.45rem 0;
+  min-height: 44px;
+  white-space: nowrap;   /* le numéro ne passe JAMAIS à la ligne */
+}
+.head-tel::before {
+  content: "";
+  width: 26px; height: 26px; flex: 0 0 26px;
+  border-radius: 3px;
+  background-color: var(--fond-alt);
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23221C0E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z'/%3E%3C/svg%3E");
+  background-size: 15px 15px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+@media (min-width: 860px) {
+  .nav { display: flex; }
+}
+
+/* ======================= Accueil : carrousel plein écran ================
+   Trois photos se remplacent en fondu. Rien d'autre ne bouge sur la page :
+   aucun zoom, aucun déplacement, aucune animation en boucle ailleurs.
+
+   SANS JAVASCRIPT, la première image reste affichée, fixe : c'est le CSS
+   seul qui la rend visible (la classe « est-visible » est écrite dans le
+   HTML). Le carrousel est un bonus, jamais une nécessité.
+
+   Le fond du bloc est vert pin : pendant le chargement des photos, le texte
+   blanc est déjà lisible.
+   ====================================================================== */
+.hero {
+  /* Plus de carrousel : le fond sombre texturé porte l'écran, et la photo de la
+     maison se pose SOUS le texte. En colonne : sans cela, la photo se
+     rangerait à côté du texte au lieu de passer dessous. */
+  background-image: url("images/grain.png");
+  background-repeat: repeat;
+  background-size: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  /* ⚠️ « background-color », PAS « background ».
+     Le raccourci « background » réinitialise l'image de fond : écrit après
+     « background-image: url(grain.png) », il l'ANNULE. Le héros est resté sans
+     grain — et comme l'en-tête est posé dessus, l'audit de contraste ne voyait
+     plus l'image derrière lui et croyait ses textes posés sur du crème. */
+  background-color: var(--fond-alt);
+  color: #fff;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* ======================================================================
+
+/* LE VOILE — c'est le point critique. Le titre blanc est posé sur trois
+   photos différentes : le voile est donc plus dense en haut, et il doit
+   tenir sur LA PLUS CLAIRE des trois. Mesuré sur chacune avec
+   outils/mesurer-contraste-accueil.py. */
+.hero-scrim {
+  position: absolute; inset: 0;
+  /* ⚠️ LE VOILE NE DOIT JAMAIS RECEVOIR LES CLICS.
+     Il est en position absolue et couvre tout le héros : sans cette ligne, il
+     passe AU-DESSUS de tout élément non positionné et AVALE les clics. C'est
+     arrivé : le lien « Découvrir la maison » et le bouton « Demander une
+     disponibilité » étaient incliquables. Il est décoratif — aria-hidden — donc
+     il n'a rien à faire dans les clics. */
+  pointer-events: none;
+  background:
+    linear-gradient(180deg,
+      rgba(var(--voile), 0.78) 0%,
+      rgba(var(--voile), 0.46) 26%,
+      rgba(var(--voile), 0.52) 55%,
+      rgba(var(--voile), 0.74) 100%);
+}
+/* LA PHOTO DE LA MAISON DANS L'ACCUEIL.
+   ⚠️ `position: relative` est indispensable : sans elle, le voile de l'accueil
+   (position: absolue, donc au-dessus des éléments statiques) la recouvrirait et
+   on ne verrait qu'une photo grise.
+   Le plafond était de 620 px, la taille réelle de l'ancienne photo : au-delà on
+   l'aurait agrandie, et une photo agrandie devient floue. La nouvelle fait
+   1200 px de large — le plafond suit donc la nouvelle photo. Il reste inférieur
+   ou égal à sa taille réelle : jamais d'agrandissement.
+   Sur téléphone, elle est plus large que l'écran : elle reste bord à bord. */
+.hero-photo {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding-bottom: clamp(1.5rem, 5vw, 3rem);
+  /* Le debordement est coupe : c'est un reste du zoom tres lent, retire a la
+     demande du client. On le garde, il ne coute rien et protege d'un
+     debordement accidentel de l'image. */
+  overflow: hidden;
+}
+.hero-photo img {
+  display: block;
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.hero-content {
+  position: relative;
+  width: 100%;
+  padding-top: 5rem;
+  /* La photo suit immédiatement : la respiration se fait sous elle. */
+  padding-bottom: clamp(1.1rem, 3vw, 1.8rem);
+}
+.hero-loc {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0 0 1.1rem;
+}
+/* Aucune ombre portée sur le titre : c'est le voile qui garantit la
+   lisibilité, et une ombre grise est exactement ce qu'on retire. */
+.hero h1 {
+  color: #fff;
+  max-width: 22ch;
+  margin-inline: auto;
+}
+.hero-facts {
+  font-size: clamp(0.98rem, 2.2vw, 1.12rem);
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 46ch;
+  margin: 0 auto 2.1rem;
+}
+.hero-actions {
+  display: flex; flex-wrap: wrap;
+  justify-content: center; align-items: center;
+  gap: 1.2rem 2.2rem;
+}
+/* LES DEUX ACTIONS DE L'ACCUEIL, SOUS LA PHOTO.
+   Le lien et le bouton sur la même ligne ; sur téléphone ils s'empilent, le
+   lien au-dessus du bouton. */
+.hero-actions {
+  /* Position relative : par sécurité, elle garantit que les deux actions
+     passent au-dessus du voile de l'accueil. */
+  position: relative;
+  padding-bottom: clamp(2rem, 6vw, 3.5rem);
+}
+@media (max-width: 620px) {
+  .hero-actions { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; }
+}
+
+/* LE BOUTON DE L'ACCUEIL.
+   ⚠️ Il prenait --fond-alt, c'est-à-dire EXACTEMENT la couleur du fond du
+   héros : mesuré 1,00:1, donc invisible. Le même défaut que les champs du
+   formulaire. Sur un fond sombre, le bouton s'inverse : c'est lui qui devient
+   clair — et il doit REPRENDRE LA MAIN sur sa couleur de texte. */
+.hero .btn-primary { background: var(--sur-sombre); color: var(--fond-alt); }
+.hero .btn-primary:hover { opacity: 0.85; }
+.hero-open {
+  margin: 1.9rem 0 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* ======================= Boutons ====================================== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 52px; padding: 0.85rem 1.6rem;
+  border-radius: 8px; border: 1px solid transparent;
+  font-size: 1rem; font-weight: 600; font-family: var(--sans);
+  text-decoration: none; cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+/* Le bouton plein est VERT PIN, pas laiton : le laiton est réservé aux petits
+   éléments, et un bouton est une grande surface. */
+.btn-primary { background: var(--fond-alt); color: var(--sur-sombre); }
+.btn-primary:hover { background: var(--surface-sombre); }
+/* Dans une zone sombre, le bouton s'inverse : c'est lui qui devient clair,
+   sinon il disparaîtrait dans le fond. */
+/* Dans une zone sombre, le bouton s'inverse : c'est lui qui devient clair —
+   et il doit alors REPRENDRE LA MAIN sur sa couleur de texte, sinon il hérite
+   du clair et devient blanc sur blanc. C'est le même piège que la carte
+   « Direct » de Cap Encre : un élément qui inverse son fond sans fixer sa
+   couleur de texte. Ici, le texte reprend la couleur sombre de la zone. */
+.section-alt .btn-primary { background: var(--sur-sombre); color: var(--fond-alt); }
+.section-alt .btn-primary:hover { background: var(--surface); }
+.btn-ghost {
+  background: transparent; color: #fff;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+.btn-ghost:hover { border-color: #fff; }
+.btn-block { width: 100%; }
+
+/* ======================= Colonnes ===================================== */
+.cols { display: grid; gap: clamp(1.5rem, 4vw, 3rem); }
+@media (min-width: 880px) {
+  .cols { grid-template-columns: 1.15fr 0.85fr; align-items: start; }
+  .cols-contact { grid-template-columns: 0.8fr 1.2fr; }
+
+  /* LE FILET ENTRE LES DEUX COLONNES.
+     La référence sépare ses blocs par des traits de 1 px, jamais par des
+     ombres ni des cartes à bordure. Le filet fait le travail seul : il cadre,
+     il sépare, et il ne pèse rien. « align-self: stretch » pour qu'il coure
+     sur toute la hauteur — sinon il s'arrête au bout du texte et on dirait un
+     trait oublié. */
+  .cols > *:first-child {
+    align-self: stretch;
+    padding-right: clamp(1.8rem, 4vw, 3.2rem);
+    border-right: 1px solid var(--filet);
+  }
+}
+
+/* Un cadre de 1 px autour d'une image, et rien d'autre : pas d'ombre, pas de
+   coin arrondi. Même famille que le filet. */
+.cadre {
+  border: 1px solid var(--filet);
+  padding: 0;
+  margin: 0;
+  display: block;
+}
+.cadre img { display: block; width: 100%; height: auto; }
+
+/* =====================================================================
+   LA CONSTRUCTION — LA MÊME ALTERNANCE QUE LA RÉFÉRENCE
+   =====================================================================
+   Chez eux, la page se lit : visuel plein cadre → bloc de texte → visuel →
+   bloc de texte, sans interruption. Le plus court de leurs blocs fait un
+   écran et demi. Le vide n'est pas perdu : c'est lui qui donne l'air.
+
+   Trois règles, et c'est tout :
+     · un filet de 1 px court d'un bord à l'autre entre les blocs — la page se
+       lit comme une suite de panneaux, pas comme un long rouleau. Le filet est
+       posé sur le bloc, donc pleine largeur, sans conteneur de plus ;
+     · aucun bloc ne fait moins d'un écran ;
+     · le contenu est centré verticalement, sinon le vide s'accumule en bas et
+       le bloc paraît vide au lieu de paraître calme.
+   ===================================================================== */
+.section {
+  min-height: 92vh;
+  display: grid;
+  align-content: center;
+}
+.section + .section { border-top: 1px solid var(--filet); }
+/* Après un bloc sombre, le filet doit être clair : sinon il disparaît. */
+.section-alt { border-top-color: var(--trait-sombre); }
+.section-alt + .section { border-top-color: var(--trait-sombre); }
+
+/* Sur téléphone, un écran minimum par bloc reste tenable : la barre d'adresse
+   du navigateur se rétracte, donc « vh » change sous nos pieds. On passe en
+   pixels une fois pour toutes sous 700 px. Le panneau vide garde SA mesure :
+   c'est une respiration, elle ne doit pas devenir un écran sur téléphone non
+   plus. */
+@media (max-width: 700px) {
+  .section { min-height: 560px; }
+}
+
+/* ======================================================================
+   LES BANDES PHOTO — LA COLONNE VERTÉBRALE DU SITE
+   ======================================================================
+   Une photo, pleine largeur, angles droits, et RIEN d'autre dans son bloc.
+   Elle ne touche jamais une autre photo : avant et après, il y a un bloc de
+   texte, ou le calendrier.
+
+   C'est le rythme de la référence, et il est mesuré : chez eux, l'écart entre
+   deux médias va de 299 à 813 px — aucune image n'en suit une autre. Leur
+   accueil se lit : visuel plein cadre → bloc de texte → visuel → bloc de
+   texte, sans interruption.
+
+   Ici, les six photos du gîte deviennent six bandes, et les sections de
+   contenu viennent s'intercaler. La page n'est plus « une galerie et des
+   textes » : c'est une alternance.
+   ====================================================================== */
+.bande-photo { margin: 0; padding: 0; }
+
+
+/* LA BANDE QUI FERME LA PAGE. Une seule image, sans texte : elle sert de
+   point final. Un peu plus courte que les autres — une image qui ferme n'a
+   pas besoin d'un écran entier, sinon on cherche encore quelque chose après. */
+.bande-fin { padding-top: clamp(1rem, 4vw, 2.5rem); }
+/* La fougere ferme la page : elle aussi ENTIERE. Ma regle precedente la
+   recadrait (62vh + cover) — le meme defaut que la bande du calendrier, sur
+   une photo que j'avais posee moi-meme. */
+.bande-fin .photo-pleine img { max-height: 84vh; object-fit: contain; margin: 0 auto; }
+
+/* L'EMPLACEMENT D'ATTENTE d'une photo de la page principale.
+   Les photos de la maison sont désormais regroupées sur la page Photos : ici,
+   on garde la place, le rythme de la page, et on dit clairement ce qui manque. */
+.bande-attente {
+  margin: 0;
+  padding: clamp(2rem, 6vw, 4rem) clamp(1.2rem, 4vw, 2rem);
+  text-align: center;
+  border-top: 1px dashed var(--trait-sombre);
+  border-bottom: 1px dashed var(--trait-sombre);
+}
+.photo-pleine { position: relative; overflow: hidden; margin: 0; padding: 0; }
+.photo-pleine .cadre {
+  width: 100%;
+  border: 0;          /* bord à bord : aucun cadre, aucun arrondi */
+  border-radius: 0;
+}
+.photo-dans-section {
+  /* Elle vit DANS une section de texte, mais elle s'affiche bord à bord comme
+     les autres : une photo à demi-largeur dans une colonne, ce n'est plus la
+     même chose. */
+  width: 100vw;
+  margin: 2.6rem 0 2.6rem calc(50% - 50vw);
+}
+.photo-pleine img {
+  display: block;
+  width: 100%;
+  height: auto;       /* jamais d'étirement, et l'image reste entière */
+  /* Une photo VERTICALE ne peut pas occuper toute la largeur d'un écran
+     d'ordinateur : 972 x 1280 étirée à 1920 ferait 2528 px de haut, soit
+     2,8 écrans empilés. Elle est donc plafonnée par la hauteur de l'écran et
+     centrée — exactement comme la bande du calendrier. */
+  max-height: 84vh;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+/* ======================================================================
+   L'ARRIVÉE DU TEXTE SUR L'ACCUEIL
+   ======================================================================
+   Le surtitre, le titre, la ligne et le bouton apparaissent l'un après
+   l'autre, en montant de 18 px. C'est le seul mouvement de la page avec le
+   fondu des photos et leur zoom très lent — la référence n'en a aucun, et
+   c'est précisément pour ça qu'elle paraît calme.
+
+   DEUX PRÉCAUTIONS, ET ELLES COMPTENT :
+     · l'animation est précédée de « .js » : sans JavaScript, le texte est là,
+       tout de suite. Un texte d'accueil qui ne s'affiche jamais parce qu'une
+       animation n'a pas démarré, c'est le pire défaut possible ;
+     · le retard tient compte de l'écran d'ouverture : il couvre la page
+       pendant 3 s, donc rien ne se jouerait avant. On démarre à 2,75 s, un peu
+       avant la fin du retrait, pour que l'arrivée soit continue.
+   ====================================================================== */
+@keyframes arrivee {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+.js .hero-content > * {
+  animation: arrivee 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+.js .hero-content > *:nth-child(1) { animation-delay: 2.75s; }
+.js .hero-content > *:nth-child(2) { animation-delay: 2.90s; }
+.js .hero-content > *:nth-child(3) { animation-delay: 3.05s; }
+.js .hero-content > *:nth-child(4) { animation-delay: 3.20s; }
+@media (prefers-reduced-motion: reduce) {
+  .js .hero-content > * { animation: none; }
+}
+
+/* UN TITRE POUR CEUX QUI NE LE VOIENT PAS.
+   Le grand titre a été retiré de l'accueil, mais une page doit avoir UN titre
+   principal : les lecteurs d'écran et Google s'en servent pour savoir de quoi
+   parle la page. Celui-ci est dans le document, hors de l'écran. */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ======================= Caractéristiques ============================= */
+.specs {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 0.65rem;
+}
+.specs li {
+  position: relative; padding-left: 1.5rem;
+  border-bottom: 1px solid var(--trait); padding-bottom: 0.65rem;
+}
+.specs li::before {
+  content: ""; position: absolute; left: 0; top: 0.62em;
+  width: 7px; height: 7px; border-radius: 2px; background: var(--encre);
+}
+.specs b { font-weight: 600; }
+
+/* ======================= Galerie ======================================
+   Une mosaïque, pas une grille régulière : une grande case qui ancre les
+   deux rangées, quatre vignettes qui se glissent autour. C'est ce qui donne
+   une hiérarchie au regard.
+
+   POINT CRUCIAL : chaque photo garde son cadrage naturel. Dans l'ancienne
+   version, les attributs width/height du HTML imposaient une hauteur fixe
+   de 576 px qui écrasait l'aspect-ratio : seuls 36 % de la largeur
+   d'origine étaient visibles, et la piscine perdait tout son sujet. Le
+   `height: auto` ci-dessous n'est donc pas une coquetterie.
+   ====================================================================== */
+
+/* Le cadre cliquable autour de chaque photo. */
+.cadre {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--trait);
+  /* ANGLE DROIT, et pas de coin arrondi. Une photo bord à bord et à angles
+     droits se lit comme une fenêtre ; arrondie, elle se lit comme une carte
+     posée sur la page. C'est un détail, et c'est lui qui fait la classe. */
+  border-radius: 0;
+  overflow: hidden;
+  cursor: zoom-in;
+  line-height: 0;
+}
+.cadre img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.cadre:hover { outline: 2px solid var(--encre); outline-offset: 2px; }
+
+/* Sur téléphone, la plage prend toute la largeur ; les quatre autres se
+   placent d'elles-mêmes sur deux colonnes, dans l'ordre du HTML. */
+
+/* PLUS DE LÉGENDE SOUS LES PHOTOS.
+   « La piscine », « La cuisine », « La terrasse » : on le voit très bien, pas
+   besoin de l'écrire. Les attributs alt, eux, sont intacts — ils s'adressent
+   aux lecteurs d'écran, et n'ont jamais eu le même rôle. Les trois faits qui
+   comptaient vraiment (la piscine chauffée et sa période, les 800 m, les trois
+   chambres) sont passés dans le texte des blocs. */
+
+
+
+/* ======================================================================
+   LA GALERIE EN SURIMPRESSION
+   ======================================================================
+   Elle s'ouvre par-dessus la page, et on doit DEVINER la page derrière :
+   c'est tout l'effet. D'où deux couches distinctes :
+
+     · le ::backdrop — le vert sombre à 92 %. C'est lui qui laisse passer 8 %
+       de la page. Plus opaque, ça redevient une page ordinaire ; plus clair,
+       on ne lit plus les photos ;
+     · le grain — en calque séparé, à 6 %. La tuile de grain est OPAQUE : posée
+       directement, elle recouvrirait le voile et la page ne se devinerait plus
+       du tout. En calque léger, elle donne la matière sans rien masquer.
+
+   Le <dialog> lui-même est donc TRANSPARENT : son fond, c'est le ::backdrop.
+   ====================================================================== */
+.galerie-entiere {
+  width: 100vw;
+  max-width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;      /* le fond vient du ::backdrop */
+  color: var(--sur-sombre);
+  overflow-y: auto;
+}
+.galerie-entiere::backdrop {
+  background: rgba(47, 52, 49, 0.92);
+}
+/* Le grain, par-dessus le voile et sous les photos. */
+.galerie-entiere::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("images/grain.png");
+  background-repeat: repeat;
+  background-size: auto;
+  opacity: 0.06;
+  z-index: 0;
+}
+/* Tout le contenu passe au-dessus du grain. */
+.galerie-entiere > * { position: relative; z-index: 1; }
+
+.ge-fermer {
+  position: fixed;
+  top: 0.9rem;
+  right: 0.9rem;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--sur-sombre);
+  font-family: var(--sans);
+  font-size: 1.9rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 3;
+}
+.ge-fermer:hover, .ge-fermer:focus-visible { color: var(--accent-lien); }
+
+.ge-titre {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--sur-sombre-doux);
+  margin: 1.8rem 0 1.6rem;
+  padding: 0 var(--marge);
+}
+
+/* SUR TÉLÉPHONE : une seule colonne, chaque photo PLEINE LARGEUR. */
+.ge-grille { display: grid; gap: 0; padding-bottom: 3rem; }
+.ge-photo {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+.ge-photo img { display: block; width: 100%; height: auto; }
+
+/* SUR ORDINATEUR : deux colonnes, un filet de 1 px entre les cellules. */
+@media (min-width: 900px) {
+  .ge-grille {
+    grid-template-columns: 1fr 1fr;
+    padding: 0 clamp(1.5rem, 5vw, 5rem) 4rem;
+    gap: 0;
+  }
+  .ge-photo {
+    border-right: 1px solid var(--trait-sombre);
+    border-bottom: 1px solid var(--trait-sombre);
+  }
+  .ge-photo:nth-child(2n) { border-right: 0; }
+  .ge-photo:nth-child(2n+1) { border-left: 1px solid var(--trait-sombre); }
+  .ge-photo:nth-child(-n+2) { border-top: 1px solid var(--trait-sombre); }
+}
+
+
+/* ======================================================================
+   LA PAGE DES PHOTOS — BEIGE ET TEXTURÉE
+   ======================================================================
+   La page principale est sombre de haut en bas. Celle-ci est l'inverse :
+   beige, mais texturée elle aussi, pour qu'on sente la même main.
+
+   ⚠️ LA TUILE BEIGE EST UNE SECONDE TUILE, pas la même. Le grain est opaque :
+   une tuile sombre posée sur du beige ne donnerait pas du beige texturé, mais
+   une plaque sombre. Deux fonds, deux tuiles — voir outils/generer-grain.py.
+   ====================================================================== */
+.page-claire {
+  background-color: #d9d6d0;
+  background-image: url("images/grain-beige.png");
+  background-repeat: repeat;
+  background-size: auto;
+
+  /* ON BASCULE LES VARIABLES, PAS LES ELEMENTS.
+     La palette « pierre » est sombre : son --encre est CLAIRE. Poser cette page
+     dessus sans rien faire donnait du gris clair sur du beige — le titre était
+     presque invisible. Corriger element par element aurait marche jusqu'au
+     prochain texte ajoute. En inversant le jeu ICI, tout ce qui est dans la
+     page suit, y compris ce qu'on ajoutera plus tard. */
+  --fond:            #d9d6d0;
+  --surface:         #e7e5e4;
+  --fond-alt:        #d9d6d0;
+  --surface-sombre:  #e7e5e4;
+  --encre:           #2f3431;
+  --encre-sur-clair: #2f3431;
+  --gris:            #565956;
+  --gris-sur-clair:  #565956;
+  --sur-sombre:      #2f3431;
+  --sur-sombre-doux: #565956;
+  --accent-texte:    #6b6e6b;
+  --trait:           rgba(47, 52, 49, 0.18);
+  --trait-sombre:    rgba(47, 52, 49, 0.22);
+  --filet:           #c2bfb9;
+
+  color: var(--encre);
+}
+.page-claire .site-head { position: static; background: none; border-bottom: 1px solid #c2bfb9; }
+/* Le filet de la grille : la couleur relevee sur la reference. Un peu plus
+   soutenue que le filet courant de la page, qui sert aux cadres. */
+.page-claire { --filet-grille: #aeaca6; }
+
+.pv-intro { min-height: auto; padding: var(--bloc-y) 0 3.5rem; }
+.pv-intro h1 { font-size: clamp(2rem, 7vw, 3.6rem); margin: 0 0 1.2rem; }
+.pv-retour { margin-top: 2rem; }
+.pv-retour a { color: #2f3431; }
+
+/* ===== LA GRILLE ALTERNEE DES PHOTOS ====================================
+   Principe repris de la reference : trois colonnes EGALES, des rangees de
+   540 px, des filets de 1 px, et deux cases qui s'alternent d'une rangee a
+   l'autre. On ne reprend ni leurs images, ni leurs textes, ni leurs
+   fichiers : ce sont nos neuf photos et nos textes, rien d'autre.
+
+   Reserve honnete : chez eux, la case etroite est pour un portrait vertical.
+   Les neuf photos de cette page sont TOUTES des paysages : la case large de
+   deux colonnes est donc la seule que nous employons, et l'alternance se
+   fait par la case TEXTE, qui change de cote a chaque rangee. */
+
+/* ⚠️ DEUX FOIS .pv-section, ET C'EST VOULU : la regle generique .section pose
+   un filet en haut, et a specificite egale c'est l'ordre du fichier qui
+   tranche. En repettant la classe, celle-ci passe devant — et le filet du haut
+   n'est plus dessine deux fois (une par la section, une par la premiere case).
+   C'est ce doublon qui faisait une ligne de 2 px au-dessus de la premiere photo. */
+.pv-section.pv-section { min-height: auto; padding: 0; border-top: 0; }
+
+.pg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);   /* trois colonnes egales */
+  grid-auto-rows: 540px;                   /* la hauteur de rangee mesuree */
+  /* PLEINE LARGEUR : la grille touche les deux bords de l'ecran. La case
+     photo fait donc 2/3 de l'ecran et la case texte 1/3 — c'est la demande
+     du client, et c'est plus moderne que le conteneur centre.
+     Le reste de la page (en-tete, intro, pied) garde sa largeur de lecture :
+     seules les photos vont jusqu'au bord. */
+  width: 100%;
+  margin-inline: 0;
+  /* PAS de filet en BAS : la premiere rangee du bloc de fin dessine deja son
+     propre filet du haut. Les deux superposes faisaient une ligne de 2 px sur
+     toute la largeur — c'est ce que le client voyait « plus epais ».
+  /* Le filet de DROITE appartient au conteneur, pas aux cases. C'est la seule
+     facon d'avoir UNE seule epaisseur partout : deux cases voisines qui
+     dessinent chacune leur bord donnaient 2 px la ou elles se touchent. */
+  border-right: 1px solid var(--filet-grille);
+}
+
+/* La case PHOTO occupe DEUX colonnes sur trois. Son filet court a gauche et
+   a droite d'elle, en plus du filet du haut : c'est ce qui dessine la case
+   dans la reference. */
+.pg-cell {
+  grid-column: span 2;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--filet-grille);
+  border-left: 1px solid var(--filet-grille);
+  border-right: 0;
+  background: none;
+  cursor: zoom-in;
+  overflow: hidden;
+  /* PAS d'aspect-ratio ICI. Sur ordinateur la grille impose 540 px de hauteur
+     a chaque rangee : une case de 853 px de large reclamee en 3/2 voudrait
+     569 px, deborderait de 29 px et RECOUVRIRAIT la rangee suivante. Les photos
+     se chevauchaient. Le rapport n'a de sens que sur telephone, ou la rangee
+     est automatique — il est pose dans la media query, plus bas. */
+}
+
+/* L'image remplit la case et se recadre. C'est le SEUL endroit du site ou
+   une photo est recadree (demande explicite du brief) : partout ailleurs,
+   elles restent entieres. */
+.pg-cell img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* La case TEXTE occupe UNE colonne. Son contenu se pose sur une DEMI-colonne
+   — la moitie de 422 px — centre horizontalement et verticalement, les
+   lignes alignees a gauche. */
+.pg-texte {
+  display: grid;
+  place-items: center;
+  border-top: 1px solid var(--filet-grille);
+  border-left: 1px solid var(--filet-grille);
+  border-right: 0;
+  padding: 1.5rem 0;
+}
+.pg-texte > div { width: 50%; max-width: 211px; text-align: left; }
+
+/* L'etiquette : 13 px, MAJUSCULES, interlettre tres large, encre foncee. */
+.pg-etiquette {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.34em;
+  line-height: 2.53;
+  color: #2f3431;
+}
+
+/* Le paragraphe. Chez eux il est en #7B7E7C : mesure sur ce fond beige, cela
+   donne 2,8:1 — sous le seuil de 4,5:1. On garde le gris du site, qui passe,
+   et on ne copie pas leur defaut de contraste. */
+.pg-paragraphe {
+  margin: 0.4rem 0 0;
+  font-size: 14px;
+  line-height: 2;
+  color: #565956;
+  text-align: center;
+}
+
+
+/* ===== LA FIN DE LA GRILLE ================================================
+   Apres les neuf photos, la grille s'arrete sans se fermer : d'abord une
+   rangee de trois cases vides et basses, puis une derniere rangee ou la photo
+   ne prend qu'un tiers — les deux autres tiers restent beiges, l'un legerement
+   plus fonce que le fond. Le bas de page garde la couleur beige texturee.
+
+   Ces deux rangees sont dans un bloc a part, et pas dans la grille principale :
+   celle-ci impose 540 px de hauteur a chaque rangee, et ces cases-ci doivent
+   pouvoir etre plus basses. */
+
+.pg-fin {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  border-bottom: 1px solid var(--filet-grille);
+  border-right: 1px solid var(--filet-grille);
+}
+/* Les trois cases vides et basses. Elles portent les memes filets que les
+   cases photo — haut, gauche, droite : sans les filets verticaux, trois cases
+   vides se lisent comme une seule bande vide, et non comme trois cases. */
+.pg-vide {
+  height: 190px;
+  border-top: 1px solid var(--filet-grille);
+  border-left: 1px solid var(--filet-grille);
+  border-right: 0;
+}
+/* Le tiers vide de la dernière rangee : lui, il fait toute la hauteur. */
+.pg-vide-haut {
+  height: 540px;
+  border-top: 1px solid var(--filet-grille);
+  border-left: 1px solid var(--filet-grille);
+}
+/* Le bloc un peu plus fonce que le beige du fond. Un ton au-dessus, pas plus :
+   « legerement » est dans la demande. Il ne porte aucun texte. */
+.pg-fonce {
+  height: 540px;
+  border-top: 1px solid var(--filet-grille);
+  border-left: 1px solid var(--filet-grille);
+  background: #cfccc5;
+}
+/* La fougere est cadree comme les autres photos (« cover », celui de .pg-cell).
+   Pour la montrer ENTIERE, remplacer ci-dessus par :
+       .pg-petite img { width: 100%; height: 100%; object-fit: contain; }
+   Sa case fait alors 426 x 540 et la photo s'y inscrit en laissant du beige.
+   Le client a prefere le cadrage d'origine. */
+
+/* La photo de la derniere rangee : un tiers de large, au lieu de deux. */
+.pg-petite {
+  grid-column: span 1;
+  height: 540px;
+  border-top: 1px solid var(--filet-grille);
+  border-left: 1px solid var(--filet-grille);
+  border-right: 0;
+}
+
+
+/* ===== LE PIED DE PAGE ====================================================
+   Trois zones, comme la reference : le logo a gauche, l'adresse du bien au
+   milieu, le telephone puis le compte Instagram a droite. Sur telephone, les
+   trois s'empilent.
+
+   Aucune couleur en dur : tout passe par les variables de la palette. Le pied
+   s'affiche sur le fond sombre de l'accueil ET sur le fond beige de la page
+   Photos, et il doit rester lisible sur les deux. */
+.foot-grille { display: grid; gap: 2.2rem; }
+
+.monogramme-pied {
+  display: block;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 0.9rem;
+  color: var(--sur-sombre);
+}
+
+.foot-adresse { font-style: normal; }
+
+.foot-contact { display: grid; justify-items: start; gap: 0.55rem; }
+.foot-tel { font-size: 1.02rem; }
+
+.foot-insta { display: flex; align-items: center; gap: 0.55rem; margin: 0; }
+.foot-insta svg { width: 19px; height: 19px; flex: 0 0 19px; }
+
+.foot-bas {
+  grid-column: 1 / -1;
+  margin: 0.4rem 0 0;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--filet);
+  font-size: 0.9rem;
+}
+
+/* Le pied de page se cale sur la grille des photos : MEME largeur totale,
+   MEMES trois tiers. Sans ca, l'adresse tombait 35 px a droite du 2e bloc,
+   parce que le pied vivait dans un conteneur plus etroit que la grille.
+   Le logo garde une petite marge a gauche — lui seul, pour ne pas coller au
+   bord ; c'est ce qui laisse l'adresse pile sous le 2e bloc. */
+.site-foot .wrap.foot-grille {
+  /* La classe .wrap limite la largeur a var(--largeur) : on la neutralise.
+     Le pied de page prend donc EXACTEMENT la meme largeur que la grille des
+     photos, et ses trois tiers tombent pile sur les trois blocs au-dessus. */
+  width: 100%;
+  max-width: none;
+  padding-inline: 0;
+  /* Sans ceci, le conteneur gardait sa marge automatique de 70 px et
+     l'adresse tombait 24 px a droite du 2e bloc. */
+  margin-inline: 0;
+}
+
+@media (min-width: 760px) {
+  .foot-grille { grid-template-columns: repeat(3, 1fr); gap: 0; align-items: start; }
+}
+.foot-logo { padding-left: clamp(1rem, 3vw, 2.5rem); }
+/* Le telephone commence au DEBUT du 3e tiers, comme l'adresse commence au
+   debut du 2e. Il etait cale a droite de sa colonne. */
+.foot-contact { padding-right: 0; justify-items: start; }
+
+/* DES TEINTES PLUS PALES, SUR LE FOND BEIGE.
+   Le telephone et l'icone Instagram descendent d'un cran : ils avaient de la
+   marge (8,74:1). L'ADRESSE, NON : a 4,89:1 elle est deja au plancher du
+   seuil de lisibilite, et un gris plus pale passerait dessous. Elle reste donc
+   telle quelle — c'est la limite, pas un oubli. */
+.page-claire-foot .foot-tel { color: #565956; }          /* 4,89:1 : le plus pale possible */
+.page-claire-foot .foot-insta svg { color: #737673; }    /* 3,17:1 : une icone a droit a 3:1 */
+
+/* LE PIED DE PAGE SUR LA PAGE PHOTOS. La tuile de grain est OPAQUE : elle
+   REMPLACE la couleur de fond, elle ne se pose pas dessus. Celle de l'accueil
+   est sombre ; laissee ici, elle recouvrait le beige et le texte beige du pied
+   se retrouvait sur du sombre. Une tuile par fond — c'est la regle du projet,
+   et c'est la deuxieme fois qu'elle me rattrape sur ce pied de page. */
+.site-foot.page-claire-foot {
+  background-color: var(--fond);
+  background-image: url("images/grain-beige.png");
+}
+
+/* L'ALTERNANCE SUR GRAND ECRAN.
+   Le document suit maintenant l'ordre naturel — chaque photo suivie de son
+   texte — pour que la lecture reste juste sur une seule colonne. C'est le CSS
+   qui fait alterner : dans une rangee sur deux, le texte passe a la PREMIERE
+   colonne, et la photo glisse de deux colonnes vers la droite.
+   On n'utilise PAS `order` : lui seul changerait l'ordre visuel sans changer
+   l'ordre du clavier. Ici la tabulation suit la lecture. */
+/* L'ALTERNANCE EST DANS LE DOCUMENT, PAS DANS LE CSS.
+   Les cases photo et texte se suivent dans l'ordre qui donne l'alternance
+   voulue : la grille n'a plus qu'a les poser. Essaye autrement — un ordre
+   naturel plus un placement explicite — cela a donne « dense », qui remplissait
+   les trous laisses par les photos de deux tiers : les cases vides de la fin de
+   grille sont remontees s'intercaler entre les photos. Ne pas y revenir. */
+
+/* SUR TELEPHONE : la reference s'effondre en UNE colonne. Les cases
+   s'empilent, les photos prennent toute la largeur, les filets disparaissent
+   (il n'y a plus de colonnes a separer). */
+@media (max-width: 899px) {
+  .pg { grid-template-columns: 1fr; grid-auto-rows: auto; }
+  .pg-cell, .pg-texte { grid-column: auto; border-left: 0; border-right: 0; border-top: 0; }
+  .pg, .pg-fin { border-right: 0; }
+  /* LA CASE A UNE PLACE AVANT LE CHARGEMENT DE L'IMAGE.
+     Sans ceci la case n'a aucune hauteur tant que l'image n'est pas chargee —
+     et comme les <img> sont en chargement paresseux, une case de 0 px n'entre
+     jamais dans la fenetre : le chargement ne part jamais. Cercle vicieux.
+     C'est ici et SEULEMENT ici : sur telephone la rangee est automatique. */
+  .pg-cell { aspect-ratio: 3 / 2; }
+  .pg-cell img { height: 100%; }        /* elle remplit la place ainsi donnee */
+  .pg-texte { padding: 2.8rem 1.25rem; }
+  /* Une colonne : les trois cases vides empilees feraient un grand trou.
+     On les retire, et le bloc fonce se contente d'une bande. */
+  .pg-fin { grid-template-columns: 1fr; }
+  .pg-vide { display: none; }
+  .pg-vide-haut { display: none; }
+  .pg-fonce { height: 200px; }
+  /* LA FOUGERE SUR TELEPHONE : sa case prend SA proportion, pas celle du 3/2.
+     Sinon la photo, qui est un portrait, etait rognee. Et surtout : on garde un
+     RAPPORT (1145 sur 1280, les dimensions reelles du fichier) plutot que de
+     laisser la case sans hauteur — sans hauteur, l'image en chargement
+     paresseux n'entre jamais dans la fenetre et ne se charge jamais.
+     « contain » la fait tenir entiere dans cette case a sa proportion. */
+  /* LA FOUGERE SUR TELEPHONE — la photo entiere, sans coupe.
+     Trois choses, et chacune sert :
+       · `height: auto` : la case ne s'etire plus pour remplir sa rangee (elle
+         faisait 540 px de haut, et la photo, un portrait, y etait rognee) ;
+       · `min-height` : la case garde une place AVANT que l'image soit chargee.
+         Sans elle, la case vaut 0 px, l'image en chargement paresseux n'entre
+         jamais dans la fenetre, et elle ne se charge jamais — le cercle vicieux
+         deja rencontre sur cette page ;
+       · l'image prend toute la largeur et SA hauteur : elle s'affiche entiere ;
+       · `align-self: end` : la photo se pose en BAS de sa case, contre la suite
+         de la page — sinon elle flottait en haut et laissait un vide sous elle. */
+  .pg-petite { height: auto; min-height: 380px; aspect-ratio: auto; align-self: end;
+               border-top: 1px solid var(--filet-grille); }
+  .pg-petite img { width: 100%; height: auto; }
+
+  /* TOUT LE TEXTE DU PIED DE PAGE EST CENTRE.
+     Sur telephone les trois zones s'empilent : alignees a gauche, elles
+     laissaient un grand vide a droite. Sur grand ecran on ne touche a rien :
+     l'adresse et le telephone doivent rester calees sous les 2e et 3e blocs
+     de la grille, ce qui est une autre demande, et un centrage les decalerait. */
+  /* LE BLOC FONCE NE SERT A RIEN SUR TELEPHONE. C'est un aplat a peine plus
+     fonce que le fond : sur grand ecran il fait une case, mais empile en une
+     colonne il devient un trou de 200 px entre la fougere et le pied de page.
+     Comme les trois cases vides, on le retire. */
+  .pg-fonce { display: none; }
+
+  /* Et le pied de page remonte : 48 px de rembourrage en haut, c'etait pour
+     un pied pose sous une grille, pas sous une photo. */
+  .site-foot { text-align: center; padding-top: 1.5rem; }
+  .site-foot .foot-contact { justify-items: center; }
+  .site-foot .foot-logo { padding-left: 0; }
+  .site-foot .monogramme-pied { margin-inline: auto; }
+  .site-foot .foot-bas { text-align: center; }
+  .pg-texte > div { width: 100%; max-width: 34rem; }
+}
+
+/* Le lien du bas de l'accueil : « Découvrez la maison dans les dunes ».
+   La manière de la référence — capitales très espacées, filet fin dessous. */
+.lien-decouvrir {
+  display: inline-block;
+  /* Dans la rangée d'actions, la marge du haut ne sert plus. */
+  margin-top: 0;
+  padding: 0.8rem 0;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--sur-sombre);
+  text-decoration: none;
+  /* LES DEUX FILETS : un au-dessus, un en dessous. C'est ce qui l'encadre. */
+  border-top: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transition: opacity 0.3s ease;
+}
+.lien-decouvrir:hover, .lien-decouvrir:focus-visible { opacity: 0.7; }
+
+/* --- Visionneuse plein écran -----------------------------------------
+   <dialog> est natif : aucune bibliothèque, la touche Échap ferme, et le
+   focus reste piégé à l'intérieur tant qu'elle est ouverte.
+   --------------------------------------------------------------------- */
+.visionneuse {
+  width: 100vw;
+  max-width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0;
+  padding: 1rem;
+  border: 0;
+  overflow: auto;
+  background: rgba(12, 20, 26, 0.96);
+  color: #E8EDF1;
+}
+.visionneuse[open] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.visionneuse img {
+  max-width: min(94vw, 1400px);
+  max-height: 76vh;
+  width: auto;
+  height: auto;
+  border-radius: var(--rayon);
+  animation: apparition 0.18s ease-out;
+}
+.visionneuse-legende {
+  margin: 0;
+  font-size: 0.95rem;
+  text-align: center;
+  max-width: 60ch;
+}
+.visionneuse-fermer {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.visionneuse-fermer:hover { background: rgba(0, 0, 0, 0.7); }
+.visionneuse::backdrop { background: rgba(8, 14, 20, 0.85); }
+
+@keyframes apparition { from { opacity: 0; } to { opacity: 1; } }
+
+/* ======================= Tarifs ====================================== */
+.pricelist { border-top: 1px solid var(--trait); }
+.prow {
+  display: grid; grid-template-columns: 1fr auto; gap: 1rem;
+  align-items: baseline;
+  padding: 1.1rem 0; border-bottom: 1px solid var(--trait);
+}
+.plabel { color: var(--encre); }
+.pval {
+  font-family: var(--serif); font-size: clamp(1.35rem, 3.6vw, 1.75rem);
+  color: var(--encre); white-space: nowrap;
+}
+.pval small { font-family: var(--sans); font-size: 0.8rem; color: var(--gris); }
+
+/* L'encadré de la section tarifs passe en VERT PIN : c'est le bloc mis en
+   avant, et il se distingue par la couleur, plus par un cadre. */
+.aside {
+  background: var(--fond-alt);
+  color: var(--sur-sombre);
+  border-radius: var(--rayon);
+  padding: clamp(1.4rem, 3.2vw, 2.1rem);
+}
+.aside h3 {
+  font-family: var(--sans); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--sur-sombre-doux);
+  margin-bottom: 0.9rem;
+}
+/* La pastille de laiton : un petit carré, rien de plus. C'est la rareté de
+   la couleur qui fait le haut de gamme. */
+.aside h3::before {
+  content: "";
+  display: block;
+  width: 9px; height: 9px;
+  border-radius: 1px;
+  background: var(--encre);
+  margin-bottom: 0.85rem;
+}
+.aside strong { color: var(--sur-sombre); }
+
+/* ======================= Contact ====================================== */
+.contact-info { display: grid; gap: 0.25rem; align-content: start; }
+.ci-label {
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--gris);
+  margin: 1.1rem 0 0.15rem;
+}
+.contact-info .ci-label:first-child { margin-top: 0; }
+.ci-value { margin: 0; font-size: 1.05rem; }
+.ci-value a { text-decoration: none; font-weight: 600; }
+.ci-value a:hover { text-decoration: underline; }
+
+/* Le formulaire est posé sur un panneau VERT PIN, dans une section sable.
+   Il se détache par la couleur, sans bordure ni ombre — et cela sépare deux
+   zones claires consécutives, ce qui est la règle du rythme. */
+.form {
+  display: grid; gap: 1.1rem;
+  background: var(--fond-alt);
+  color: var(--sur-sombre);
+  border: 0;
+  border-radius: var(--rayon);
+  padding: clamp(1.4rem, 3.2vw, 2.2rem);
+
+  /* ================= LES CHAMPS DE CE FORMULAIRE, ET EUX SEULS =============
+     Un champ est un OBJET QU'ON REMPLIT : il doit se voir, quelle que soit la
+     palette. Ils prenaient --fond, c'est-a-dire la couleur du fond de la page :
+     depuis que la page est en vert sombre, les champs avaient donc exactement
+     la couleur du mur derriere eux. « On voit rien » — mesure : fond du champ
+     #272928 sur fond de page #272928, contraste 1,00:1.
+
+     Les couleurs sont posees ICI, sur le formulaire, et nulle part ailleurs :
+     elles ne dependent plus de la palette. Fond clair, texte fonce. */
+  --champ-fond:      #F7F4EF;   /* blanc chaud, dans la famille du beige du site */
+  --champ-encre:     #232625;   /* 13,92:1 sur le fond du champ (mesure) */
+  --champ-exemple:   #616661;   /* 5,34:1 — le texte d'exemple se lit sans être
+                                   pris pour ce qui est saisi (mesure) */
+  --champ-trait:     rgba(35, 38, 37, 0.58);   /* 3,77:1 sur le champ. Sous ce
+                                   seuil, sur les palettes CLAIRES du gabarit,
+                                   c'est la bordure seule qui délimite le champ :
+                                   à 0,28 elle ne faisait que 1,77:1. */
+}
+/* Le formulaire non plus n'est pas un bloc : les champs, eux, gardent leur
+   fond clair — c'est ce qui les rend saisissables. */
+.section-alt .form { background: none; }
+.form-row { display: grid; gap: 1.1rem; }
+@media (min-width: 620px) { .form-row { grid-template-columns: 1fr 1fr; } }
+
+.field { display: grid; gap: 0.4rem; }
+.field label { font-size: 0.88rem; font-weight: 600; }
+.field input, .field select, .field textarea {
+  font-family: var(--sans);
+  font-size: 16px; /* 16px minimum : sinon l'iPhone zoome tout seul au clic */
+  color: var(--champ-encre);
+  background: var(--champ-fond);
+  border: 1px solid var(--champ-trait);
+  border-radius: 6px;
+  padding: 0.75rem 0.9rem;
+  min-height: 50px;
+  width: 100%;
+  /* Sans cela, le petit icone du calendrier et la fleche du menu deroulant
+     restent dessines CLAIRS par le navigateur : blancs sur fond clair. */
+  color-scheme: light;
+}
+/* Le texte d'exemple (« Vos dates, vos questions... ») : il doit se lire sans
+   qu'on le confonde avec ce qui est vraiment saisi. */
+.field input::placeholder,
+.field textarea::placeholder { color: var(--champ-exemple); opacity: 1; }
+.field textarea { min-height: 120px; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: 2px solid var(--encre); outline-offset: 1px;
+  border-color: var(--encre);
+}
+/* Avertissement quand les deux dates du formulaire se contredisent.
+   Même palette que les autres messages d'alerte du site, déjà validée
+   pour le contraste. */
+.form-alerte {
+  margin: 0 0 1rem;
+  padding: 0.7rem 0.85rem;
+  background: var(--note-fond);
+  border: 1px dashed var(--note-trait);
+  color: var(--note-encre);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.form-note {
+  margin: 0; padding: 0.9rem 1rem;
+  background: var(--surface-sombre); color: var(--sur-sombre);
+  border-radius: 8px; font-size: 0.92rem;
+}
+
+/* ======================= Carte et alentours ========================== */
+/* Cette section est sur fond vert pin : la carte et les blocs s'y détachent
+   par un ton plus clair, sans aucun cadre. */
+.map-wrap {
+  border-radius: var(--rayon); overflow: hidden;
+  border: 0;
+  background: var(--surface-sombre);
+  margin-bottom: 1rem;
+}
+.map-wrap iframe {
+  display: block; width: 100%; height: clamp(280px, 48vw, 460px); border: 0;
+}
+/* LES ACTIONS DU PLAN — un lien, pas un bouton.
+   Le client a fait retirer « Calculer mon itinéraire » et rendre l'autre plus
+   discret. Un bloc plein sur toute la largeur, ce n'est pas discret : la
+   maniere du site, c'est le lien en capitales espacees avec un filet fin —
+   la meme que « Decouvrez la maison dans les dunes », sur l'accueil.
+   La zone cliquable reste genereuse (45 px de haut) : discret ne veut pas dire
+   difficile a toucher du doigt. */
+.map-actions { display: flex; flex-wrap: wrap; gap: 1.4rem; margin-bottom: 2.6rem; }
+
+.lien-plan {
+  display: inline-block;
+  padding: 0.8rem 0 0.55rem;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--sur-sombre);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  transition: opacity 0.3s ease;
+}
+.lien-plan:hover, .lien-plan:focus-visible { opacity: 0.7; }
+
+.cards { display: grid; gap: 1rem; }
+@media (min-width: 700px) { .cards { grid-template-columns: 1fr 1fr; } }
+.card {
+  /* PLUS DE BLOC. Les alentours se lisaient comme trois panneaux posés sur le
+     fond : le client a demandé le texte DIRECTEMENT sur le fond, partout. On
+     sépare par un filet, qui est la seule séparation du site. */
+  border: 0; border-radius: 0;
+  background: none;
+  border-top: 1px solid var(--trait);
+  padding: clamp(1.2rem, 2.8vw, 1.7rem) 0;
+}
+.card p { font-size: 0.97rem; color: var(--sur-sombre-doux); margin: 0; }
+.card h3 { color: var(--sur-sombre); }
+
+/* ======================= Pied de page ================================ */
+.site-foot {
+  background-color: var(--fond-alt); background-image: url("images/grain.png");
+  background-repeat: repeat; background-size: auto;
+  color: var(--sur-sombre-doux);
+  padding: clamp(3rem, 7vw, 5rem) 0;
+  font-size: 0.95rem;
+}
+.foot-inner { display: grid; gap: 1.6rem; }
+@media (min-width: 760px) {
+  .foot-inner { grid-template-columns: 1fr 1fr; align-items: start; }
+}
+.site-foot a { color: var(--sur-sombre); text-decoration: none; }
+.site-foot a:hover { text-decoration: underline; }
+.foot-name {
+  font-family: var(--serif); font-size: 1.45rem; color: var(--sur-sombre);
+  margin: 0 0 0.4rem;
+}
+.site-foot .todo { margin-top: 0.8rem; }
+
+/* ======================= Notes du gabarit ============================ */
+.gabarit {
+  /* L'ENCADRÉ D'AIDE DU GABARIT. Son fond est crème : il doit donc fixer SA
+     couleur de texte. Sur une palette sombre, l'encre générale est claire, et
+     ce bloc devenait du clair sur du crème — 1,47:1, mesuré. On bascule l'encre
+     pour TOUT ce qui est dedans, titre et code compris. */
+  color: var(--note-encre);
+  background: var(--note-fond);
+  border-top: 1px solid var(--note-trait);
+  padding: clamp(2rem, 5vw, 3rem) 0;
+  font-size: 0.95rem;
+}
+.gabarit code, .gabarit strong, .gabarit a { color: inherit; }
+.gabarit h2 { font-family: var(--sans); font-size: 0.95rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--note-encre); }
+.gabarit ul { margin: 0; padding-left: 1.2rem; }
+.gabarit li { margin: 0.4rem 0; }
+
+/* ======================= Calendrier des disponibilités ================ */
+.cal-layout { display: grid; gap: clamp(1.25rem, 3.5vw, 2rem); }
+@media (min-width: 900px) {
+  .cal-layout { grid-template-columns: 1.35fr 1fr; align-items: start; }
+}
+
+/* Les blocs du calendrier se détachent par un ton plus HAUT que le fond de la
+   section, sans bordure — la section est déjà sombre, un panneau clair y
+   ferait une tache et forcerait à rétablir à la main chaque couleur de texte.
+   Un panneau sombre, lui, laisse jouer les variables de la zone sombre : et
+   les cases des jours libres, plus CLAIRES que lui, ressortent d'elles-mêmes. */
+.cal-bloc, .cal-resume {
+  /* PLUS DE BLOC. Le texte va directement sur le fond texturé — c'est la
+     demande, et c'est ce que fait la référence : chez elle, aucun panneau,
+     aucun cadre, aucune carte. Le fond porte tout.
+     Restent les cases des JOURS : elles, elles sont fonctionnelles. Sans fond
+     clair, un calendrier ne se lit pas. */
+  background: none;
+  border: 0;
+  border-radius: var(--rayon);
+  padding: clamp(1.05rem, 2.8vw, 1.6rem);
+}
+
+.cal-entete { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.cal-mois { margin: 0; font-family: var(--serif); font-size: clamp(1.1rem, 3vw, 1.35rem); }
+.cal-fleche {
+  width: 44px; height: 44px; flex: 0 0 auto; display: grid; place-items: center;
+  background: var(--fond); border: 1px solid transparent; border-radius: 8px;
+  font-size: 1.35rem; line-height: 1; color: var(--encre); cursor: pointer;
+}
+.cal-fleche:hover:not(:disabled) { border-color: var(--sur-sombre); }
+.cal-fleche:disabled { opacity: 0.3; cursor: default; }
+
+/* Le bloc clair du calendrier : la période et les tarifs du mois. Il prend la
+   couleur des CASES CLAIRES, pas celle du fond — --fond est devenu sombre. */
+.cal-bandeau {
+  margin: 0.9rem 0 0.8rem; padding: 0.55rem 0.7rem;
+  background: var(--cellule, var(--fond));
+  color: var(--cellule-encre, var(--encre-sur-clair));
+  border-radius: 7px; font-size: 0.82rem; line-height: 1.45;
+}
+.cal-bandeau:empty { display: none; }
+
+.cal-semaine, .cal-grille {
+  display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px;
+}
+.cal-semaine { margin-bottom: 4px; }
+.cal-semaine span { text-align: center; font-size: 0.72rem; font-weight: 600; color: var(--gris); }
+
+/* Un jour disponible est plus CLAIR que le panneau qui le porte. Les jours
+   réservés passent en vert pin : c'est la couleur qui dit « non », pas une
+   bordure grise. */
+.cal-jour {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; min-height: 58px; padding: 4px 1px;
+  border: 1px solid transparent; border-radius: 8px;
+  font-family: var(--sans); cursor: pointer;
+  background: var(--cellule, var(--fond)); color: var(--cellule-encre, var(--encre-sur-clair));
+}
+.cal-jour b { font-size: 0.95rem; font-weight: 600; line-height: 1; }
+.cal-jour i {
+  font-style: normal; font-size: 0.66rem; line-height: 1;
+  color: var(--gris-sur-clair); white-space: nowrap;
+}
+.cal-jour:hover:not(:disabled):not(.vide) { border-color: var(--sur-sombre); }
+.cal-jour:disabled { cursor: default; }
+
+.cal-jour.vide { background: none; min-height: 0; padding: 0; }
+.cal-jour.ferme { background: var(--cellule-vide, var(--surface)); color: var(--cellule-encre, var(--gris-sur-clair)); }
+.cal-jour.passe { background: none; color: var(--gris); }
+.cal-jour.pris { background: var(--surface-sombre); color: var(--sur-sombre); }
+.cal-jour.pris::after {
+  content: ""; position: absolute; left: 12%; right: 12%; top: 50%;
+  height: 1px; background: var(--sur-sombre-doux); transform: rotate(-16deg);
+}
+
+.cal-jour.dans { background: var(--sur-sombre); color: var(--fond-alt); }
+.cal-jour.dans i { color: var(--sur-accent); }
+.cal-jour.dans.pris { color: var(--sur-accent); }
+/* Le premier et le dernier jour du séjour sont les deux repères forts : vert
+   pin, cerclés de laiton. */
+.cal-jour.debut, .cal-jour.fin {
+  background: var(--fond-alt); color: var(--sur-sombre);
+  border-color: var(--sur-sombre);
+}
+.cal-jour.debut i, .cal-jour.fin i { color: var(--sur-sombre-doux); }
+.cal-jour.debut::after, .cal-jour.fin::after { display: none; }
+.cal-jour.pris:not(:disabled) { cursor: pointer; }
+.cal-jour.pris:hover { border-color: var(--sur-sombre-doux); }
+
+/* ======================= La grille sans JavaScript ====================
+   Affichée uniquement par les navigateurs qui n'exécutent pas le script
+   (balise <noscript>). Elle montre le mois, les jours pris, et le téléphone.
+   Fabriquée par outils/generer-noscript.py. */
+.noscript-cal {
+  margin-top: 1.5rem;
+  background: var(--surface-sombre);
+  border-radius: var(--rayon);
+  padding: clamp(1.1rem, 3vw, 1.75rem);
+}
+.noscript-titre {
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  color: var(--sur-sombre);
+  margin: 0 0 1.1rem;
+  text-align: center;
+}
+.noscript-semaine, .noscript-grille {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  max-width: 34rem;
+  margin-inline: auto;
+}
+.noscript-semaine { margin-bottom: 5px; }
+.noscript-semaine span {
+  text-align: center; font-size: 0.72rem; font-weight: 600;
+  color: var(--sur-sombre-doux);
+}
+/* 44 px minimum : la taille d'un doigt. C'est aussi la règle de la grille
+   vivante (.cal-jour), qui monte à 52 px sur téléphone. */
+.noscript-jour, .noscript-vide {
+  min-height: 44px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+.noscript-jour.libre { background: var(--cellule, var(--fond)); color: var(--cellule-encre, var(--encre-sur-clair)); }
+.noscript-jour.pris {
+  position: relative;
+  background: var(--surface-sombre);
+  color: var(--sur-sombre-doux);
+  border: 1px solid var(--trait-sombre);
+}
+.noscript-jour.pris::after {
+  content: ''; position: absolute; left: 8%; right: 8%; top: 50%;
+  border-top: 2px solid currentColor; transform: rotate(-16deg);
+}
+.noscript-jour.pris i { font-size: 0.6rem; font-style: normal; }
+.noscript-jour.ferme { color: var(--sur-sombre-doux); opacity: 0.45; }
+.noscript-legende {
+  display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;
+  margin: 1.1rem 0 0; font-size: 0.82rem; color: var(--sur-sombre-doux);
+}
+.noscript-appel {
+  margin: 0.9rem 0 0; text-align: center;
+  color: var(--sur-sombre);
+}
+.noscript-appel a { color: var(--sur-sombre); font-weight: 700; }
+
+/* Sans JavaScript, la grille vivante n'existe pas : elle resterait vide avec
+   « Chargement… » écrit dedans. On ne l'affiche donc qu'avec la classe « js »,
+   posée par l'unique ligne de script en tête de page. Progressif : ce qui a
+   besoin du script n'apparaît qu'avec le script. */
+.cal-section .cal-layout { display: none; }
+.js .cal-section .cal-layout { display: grid; }
+
+.cal-legende {
+  display: flex; flex-wrap: wrap; gap: 0.35rem 1.1rem;
+  list-style: none; margin: 1rem 0 0; padding: 0;
+  font-size: 0.78rem; color: var(--gris);
+}
+.cal-legende li { display: flex; align-items: center; gap: 0.4rem; }
+.pastille { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.pastille.libre { background: var(--cellule, var(--fond)); border: 1px solid var(--trait); }
+.pastille.pris { background: var(--surface-sombre); border: 1px solid var(--surface-sombre); }
+.pastille.ferme { background: var(--surface); border: 1px solid var(--trait); }
+.pastille.passe { background: none; border: 1px dashed var(--trait); }
+
+.cal-resume h3 {
+  font-family: var(--sans); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  /* Une petite étiquette sur fond sombre : elle prend une couleur claire, pas
+     le laiton. Mesuré : le laiton y tombe à 2,77:1 en Sable et 2,88:1 en
+     Atlantique. La règle est générale — le laiton ne porte du TEXTE que s'il
+     est grand ; ici il ne l'est pas. */
+  color: var(--sur-sombre-doux);
+  margin: 0 0 0.9rem;
+}
+.cal-choix { font-size: 0.95rem; margin: 0 0 0.8rem; }
+.cal-vide { color: var(--gris); font-size: 0.94rem; }
+.cal-lignes { list-style: none; margin: 0.9rem 0; padding: 0; }
+.cal-lignes li {
+  display: flex; justify-content: space-between; gap: 1rem;
+  padding: 0.4rem 0; border-bottom: 1px dashed var(--trait); font-size: 0.92rem;
+}
+.cal-total {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--serif); font-size: 1.85rem; color: var(--sur-sombre);
+  margin: 0.6rem 0 0.2rem;
+}
+.cal-total span {
+  font-family: var(--sans); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--gris);
+}
+.cal-precision { font-size: 0.82rem; color: var(--gris); margin: 0.5rem 0 0; }
+.cal-alerte {
+  background: var(--note-fond); border: 1px dashed var(--note-trait);
+  color: var(--note-encre); border-radius: 8px;
+  padding: 0.7rem 0.85rem; font-size: 0.88rem;
+}
+.cal-resume .btn { margin-top: 1rem; }
+
+/* --- État de la synchronisation -------------------------------------- */
+.cal-etat {
+  margin: 1.25rem 0 0;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--note-trait);
+  background: var(--note-fond);
+  color: var(--encre);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  max-width: 62ch;
+}
+.cal-etat.douteux {
+  border-left-color: var(--note-trait);
+  background: var(--note-fond);
+  color: var(--note-encre);
+}
+/* Seule teinte non-accent du site. Réservée à l'état d'erreur : quand le
+   calendrier ne peut pas être affiché, la couleur doit alerter d'elle-même. */
+.cal-etat.hors-service {
+  border-left-color: #A33A2A;
+  background: #FBEDEA;
+  color: #7A2A1D;
+}
+
+/* --- Calendrier momentanément indisponible --------------------------- */
+.cal-indisponible {
+  margin-top: 2rem;
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  border: 1px solid var(--trait);
+  border-radius: var(--rayon);
+  background: var(--fond);
+  text-align: center;
+}
+.cal-indisponible-titre {
+  font-family: var(--serif);
+  font-size: clamp(1.05rem, 2.6vw, 1.25rem);
+  margin: 0 0 0.7rem;
+}
+.cal-indisponible p { margin: 0 0 0.7rem; color: var(--gris); }
+.cal-indisponible-motif { font-size: 0.85rem; }
+.cal-indisponible-motif:empty { display: none; }
+.cal-indisponible .btn { margin-top: 0.6rem; }
+
+.btn-secondaire {
+  background: var(--fond); color: var(--encre); border-color: var(--trait);
+}
+.btn-secondaire:hover { border-color: var(--encre); color: var(--encre); }
+.btn-lien {
+  background: none; border: none; color: var(--gris);
+  min-height: 40px; padding: 0.4rem; text-decoration: underline;
+  font-size: 0.88rem; width: 100%;
+}
+.btn-lien:hover { color: var(--encre); }
+
+@media (max-width: 420px) {
+  .cal-jour { min-height: 52px; }
+  .cal-jour b { font-size: 0.88rem; }
+  .cal-jour i { font-size: 0.6rem; }
+}
+
+/* ======================= Barre d'appel, sur téléphone ===================
+   Elle est CRÉÉE par script.js : elle n'est jamais présente dans le HTML.
+   Sans JavaScript, il n'y a pas de barre du tout — et le site reste
+   parfaitement utilisable.
+
+   Elle n'apparaît qu'après une hauteur d'écran de défilement, et disparaît
+   dès que la section contact arrive dans l'écran. Si le visiteur remonte
+   au-dessus du contact, elle revient : elle suit la position, elle ne garde
+   aucune mémoire de ce qu'elle a vu. Voir le README, section « Barre
+   d'appel ». */
+.barre-appel {
+  position: fixed;
+  /* DES MARGES SUR LES COTES. Collee aux deux bords (left: 0; right: 0), la
+     barre occupait toute la largeur de l'ecran et paraissait enorme sur
+     telephone. Elle flotte maintenant au-dessus du bas, avec des coins
+     arrondis : une pastille, pas une bande. Les marges tiennent compte de
+     l'encoche laterale des iPhone en paysage (env(safe-area-inset-*)). */
+  left: max(0.9rem, env(safe-area-inset-left, 0px));
+  right: max(0.9rem, env(safe-area-inset-right, 0px));
+  bottom: calc(0.7rem + env(safe-area-inset-bottom, 0px));
+  z-index: 40;
+  display: flex; align-items: center; justify-content: center;
+  /* Plus fine : 46 px de haut, soit juste au-dessus des 44 px en dessous
+     desquels une cible devient difficile a toucher au doigt. On reduit le
+     rembourrage vertical et la taille du texte, pas la largeur — elle, elle
+     est bonne depuis la correction precedente. */
+  min-height: 46px;
+  border-radius: 999px;
+  /* env(safe-area-inset-bottom) réserve la hauteur de la barre de geste des
+     iPhone récents : sans elle, le texte passerait dessous. Vaut 0 ailleurs. */
+  padding: 0.5rem 1.2rem;
+  background: var(--fond-alt); color: var(--sur-sombre);
+  /* Une ombre discrete : la barre flotte au-dessus du contenu, il faut qu'on
+     voie qu'elle est devant. Legere — pas d'ombre lourde sur ce site. */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+  font-weight: 600; font-size: 0.95rem;
+  text-decoration: none;
+  box-shadow: none;
+  transform: translateY(115%);          /* au repos : hors de l'écran, en bas */
+  transition: transform 150ms ease-out;
+}
+.barre-appel.visible { transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .barre-appel { transition: none; }
+}
+/* Sécurité : le JavaScript ne la crée déjà pas au-dessus de 768 px, mais on
+   le redit ici pour qu'un élargissement de fenêtre ne la laisse pas traîner. */
+@media (min-width: 768px) { .barre-appel { display: none; } }
+
+/* ======================= L'OUVERTURE =================================
+   Le monogramme qui se dessine, puis le nom, puis l'écran qui se retire.
+
+   Elle est CRÉÉE par script.js : sans JavaScript, elle n'existe pas du tout
+   et le site s'affiche immédiatement. Voir le README, section « L'ouverture ».
+
+   Le monogramme est un SVG minuscule — un cercle et les initiales, tous deux
+   au trait — dessiné par stroke-dasharray / stroke-dashoffset. C'est la seule
+   technique qui « trace » réellement un trait, et elle ne pèse rien. */
+.monogramme { display: block; }
+.monogramme .mono-trait {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.monogramme .mono-initiales {
+  font-family: var(--initiales);
+  font-size: 42px;
+  letter-spacing: 0.02em;
+}
+
+/* Le même monogramme, en petit, dans l'en-tête. Il prend la couleur du texte
+   autour de lui (currentColor) : blanc sur la photo d'accueil, et il suivrait
+   une autre couleur ailleurs. */
+.monogramme-entete { width: 34px; height: 34px; flex: 0 0 34px; }
+.brand { display: inline-flex; align-items: center; gap: 0.6rem; }
+
+.ouverture {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background: var(--fond);      /* le sable de la palette, jamais du blanc */
+  /* ⚠️ L'ENCRE DE L'ÉCRAN, PAS « --fond-alt ».
+     « --fond-alt » était la bonne valeur tant que la palette avait DEUX tons :
+     un fond clair et un fond sombre. Depuis que la page est d'un seul vert
+     sombre, « --fond » et « --fond-alt » portent la MÊME valeur — le
+     monogramme se dessinait donc exactement de la couleur du mur : 1,00:1,
+     invisible. « --encre » est par construction l'encre qui contraste avec
+     « --fond » : elle est juste sur les quatre palettes. */
+  color: var(--encre);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.ouverture.se-retire {
+  opacity: 0;
+  transform: translateY(-4%);
+  pointer-events: none;
+}
+.ouverture-dedans { text-align: center; }
+.ouverture .monogramme {
+  width: clamp(92px, 17vw, 128px);
+  height: auto;
+  margin-inline: auto;
+}
+.ouverture-nom {
+  margin: 1.9rem 0 0;
+  /* LA POLICE DE LA RÉFÉRENCE, en libre.
+     Chez eux : « Owners Wide » (Adobe Fonts, payante). Ici : Archivo élargi,
+     sa plus proche parente libre — un grotesque large, en capitales espacées.
+     Exactement la même recette que la leur : capitales, petites, très
+     espacées. */
+  font-family: "Archivo Elargi", var(--sans), sans-serif;
+  /* LE DOUBLE d'avant (0,72 rem), comme demandé. L'interlettre est réduite
+     d'autant, sinon la ligne ne tiendrait pas sur un téléphone de 320 px :
+     mesuré, c'est l'interlettre qui déborde, pas la taille. */
+  font-size: 1.44rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-indent: 0.26em;              /* le letter-spacing décale le texte à droite */
+  text-transform: uppercase;
+  color: var(--encre);
+  /* LE MASQUE. Le nom n'apparaît pas en fondu : il GLISSE depuis dessous, et
+     c'est ce cadre qui le découpe. C'est le geste de la référence, et c'est lui
+     qui donne l'allure posée — un fondu paraît toujours plus pressé. */
+  overflow: hidden;
+}
+.ouverture-nom span {
+  display: inline-block;
+  /* La ligne part de 12 px plus bas, invisible : le fondu et le déplacement
+     ensemble. Le masque du conteneur (overflow: hidden) la fait « sortir de
+     nulle part » au lieu d'apparaître. */
+  opacity: 0;
+  transform: translateY(12px);
+}
+/* LE DEUXIÈME MOT : « à la maison dans les dunes ».
+   Même geste que le premier — il glisse depuis derrière son masque — mais plus
+   petit et moins espacé, sinon la ligne ne tient pas sur un téléphone de
+   320 px. Il arrive une seconde après « Bienvenue », comme demandé. */
+.ouverture-nom-suite {
+  margin-top: 0.7rem;
+  font-family: "Archivo Elargi", var(--sans), sans-serif;
+  /* ⚠️ PLUS PETITE QUE PRÉVU, ET C'EST LA POLICE QUI L'IMPOSE.
+     Archivo élargi est bien plus LARGE qu'Inter : à taille égale, la ligne
+     mesure 25 % de plus. Mesuré : à 1,1 rem, elle faisait 382 px — trop pour un
+     téléphone de 320 px. À 0,88 rem, elle tient partout. La line reste plus
+     grande qu'avant le changement de police (0,62 rem au départ). */
+  font-size: 0.88rem;
+  letter-spacing: 0.02em;
+  text-indent: 0.02em;
+}
+@keyframes nom-ouverture { to { opacity: 1; } }
+
+/* ---------------------------------------------------------------------------
+   LE DESSIN, ET SON TEMPS D'ARRÊT
+
+   Les durées sont alignées sur l'ARRIVÉE SUR LA PAGE, pas sur l'insertion de
+   l'écran : le JavaScript pose « --decalage » avec le temps déjà écoulé, ce
+   qui décale toutes les animations d'autant. Sans ce rattrapage, les
+   animations démarrent ~110 ms trop tard et le nom finissait d'apparaître
+   APRÈS le début du retrait — donc jamais vu en entier.
+
+   0,00 → 0,20 s  temps vide : l'œil se pose (la référence fait 0,94 s)
+   0,20 → 0,85 s  le cercle se referme
+   0,50 → 1,02 s  les initiales se tracent, quand le cercle est à 60 %
+   0,85 → 1,55 s  « BIENVENUE » arrive : fondu + 12 px, sur 700 ms
+   1,00 → 1,70 s  « À LA MAISON DANS LES DUNES » arrive, 150 ms après
+   1,70 → 2,40 s  TEMPS D'ARRÊT : les deux lignes sont là, immobiles
+   2,40 → 3,00 s  l'écran se retire
+
+   La courbe « --sortie » est celle de la référence, relevée dans sa feuille de
+   style : cubic-bezier(0.65, 0, 0.35, 1). Elle démarre doucement, accélère,
+   puis ralentit longuement. C'est cette longue fin de course qui fait qu'une
+   même durée paraît plus calme.
+   --------------------------------------------------------------------------- */
+.ouverture { --sortie: cubic-bezier(0.65, 0, 0.35, 1); }
+
+/* La circonférence du cercle vaut 2 × π × 54 ≈ 340. */
+.ouverture .mono-cercle {
+  stroke-dasharray: 340;
+  stroke-dashoffset: 340;
+  animation: tracer 0.65s var(--sortie) calc(0.2s + var(--decalage, 0ms)) forwards;
+}
+.ouverture .mono-initiales {
+  stroke-dasharray: 280;
+  stroke-dashoffset: 280;
+  animation: tracer 0.52s var(--sortie) calc(0.5s + var(--decalage, 0ms)) forwards;
+}
+.ouverture .ouverture-nom span {
+  animation: arriver 700ms var(--sortie) calc(0.85s + var(--decalage, 0ms)) forwards;
+}
+/* LE DELAI DU DEUXIEME MOT.
+   DEUX PIEGES, tous les deux verifies a la mesure :
+     1. le raccourci « animation » contient le delai : une regle placee avant lui
+        ne sert a rien, il la reinitialise ;
+     2. la regle d'origine est « .ouverture .ouverture-nom span » — DEUX classes,
+        donc plus specifique. Un selecteur plus court perd, meme place apres.
+   Resultat des deux erreurs : les deux mots apparaissaient en meme temps, a
+   1,4 s au lieu de 1,4 s puis 2,45 s. Rien ne le signalait. */
+/* 150 ms après la première ligne : c'est le décalage du brief. Il remplace la
+   seconde d'attente demandée plus tôt — voir la note dans le README. */
+.ouverture .ouverture-nom-suite span {
+  animation-delay: calc(1s + var(--decalage, 0ms));
+}
+@keyframes tracer { to { stroke-dashoffset: 0; } }
+@keyframes arriver { to { opacity: 1; transform: none; } }
+
+/* Sans ce garde-fou, le site apparaîtrait une fraction de seconde avant que
+   l'ouverture ne le recouvre : un clignotement, exactement ce qu'on veut
+   éviter. La classe est posée par le petit script en tête de index.html,
+   AVANT le premier affichage. Sans JavaScript elle n'est jamais posée, et si
+   le script principal ne se chargeait pas, ce même script de tête la retire
+   au bout de 3 secondes. */
+html.avant-ouverture body > * { visibility: hidden; }
+html.avant-ouverture .ouverture,
+html.avant-ouverture .ouverture * { visibility: visible; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ouverture .mono-cercle,
+  .ouverture .mono-initiales { animation: none; stroke-dashoffset: 0; }
+  /* Sans animation, les lignes doivent être VISIBLES tout de suite : sans
+     l'opacité, elles resteraient invisibles pour toujours. */
+  .ouverture .ouverture-nom span { animation: none; opacity: 1; transform: none; }
+}
+
+/* ======================= Accessibilité =============================== */
+:focus-visible { outline: 2px solid var(--encre); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
+
+@media print {
+  .site-head, .hero-actions, .form, .map-wrap, .gabarit { display: none; }
+  .hero { min-height: auto; color: var(--encre); }
+}
+
+/* ======================================================================
+   LE ROUGE, LÀ OÙ IL SERT
+   ======================================================================
+   Un seul endroit dans tout le site : le champ mal rempli. Le navigateur
+   affiche déjà son message d'erreur, en français puisque la page est en
+   français ; on ne le refait pas, on le teinte.
+
+   « :user-invalid » et non « :invalid » : :invalid marque un champ vide DÈS
+   L'ARRIVÉE sur la page, avant que le visiteur ait touché à quoi que ce soit.
+   Un formulaire tout rouge à l'ouverture, voilà le résultat. :user-invalid
+   attend que le visiteur ait vraiment essayé.
+   ====================================================================== */
+.field input:user-invalid,
+.field select:user-invalid,
+.field textarea:user-invalid {
+  border-color: var(--erreur);
+  outline: 1px solid var(--erreur);
+  outline-offset: 1px;
+}
+.field label:has(+ input:user-invalid) { color: var(--erreur); }
+
+
+/* ======================================================================
+   LE FOND QUI PROLONGUE LA PHOTO — 13 octobre 2026
+   ======================================================================
+   Une photo verticale plafonnée par la hauteur de l'écran laisse deux bandes de
+   fond nu de chaque côté. On les remplit avec LA PHOTO ELLE-MÊME, agrandie à
+   tout le cadre et fortement floutée : les côtés reprennent donc exactement ses
+   couleurs, à chaque hauteur, sans qu'on ait à les relever une par une.
+
+   C'est la même image, déjà en mémoire : aucun téléchargement supplémentaire.
+
+   La photo est déclarée sur son propre bloc, dans l'attribut style :
+       <figure class="photo-pleine" style="--photo: url('images/...jpg')">
+   Si cet attribut manque, il ne se passe rien — le fond reste celui du site.
+   ====================================================================== */
+.photo-pleine,
+.bande-image {
+  position: relative;
+  overflow: hidden;   /* le fond déborde, puis il est coupé net : pas de bord mou */
+}
+
+.photo-pleine img,
+.bande-image img {
+  position: relative;
+  z-index: 1;         /* la photo nette passe DEVANT le fond flou */
+}
+
+.photo-pleine::before,
+.bande-image::before {
+  content: "";
+  position: absolute;
+  /* ASTUCE DE CALCUL. On demande une surface PLUS PETITE que le cadre (30 % de
+     marge de chaque côté), puis on l'agrandit trois fois. Le résultat visuel
+     est identique, mais le flou est calculé sur une surface six fois plus
+     légère — et comme le cadre agrandi déborde de 10 %, le bord mou du flou
+     tombe entièrement hors de la zone visible : aucun liseré, aucune couture. */
+  inset: 30%;
+  transform: scale(3);
+  background-image: var(--photo);
+  background-size: 100% 100%;   /* toute l'image, du haut en bas : les couleurs
+                                   de chaque hauteur se prolongent exactement */
+  background-position: center;
+  background-repeat: no-repeat;
+  /* 42 px sur la petite surface = environ 126 px à l'écran : le détail se
+     dissout, le dégradé du ciel reste. */
+  filter: blur(42px) saturate(1.25) brightness(1.32);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Sur un téléphone, le flou porte sur toute la largeur : on le réduit un peu,
+   pour ne pas faire chauffer un appareil modeste. */
+@media (max-width: 700px) {
+  .photo-pleine::before,
+  .bande-image::before {
+    filter: blur(22px) saturate(1.25) brightness(1.32);
+  }
+}
+
+
+/* ======================================================================
+   LE NUMÉRO DE TÉLÉPHONE — SANS PASTILLE, ET LISIBLE PARTOUT
+   ======================================================================
+   Benjamin a demandé de retirer le fond vert : la texture de la page doit
+   rester visible. Mais un numéro blanc n'est lisible que sur fond sombre —
+   et sur la page des photos, l'en-tête vit sur le beige.
+
+   On ne met donc AUCUN fond sur la pastille, et on laisse le numéro prendre la
+   couleur de son contexte : blanc sur la page sombre, dont c'était le
+   comportement d'origine ; vert sombre sur la page beige.
+   Le carré du pictogramme s'inverse de la même façon — son dessin est gravé en
+   sombre dans le fichier SVG, donc il s'affiche toujours sur un carré clair.
+   ====================================================================== */
+.page-claire .head-tel {
+  color: #2f3431;
+}
+
+.page-claire .head-tel::before {
+  background-color: #2f3431;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23cccecd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z'/%3E%3C/svg%3E");
+}
+
+/* ======================================================================
+   LA PAGE DES PHOTOS EST BEIGE — SA TEXTURE DOIT L'ÊTRE AUSSI
+   ======================================================================
+   La page des photos a son propre jeu de couleurs : fond #d9d6d0 (beige) et
+   texte sombre #2f3431. Mais ses sections portent la classe .section, qui leur
+   applique la tuile de grain SOMBRE (#262827) — et cette tuile est OPAQUE :
+   elle recouvre le beige. Résultat, la page s'affichait sombre avec du texte
+   sombre : le titre, l'introduction et le lien de retour étaient ILLISIBLES.
+
+   On rend donc à cette page sa texture claire. Le reste du site est inchangé.
+   ====================================================================== */
+.page-claire .section,
+.page-claire .section-alt,
+.page-claire .pv-intro,
+.page-claire .pv-section,
+.page-claire .panneau {
+  background-image: url("images/grain-beige.png");
+}

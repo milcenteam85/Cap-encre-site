@@ -1,0 +1,32 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Cap Encre//Calendrier de demonstration//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-DEMONSTRATION:Ce calendrier est factice. Il sert a montrer le fonctionnement du calendrier synchronise sur la vitrine Cap Encre. Sur le site d'un vrai client, il est remplace par le lien iCal prive fourni par le proprietaire (Airbnb ou Booking).
+X-DERNIERE-MISE-A-JOUR:20261011
+BEGIN:VEVENT
+DTEND;VALUE=DATE:20261101
+DTSTART;VALUE=DATE:20261025
+SUMMARY:Reserved
+UID:demo-1@cap-encre.fr
+END:VEVENT
+BEGIN:VEVENT
+DTEND;VALUE=DATE:20270515
+DTSTART;VALUE=DATE:20270508
+SUMMARY:Reserved
+UID:demo-2@cap-encre.fr
+END:VEVENT
+BEGIN:VEVENT
+DTEND;VALUE=DATE:20270725
+DTSTART;VALUE=DATE:20270704
+SUMMARY:Reserved
+UID:demo-3@cap-encre.fr
+END:VEVENT
+BEGIN:VEVENT
+DTEND;VALUE=DATE:20270822
+DTSTART;VALUE=DATE:20270815
+SUMMARY:Reserved
+UID:demo-4@cap-encre.fr
+END:VEVENT
+END:VCALENDAR

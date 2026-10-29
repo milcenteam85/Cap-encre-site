@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr" data-palette="table">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le Beurre Noisette — Crêperie à Saint-Jean-de-Monts</title>
+<meta name="description" content="Crêperie à Saint-Jean-de-Monts : galettes de blé noir, crêpes de froment, cidre. Sur place et à emporter. Démonstration — établissement fictif.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="Le Beurre Noisette — Crêperie à Saint-Jean-de-Monts">
+<meta property="og:description" content="Galettes de blé noir, crêpes de froment, cidre. Sur place et à emporter.">
+<meta property="og:type" content="restaurant.restaurant">
+<meta property="og:locale" content="fr_FR">
+
+<!-- Une seule police porte le titre, une seule porte le texte. Deux graisses chacune,
+     sous-ensemble latin : c'est ce qui tient le budget d'ouverture sous 300 Ko. -->
+<link rel="preload" href="polices/playfair-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="polices/jost-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
+
+<!-- Référencement local. Type Restaurant : c'est ce que Google lit pour une fiche
+     d'établissement qui reçoit du public. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "name": "Le Beurre Noisette",
+  "description": "Crêperie. Galettes de blé noir, crêpes de froment, cidre. Sur place et à emporter.",
+  "servesCuisine": ["Crêperie", "Bretonne", "Galettes"],
+  "priceRange": "€€",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "[À COMPLÉTER] rue à préciser",
+    "addressLocality": "Saint-Jean-de-Monts",
+    "postalCode": "85160",
+    "addressCountry": "FR"
+  },
+  "telephone": "[À COMPLÉTER]",
+  "url": "[À COMPLÉTER]",
+  "hasMenu": "[À COMPLÉTER]",
+  "acceptsReservations": "True",
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Tuesday","Wednesday","Thursday"], "opens": "12:00", "closes": "14:30" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday","Saturday"], "opens": "12:00", "closes": "14:30" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday","Saturday"], "opens": "19:00", "closes": "22:00" }
+  ]
+}
+</script>
+</head>
+<body>
+
+<!-- L'OUVERTURE AU MONOGRAMME.
+     Construite par le JavaScript, pas dans le HTML : sans script, elle n'existe
+     pas et la page s'affiche directement. Elle porte la classe js des que le
+     script confirme qu'il tourne. -->
+<div class="ouverture" id="ouverture" aria-hidden="true">
+  <div class="ouverture-mono">BN</div>
+  <p class="ouverture-nom">Le Beurre Noisette</p>
+  <p class="ouverture-lieu">Crêperie · Saint-Jean-de-Monts</p>
+</div>
+
+<header class="site-tete">
+  <a class="marque" href="#top">
+    <span class="marque-mono">BN</span>
+    <span class="marque-nom">Le Beurre Noisette</span>
+  </a>
+  <nav class="site-nav" aria-label="Sections">
+    <a href="#carte">La carte</a>
+    <a href="#galerie">Photos</a>
+    <a href="#acces">Nous trouver</a>
+  </nav>
+  <a class="tete-tel" href="tel:[À COMPLÉTER]">Appeler</a>
+</header>
+
+<main id="top">
+
+  <!-- 1. OUVERTURE TYPOGRAPHIQUE.
+       Pas de photo : c'est la difference affirmee avec le gabarit logement, dont
+       la signature est la photo plein ecran avec zoom lent. Ici le nom porte tout,
+       et la page s'affiche instantanement meme en 4G. -->
+  <section class="ouv">
+    <p class="surtitre">Crêperie · Saint-Jean-de-Monts</p>
+    <h1 class="ouv-nom">Le Beurre Noisette</h1>
+    <p class="ouv-accroche">
+      Galettes de blé noir, crêpes de froment, cidre brut. Une maison de pierre
+      à deux pas de la plage, ouverte sur la saison.
+    </p>
+    <div class="ouv-actions">
+      <a class="bouton bouton-plein" href="tel:[À COMPLÉTER]">Appeler</a>
+      <a class="bouton bouton-vide" href="#carte">Voir la carte</a>
+    </div>
+  </section>
+
+  <!-- 2. L'ESSENTIEL. Horaires STATIQUES, jamais calcules par le navigateur :
+       un « ouvert maintenant » se trompe des qu'on oublie de le mettre a jour,
+       et un restaurant a qui l'on annonce a tort qu'il est ferme perd un client. -->
+  <section class="essentiel" id="essentiel">
+    <h2 class="titre-section">L'essentiel</h2>
+    <div class="essentiel-grille">
+      <div class="bloc">
+        <h3>Horaires</h3>
+        <table class="horaires">
+          <tbody>
+            <tr><th scope="row">Lundi</th><td>Fermé</td></tr>
+            <tr><th scope="row">Mardi</th><td>12h – 14h30</td></tr>
+            <tr><th scope="row">Mercredi</th><td>12h – 14h30</td></tr>
+            <tr><th scope="row">Jeudi</th><td>12h – 14h30</td></tr>
+            <tr><th scope="row">Vendredi</th><td>12h – 14h30 · 19h – 22h</td></tr>
+            <tr><th scope="row">Samedi</th><td>12h – 14h30 · 19h – 22h</td></tr>
+            <tr><th scope="row">Dimanche</th><td>12h – 14h30</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="bloc">
+        <h3>Adresse</h3>
+        <p class="adresse">
+          [À COMPLÉTER] rue à préciser<br>
+          85160 Saint-Jean-de-Monts
+        </p>
+        <h3>Nous joindre</h3>
+        <p><a href="tel:[À COMPLÉTER]">[À COMPLÉTER]</a></p>
+      </div>
+      <div class="bloc">
+        <h3>Services</h3>
+        <ul class="services">
+          <li>Sur place</li>
+          <li>À emporter</li>
+          <li>Groupes sur réservation</li>
+          <li>[À COMPLÉTER] terrasse, animaux, accès PMR…</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. LA CARTE. La piece maitresse : elle doit avoir l'air d'une carte, pas
+       d'une liste. Deux colonnes, prix alignes a droite, points de conduite entre
+       le plat et son prix. En HTML, jamais une image, jamais un PDF : c'est ce
+       que Google lit, et c'est lisible sur un telephone en 4G. -->
+  <section class="carte" id="carte">
+    <h2 class="titre-section">La carte</h2>
+
+    <div class="menu-jour">
+      <p class="menu-jour-titre">Le menu du jour</p>
+      <p class="menu-jour-texte">
+        Entrée, galette et dessert, change chaque jour selon le marché.
+        <span class="menu-jour-prix">[À COMPLÉTER]</span>
+      </p>
+    </div>
+
+    <div class="carte-colonnes">
+
+      <div class="carte-colonne">
+        <h3 class="carte-groupe">Entrées</h3>
+        <ul class="plats">
+          <li><span class="plat">Soupe de poisson maison</span><span class="points"></span><span class="prix">[•]</span></li>
+          <li><span class="plat">Rillettes de maquereau</span><span class="points"></span><span class="prix">[•]</span></li>
+          <li><span class="plat">Salade de chèvre chaud</span><span class="points"></span><span class="prix">[•]</span></li>
+        </ul>
+
+        <h3 class="carte-groupe">Galettes de blé noir</h3>
+        <ul class="plats">
+          <li><span class="plat">La complète</span><span class="points"></span><span class="prix">[•]</span></li>
+          <li><span class="plat">Andouille, pommes, moutarde</span><span class="points"></span><span class="prix">[•]</span></li>
+          <li><span class="plat">Saint-Jacques, crème de poireau</span><span class="points"></span><span class="prix">[•]</span></li>
+          <li><span class="plat">La beurre noisette</span><span class="points"></span><span class="prix">[•]</span></li>
+        </ul>
+      </div>
+
+      <div class="carte-colonne">
+        <h3 class="carte-groupe">Crêpes de froment</h3>
+        <ul class="plats">
+          <li><span class="plat">Sucre, beurre noisette</span><span class="points"></span><span class="prix">[•]</span></li>
+          <li><span class="plat">Caramel au beurre salé</span><span class="points"></span><span class="prix">[•]</span></li>
+          <li><span class="plat">Pommes caramélisées, glace</span><span class="points"></span><span class="prix">[•]</span></li>
+          <li><span class="plat">Chocolat maison</span><span class="points"></span><span class="prix">[•]</span></li>
+        </ul>
+
+        <h3 class="carte-groupe">À boire</h3>
+        <ul class="plats">
+          <li><span class="plat">Cidre brut, bouché</span><span class="points"></span><span class="prix">[•]</span></li>
+          <li><span class="plat">Cidre doux</span><span class="points"></span><span class="prix">[•]</span></li>
+          <li><span class="plat">Jus de pomme fermier</span><span class="points"></span><span class="prix">[•]</span></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <p class="carte-note">
+      Prix en euros, TVA non applicable, article 293 B du CGI.
+      Les prix de cette carte sont ceux de la démonstration — [À COMPLÉTER] une fois
+      la carte réelle fournie.
+    </p>
+
+    <div class="emporter">
+      <h3 class="carte-groupe">À emporter</h3>
+      <p>
+        Toute la carte est à emporter. [À COMPLÉTER] créneau de retrait et
+        commande par téléphone.
+      </p>
+    </div>
+  </section>
+
+  <!-- 4. GALERIE. Mosaique a formats varies : deux paysages larges, quatre
+       verticales. Les images seront generees — aucune photo d'un tiers. -->
+  <section class="galerie" id="galerie">
+    <h2 class="titre-section">La maison</h2>
+    <div class="galerie-grille">
+      <figure><img src="images/galette-billig.webp" loading="lazy" decoding="async"
+        width="1200" height="800" alt="Une galette de blé noir étalée sur le billig"></figure>
+      <figure><img src="images/cidre.webp" loading="lazy" decoding="async"
+        width="1200" height="900" alt="Un bol de cidre brut et une galette servie"></figure>
+      <figure><img src="images/salle.webp" loading="lazy" decoding="async"
+        width="1280" height="768" alt="La salle de la crêperie, tables de bois et murs clairs"></figure>
+    </div>
+  </section>
+
+  <!-- 5. AVIS. Textes d'exemple tant que le client n'a pas fourni ses vrais avis. -->
+  <section class="avis" id="avis">
+    <h2 class="titre-section">On en parle</h2>
+    <div class="avis-grille">
+      <blockquote class="avis-bloc">
+        <p>« On est venus pour la galette, on est revenus pour le beurre noisette. »</p>
+        <cite>[À COMPLÉTER] avis d'exemple</cite>
+      </blockquote>
+      <blockquote class="avis-bloc">
+        <p>« Une salle simple, un accueil franc, et une carte qu'on a envie de finir. »</p>
+        <cite>[À COMPLÉTER] avis d'exemple</cite>
+      </blockquote>
+      <blockquote class="avis-bloc">
+        <p>« Les enfants ont eu leur crêpe, moi mon cidre. Tout le monde était content. »</p>
+        <cite>[À COMPLÉTER] avis d'exemple</cite>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- 6. ACCES ET CONTACT. Carte OpenStreetMap integree : pas de cle, pas de
+       compte, pas de facture. Google reste en lien pour la fiche de
+       l'etablissement, que le client alimente lui-meme. -->
+  <section class="acces" id="acces">
+    <h2 class="titre-section">Nous trouver</h2>
+    <div class="acces-grille">
+      <div class="acces-texte">
+        <p class="adresse">
+          Le Beurre Noisette<br>
+          [À COMPLÉTER] rue à préciser<br>
+          85160 Saint-Jean-de-Monts
+        </p>
+        <p><a class="lien-tel" href="tel:[À COMPLÉTER]">[À COMPLÉTER]</a></p>
+        <ul class="acces-liens">
+          <li><a href="[À COMPLÉTER]">Fiche Google de l'établissement</a></li>
+          <li><a href="[À COMPLÉTER]">Instagram</a></li>
+          <li><a href="[À COMPLÉTER]">Facebook</a></li>
+        </ul>
+      </div>
+      <div class="acces-carte">
+        <iframe title="Carte de Saint-Jean-de-Monts"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=-2.0789%2C46.7836%2C-2.0389%2C46.8036&amp;layer=mapnik&amp;marker=46.7936%2C-2.0589"
+          loading="lazy" width="100%" height="360"></iframe>
+        <p class="acces-carte-note">
+          [À COMPLÉTER] repère à ajuster sur l'adresse exacte.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. BANDEAU PLEINE LARGEUR. Une seule image, qui coupe le rythme avant le
+       pied de page. -->
+  <section class="bandeau-img" aria-label="La maison, vue de la rue">
+    <div class="bandeau-img-interieur"></div>
+  </section>
+
+</main>
+
+<!-- 8. PIED DE PAGE SOMBRE. -->
+<footer class="site-pied">
+  <div class="pied-contenu">
+    <div class="pied-bloc">
+      <p class="pied-nom">Le Beurre Noisette</p>
+      <p class="pied-siret">SIRET [À COMPLÉTER]</p>
+      <p class="pied-mentions"><a href="mentions-legales.html">Mentions légales</a></p>
+    </div>
+    <div class="pied-bloc">
+      <p class="pied-allergenes">Allergènes : [À COMPLÉTER] document à venir</p>
+      <p class="pied-demo">
+        Démonstration — établissement fictif.<br>
+        Photographies : [crédit à compléter]
+      </p>
+    </div>
+    <div class="pied-bloc">
+      <p class="pied-credits">Site : Cap Encre</p>
+    </div>
+  </div>
+</footer>
+
+<!-- BARRE D'APPEL. Telephones uniquement, apres une hauteur d'ecran de
+     defilement, masquee des que la section contact apparait. Le retrait bas
+     respecte env(safe-area-inset-bottom) : sinon elle passe sous la barre
+     du navigateur sur iPhone. -->
+<a class="barre-appel" id="barre-appel" href="tel:[À COMPLÉTER]">
+  <span class="barre-appel-icone" aria-hidden="true">☎</span>
+  <span>Appeler le Beurre Noisette</span>
+</a>
+
+<script src="script.js"></script>
+</body>
+</html>

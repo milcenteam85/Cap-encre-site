@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="fr" data-palette="pierre">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Maison dans les Dunes — Location 6 personnes à Saint-Jean-de-Monts, Vendée</title>
+<meta name="description" content="La Maison dans les Dunes à Saint-Jean-de-Monts (Vendée) : 6 personnes, 3 chambres, piscine chauffée, à 800 m de la plage. Ouvert d'avril à octobre. Demande de disponibilité en direct.">
+<meta name="theme-color" content="#2E3A2C">
+
+<!-- Garde-fou contre le clignotement. Cette classe est posée AVANT le premier
+     affichage : sans elle, le site apparaîtrait une fraction de seconde, puis
+     l'ouverture le recouvrirait — exactement ce qu'on veut éviter.
+
+     Sans JavaScript, elle n'est jamais posée : le site s'affiche normalement.
+     Et si le script principal ne se chargeait pas, la minuterie ci-dessous la
+     retire au bout de 3 secondes : la page ne peut pas rester cachée. -->
+<script>
+  try {
+    if (!sessionStorage.getItem('ouverture-vue')) {
+      var racine = document.documentElement;
+      racine.className += ' avant-ouverture';
+      setTimeout(function () {
+        racine.className = racine.className.replace(' avant-ouverture', '');
+      }, 3000);
+    }
+  } catch (e) {}
+</script>
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="La Maison dans les Dunes — Saint-Jean-de-Monts, Vendée">
+<meta property="og:description" content="6 personnes · 3 chambres · piscine chauffée · 800 m de la plage. Ouvert d'avril à octobre.">
+<meta property="og:image" content="images/ciel-bleu-soir.jpg">
+<meta property="og:locale" content="fr_FR">
+
+<!-- La police des titres est chargée en avance : c'est elle qui porte le titre
+     d'accueil, la première chose que le visiteur voit. crossorigin est
+     obligatoire pour une police, même servie depuis le même site. -->
+<link rel="preload" href="polices/cormorant-garamond-500.woff2"
+      as="font" type="font/woff2" crossorigin>
+
+<link rel="stylesheet" href="styles.css">
+
+<!-- Une seule ligne, et elle compte : elle pose la classe « js » sur la page.
+     La grille VIVANTE du calendrier n'est affichée qu'avec cette classe —
+     sinon, sans JavaScript, elle resterait vide et afficherait « Chargement… »
+     pour toujours. Ce sont alors la grille statique et le téléphone qui
+     prennent le relais. -->
+<script>document.documentElement.className += ' js';</script>
+
+<noscript>
+  <!-- SANS JAVASCRIPT, IL N'Y A PAS DE PANNEAU. Le bouton est créé par le
+       script, et les liens du menu sont masqués en dessous de 960 px pour
+       laisser la place au nom et au téléphone. Sans ce bloc, un visiteur
+       sans JavaScript sur téléphone n'aurait PLUS AUCUN moyen de naviguer —
+       mesuré, c'était le cas. On les réaffiche donc, sur plusieurs lignes.
+       C'est le repli, et il est visible. -->
+  <style>
+    .nav { display: flex !important; flex-wrap: wrap; gap: 0.35rem 1.1rem; }
+    .nav a { font-size: 0.82rem; letter-spacing: 0.14em; }
+    .head-inner { flex-wrap: wrap; row-gap: 0.4rem; }
+  </style>
+</noscript>
+</head>
+<body>
+
+<a class="skip" href="#presentation">Aller au contenu</a>
+
+<!-- ===================== EN-TÊTE ===================== -->
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a class="brand" href="#accueil">La Maison dans les Dunes</a>
+    <nav class="nav" aria-label="Sections du site">
+      <a href="#presentation">La maison</a>
+      <a href="photos.html">Photos</a>
+      <a href="#tarifs">Tarifs</a>
+      <a href="#disponibilites">Disponibilités</a>
+      <a href="#alentours">Les alentours</a>
+      <a href="#contact" class="nav-cta" data-cta-contact>Demander</a>
+    </nav>
+    <a class="head-tel" href="tel:+33662674414">06 62 67 44 14</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===================== 1. ACCUEIL PLEIN ÉCRAN ===================== -->
+  <section id="accueil" class="hero">
+    <div class="hero-scrim" aria-hidden="true"></div>
+
+    <!-- LE TITRE DE LA PAGE, INVISIBLE.
+         Le grand titre a été retiré de l'accueil : le nom est déjà dans
+         l'en-tête, le dire deux fois c'est une fois de trop. Mais une page doit
+         avoir UN titre principal — pour Google et pour les lecteurs d'écran.
+         Celui-ci est là pour eux, et personne ne le voit. -->
+    <h1 class="sr-only">La Maison dans les Dunes</h1>
+
+    <div class="wrap hero-content">
+      <p class="hero-loc">Saint-Jean-de-Monts · Vendée</p>
+      <!-- RIEN D'AUTRE au-dessus de la photo. Le sous-titre « Une maison pour
+           six, à 800 m de la plage » n'est pas perdu : c'est exactement le
+           titre du premier bloc de texte, juste après, et son paragraphe dit
+           les six personnes, les 800 mètres, les trois chambres et la piscine
+           chauffée. -->
+    </div>
+
+    <!-- ===================== LA PHOTO DE LA MAISON, DANS L'ACCUEIL ==========
+         Elle est posée DANS le héros, APRÈS le texte — donc sous l'en-tête, qui
+         garde son fond sombre et reste lisible.
+
+         ⚠️ PAS en fond plein écran : le fichier ne fait que 620 px de large. En
+         fond, il serait agrandi 1,8 fois et le toit serait coupé. Ici elle est
+         nette et entière. Envoyez l'originale en grand et elle pourra passer en
+         fond plein écran. -->
+    <figure class="hero-photo">
+      <img src="images/maison-bois-facade.jpg" width="1200" height="628" loading="eager" decoding="async"
+               alt="La Maison dans les Dunes de face : grande façade vitrée en triangle, marches de béton et oyats sur la dune, ciel bleu avec un nuage">
+    </figure>
+
+    <!-- SOUS LA PHOTO : le lien et le bouton, sur la même ligne. Sur téléphone
+         ils s'empilent — le lien au-dessus du bouton. -->
+    <div class="wrap hero-actions">
+      <a class="lien-decouvrir" href="photos.html">Découvrir la maison</a>
+      <a class="btn btn-primary" href="#contact" data-cta-contact>Demander une disponibilité</a>
+    </div>
+  </section>
+
+  <!-- ===================== 2. PRÉSENTATION ===================== -->
+    <!-- ===================== PHOTO — LA PISCINE =====================
+       UNE PHOTO, UNE BANDE, ET RIEN AVEC. Elle ne touche jamais une autre
+       photo : avant et après, il y a un bloc. C'est le rythme de la
+       référence — chez eux, aucune image n'en suit une autre. -->
+  
+
+<section id="presentation" class="section">
+    <div class="wrap">
+      <p class="eyebrow">La maison</p>
+      <h2>Une maison pour six, à 800 m de la plage</h2>
+
+      <div class="cols">
+        <div>
+          <p class="lead">
+            La Maison dans les Dunes vous accueille à Saint-Jean-de-Monts, en Vendée, à 800 mètres
+            de la plage. Il reçoit 6 personnes dans 3 chambres. Sa piscine est chauffée, et
+            ouverte d'avril à octobre comme la maison.
+          </p>
+          <p class="todo">
+            [À COMPLÉTER] Deux ou trois phrases sur le lieu : son histoire, l'ambiance,
+            ce qui le distingue des autres locations. C'est le paragraphe que lit le voyageur
+            en premier — il doit donner envie.
+          </p>
+        </div>
+
+        <ul class="specs">
+          <li><b>6 personnes</b> — capacité d'accueil</li>
+          <li><b>3 chambres</b></li>
+          <li><b>Piscine chauffée</b></li>
+          <li><b>800 m de la plage</b></li>
+          <li><b>Ouvert d'avril à octobre</b></li>
+          <li class="todo">[À COMPLÉTER] Surface, nombre de salles de bain, étage, parking,
+            animaux acceptés ou non, wifi, linge fourni, équipements de cuisine.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PHOTO — LA PLAGE =====================
+       UNE PHOTO, UNE BANDE, ET RIEN AVEC. Elle ne touche jamais une autre
+       photo : avant et après, il y a un bloc. C'est le rythme de la
+       référence — chez eux, aucune image n'en suit une autre. -->
+  
+
+  <section class="bande-photo">
+    <figure class="photo-pleine" style="--photo: url('images/ciel-crepuscule-rose.jpg')">
+      <img src="images/ciel-crepuscule-rose.jpg"
+           alt="Les pins découpés en silhouette sur un ciel de crépuscule rose"
+           loading="lazy" decoding="async">
+    </figure>
+  </section>
+<section id="tarifs" class="section">
+    <div class="wrap">
+      <p class="eyebrow">Tarifs &amp; saison</p>
+      <h2>Tarifs et période d'ouverture</h2>
+
+      <div class="cols">
+        <div class="pricelist">
+          <div class="prow">
+            <span class="plabel">Semaine, basse saison</span>
+            <span class="pval">850 €<small> / semaine</small></span>
+          </div>
+          <div class="prow">
+            <span class="plabel">Semaine, juillet et août</span>
+            <span class="pval">1 400 €<small> / semaine</small></span>
+          </div>
+          <div class="prow">
+            <span class="plabel">Nuit, hors saison</span>
+            <span class="pval">200 €<small> / nuit</small></span>
+          </div>
+        </div>
+
+        <aside class="aside">
+          <h3>Période d'ouverture</h3>
+          <p>La maison est ouverte <strong>d'avril à octobre</strong>.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 5. DISPONIBILITÉS ET CALENDRIER =====================
+       C'EST LA PIÈCE MAÎTRESSE DU GABARIT : la section est sur le fond sombre
+       de la palette et la grille occupe toute la largeur utile. Elle doit
+       donner l'impression d'un outil, pas d'un bloc de plus. -->
+  <section id="disponibilites" class="section section-alt cal-section">
+    <!-- Une grande image pleine largeur ouvre la section. Elle est purement
+         décorative : son texte de remplacement est donc vide, pour qu'un
+         lecteur d'écran ne l'annonce pas sans raison. -->
+    <figure class="bande-image" style="--photo: url('images/ciel-crepuscule-orange.jpg')">
+      <img src="images/ciel-crepuscule-orange.jpg"
+           alt="Crépuscule orangé derrière les pins" loading="lazy" decoding="async">
+    </figure>
+    <div class="wrap">
+      <p class="eyebrow">Disponibilités</p>
+      <h2>Calendrier et tarifs jour par jour</h2>
+      <p class="lead">
+        Cliquez sur votre date d'arrivée, puis sur votre date de départ :
+        le prix se calcule tout seul.
+      </p>
+
+      <!-- LE GARDE-FOU, écrit en clair et à côté du calendrier — pas en petits
+           caractères au fond d'une page. Ces phrases sont volontairement
+           répétées sous le résumé du prix : c'est là qu'on les relit. -->
+      <p class="cal-avertissement">
+        <strong>Ces disponibilités sont indicatives</strong>, et le prix affiché est une
+        estimation. Votre réservation se confirme par téléphone ou par e-mail — et c'est
+        à ce moment-là que le tarif définitif vous est confirmé.
+      </p>
+
+      <p class="cal-etat" id="cal-etat" hidden></p>
+
+      <div class="cal-layout" style="margin-top: 2rem;">
+
+        <div class="cal-bloc">
+          <div class="cal-entete">
+            <button type="button" class="cal-fleche" id="cal-prec"
+                    aria-label="Mois précédent">&#8249;</button>
+            <p class="cal-mois" id="cal-mois">Chargement…</p>
+            <button type="button" class="cal-fleche" id="cal-suiv"
+                    aria-label="Mois suivant">&#8250;</button>
+          </div>
+
+          <p class="cal-bandeau" id="cal-bandeau"></p>
+
+          <div class="cal-semaine" aria-hidden="true">
+            <span>L</span><span>M</span><span>M</span><span>J</span>
+            <span>V</span><span>S</span><span>D</span>
+          </div>
+          <div class="cal-grille" id="cal-grille"></div>
+
+          <ul class="cal-legende">
+            <li><span class="pastille libre"></span>Disponible</li>
+            <li><span class="pastille pris"></span>Déjà réservé</li>
+            <li><span class="pastille ferme"></span>Hors ouverture</li>
+            <li><span class="pastille passe"></span>Date passée</li>
+          </ul>
+        </div>
+
+        <aside class="cal-resume" id="cal-resume"></aside>
+
+      </div>
+
+      <!-- NOSCRIPT CALENDRIER -->
+      <noscript>
+      <!-- Grille statique, pour les visiteurs dont le navigateur n'exécute pas le
+      JavaScript. Fabriquée par outils/generer-noscript.py à partir de
+      calendrier-donnees.js — ne pas modifier à la main. -->
+      <div class="noscript-cal">
+      <p class="noscript-titre">Disponibilités — octobre 2026</p>
+      <div class="noscript-semaine" aria-hidden="true">
+      <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+      </div>
+      <div class="noscript-grille">
+      <span class="noscript-vide"></span><span class="noscript-vide"></span><span class="noscript-vide"></span><span class="noscript-jour libre" aria-label="1 octobre 2026, disponible"><b>1</b></span><span class="noscript-jour libre" aria-label="2 octobre 2026, disponible"><b>2</b></span><span class="noscript-jour libre" aria-label="3 octobre 2026, disponible"><b>3</b></span><span class="noscript-jour libre" aria-label="4 octobre 2026, disponible"><b>4</b></span><span class="noscript-jour libre" aria-label="5 octobre 2026, disponible"><b>5</b></span><span class="noscript-jour libre" aria-label="6 octobre 2026, disponible"><b>6</b></span><span class="noscript-jour libre" aria-label="7 octobre 2026, disponible"><b>7</b></span><span class="noscript-jour libre" aria-label="8 octobre 2026, disponible"><b>8</b></span><span class="noscript-jour libre" aria-label="9 octobre 2026, disponible"><b>9</b></span><span class="noscript-jour libre" aria-label="10 octobre 2026, disponible"><b>10</b></span><span class="noscript-jour libre" aria-label="11 octobre 2026, disponible"><b>11</b></span><span class="noscript-jour libre" aria-label="12 octobre 2026, disponible"><b>12</b></span><span class="noscript-jour libre" aria-label="13 octobre 2026, disponible"><b>13</b></span><span class="noscript-jour libre" aria-label="14 octobre 2026, disponible"><b>14</b></span><span class="noscript-jour libre" aria-label="15 octobre 2026, disponible"><b>15</b></span><span class="noscript-jour libre" aria-label="16 octobre 2026, disponible"><b>16</b></span><span class="noscript-jour pris" aria-label="17 octobre 2026, déjà réservé"><b>17</b><i>pris</i></span><span class="noscript-jour pris" aria-label="18 octobre 2026, déjà réservé"><b>18</b><i>pris</i></span><span class="noscript-jour pris" aria-label="19 octobre 2026, déjà réservé"><b>19</b><i>pris</i></span><span class="noscript-jour pris" aria-label="20 octobre 2026, déjà réservé"><b>20</b><i>pris</i></span><span class="noscript-jour pris" aria-label="21 octobre 2026, déjà réservé"><b>21</b><i>pris</i></span><span class="noscript-jour pris" aria-label="22 octobre 2026, déjà réservé"><b>22</b><i>pris</i></span><span class="noscript-jour pris" aria-label="23 octobre 2026, déjà réservé"><b>23</b><i>pris</i></span><span class="noscript-jour pris" aria-label="24 octobre 2026, déjà réservé"><b>24</b><i>pris</i></span><span class="noscript-jour libre" aria-label="25 octobre 2026, disponible"><b>25</b></span><span class="noscript-jour libre" aria-label="26 octobre 2026, disponible"><b>26</b></span><span class="noscript-jour libre" aria-label="27 octobre 2026, disponible"><b>27</b></span><span class="noscript-jour libre" aria-label="28 octobre 2026, disponible"><b>28</b></span><span class="noscript-jour libre" aria-label="29 octobre 2026, disponible"><b>29</b></span><span class="noscript-jour libre" aria-label="30 octobre 2026, disponible"><b>30</b></span><span class="noscript-jour libre" aria-label="31 octobre 2026, disponible"><b>31</b></span>
+      </div>
+      <p class="noscript-legende">
+      <span class="pastille libre"></span> disponible
+      <span class="pastille pris"></span> déjà réservé
+      <span class="pastille ferme"></span> hors ouverture
+      </p>
+      <p class="noscript-appel">
+      Pour connaître une autre période ou réserver, appelez le
+      <a href="tel:+33662674414">06 62 67 44 14</a>.
+      </p>
+      </div>
+      </noscript>
+      <!-- /NOSCRIPT CALENDRIER -->
+
+      <div class="cal-indisponible" id="cal-indisponible" hidden>
+        <p class="cal-indisponible-titre" id="cal-indisponible-titre">
+          Calendrier momentanément indisponible
+        </p>
+        <p id="cal-indisponible-texte">
+          Les disponibilités ne peuvent pas être affichées à l'instant.
+          Appelez-nous ou envoyez votre demande : nous vous répondons rapidement.
+        </p>
+        <p class="cal-indisponible-motif" id="cal-indisponible-motif"></p>
+        <a class="btn btn-primary" href="#contact">Demander mes dates</a>
+      </div>
+
+      <p class="todo" id="cal-note">
+        [À COMPLÉTER] Les tarifs et les jours réservés du calendrier se modifient
+        sans toucher au site : tout est regroupé dans le fichier
+        <code>calendrier-donnees.js</code>. Les deux périodes « déjà réservé »
+        visibles aujourd'hui sont des exemples de démonstration.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== 6. CONTACT ===================== -->
+
+<section id="contact" class="section">
+    <div class="wrap">
+      <p class="eyebrow">Contact</p>
+      <h2>Demander une disponibilité</h2>
+      <p class="lead">
+        Indiquez vos dates et le nombre de personnes. Vous pouvez aussi appeler directement.
+      </p>
+
+      <div class="cols cols-contact" style="margin-top: 2.2rem;">
+
+        <div class="contact-info">
+          <p class="ci-label">Téléphone</p>
+          <p class="ci-value"><a href="tel:+33662674414">06 62 67 44 14</a></p>
+
+          <p class="ci-label">Adresse</p>
+          <p class="ci-value">4 impasse des Dunes<br>
+            85160 Saint-Jean-de-Monts</p>
+
+          <p class="ci-label">E-mail</p>
+          <p class="ci-value"><a href="mailto:milcent-benjamin@orange.fr">milcent-benjamin@orange.fr</a></p>
+
+          <p class="todo">
+            [À COMPLÉTER] Si vous possédez une fiche Google, un lien vers vos avis,
+            ou une deuxième langue (anglais), c'est ici que ça se place.
+          </p>
+        </div>
+
+        <form class="form" id="form-dispo" action="#" method="post">
+          <div class="form-row">
+            <div class="field">
+              <label for="nom">Nom et prénom</label>
+              <input type="text" id="nom" name="nom" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="email">E-mail</label>
+              <input type="email" id="email" name="email" autocomplete="email" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="tel">Téléphone</label>
+              <input type="tel" id="tel" name="telephone" autocomplete="tel">
+            </div>
+            <div class="field">
+              <label for="personnes">Nombre de personnes</label>
+              <select id="personnes" name="personnes">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option selected>6</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="arrivee">Date d'arrivée souhaitée</label>
+              <input type="date" id="arrivee" name="arrivee">
+            </div>
+            <div class="field">
+              <label for="depart">Date de départ souhaitée</label>
+              <input type="date" id="depart" name="depart">
+            </div>
+          </div>
+
+          <!-- Avertissement affiché quand les deux dates se contredisent.
+               role="alert" : les lecteurs d'écran l'annoncent à voix haute. -->
+          <p class="form-alerte" id="dates-alerte" role="alert" hidden></p>
+
+          <div class="field">
+            <label for="message">Votre message</label>
+            <textarea id="message" name="message"
+                      placeholder="Vos dates, vos questions, vos besoins particuliers…"></textarea>
+          </div>
+
+          <button class="btn btn-primary btn-block" type="submit">Envoyer ma demande</button>
+
+          <p class="form-note" id="form-message" tabindex="-1" hidden>
+            Ceci est une démonstration : le formulaire n'est pas encore relié à une boîte
+            e-mail. En attendant, appelez le <a href="tel:+33662674414">06 62 67 44 14</a>.
+          </p>
+        </form>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 7. PLAN ET ALENTOURS ===================== -->
+  
+
+<section class="bande-photo">
+    <div class="wrap">
+      <p class="todo bande-attente">
+        [À COMPLÉTER] Photo à fournir — déposez votre image dans <code>images/sejour.jpg</code>,
+        puis remplacez ce bloc par la photo. Les <strong>neuf photos de la maison</strong>
+        sont regroupées sur la page <a href="photos.html">Photos</a>, accessible depuis le menu.
+      </p>
+    </div>
+  </section>
+<section id="alentours" class="section section-alt">
+    <div class="wrap">
+      <p class="eyebrow">Autour de la maison</p>
+      <h2>Situation et alentours</h2>
+
+      <div class="map-wrap">
+        <iframe
+          title="Plan de Saint-Jean-de-Monts"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=-2.1188889%2C46.7636111%2C-1.9988889%2C46.8236111&amp;layer=mapnik&amp;marker=46.7936111%2C-2.0588889"
+          loading="lazy"></iframe>
+      </div>
+
+      <div class="map-actions">
+        <a class="lien-plan"
+           href="https://www.openstreetmap.org/?mlat=46.7936111&amp;mlon=-2.0588889#map=14/46.7936/-2.0589"
+           target="_blank" rel="noopener">Ouvrir le plan en grand</a>
+      </div>
+
+      <p class="todo">
+        [À COMPLÉTER] Le plan est centré sur la commune de Saint-Jean-de-Monts. Remplacez les
+        coordonnées (46.7936111 et -2.0588889, présentes dans le lien du plan) par celles
+        exactes de la maison, pour que le repère tombe au bon endroit.
+      </p>
+
+      <p class="todo" style="margin-bottom: 1.6rem;">
+        [À COMPLÉTER] Les quatre lieux ci-dessous sont réels et servent de modèles de mise en
+        page. Remplacez-les par ce que <em>vous</em> conseillez vraiment à vos voyageurs :
+        c'est cette section qui donne envie de réserver chez vous plutôt qu'ailleurs.
+      </p>
+
+      <div class="cards">
+        <article class="card">
+          <h3>La plage</h3>
+          <p>La maison est à 800 m de la plage. Saint-Jean-de-Monts aligne de longues plages de
+             sable fin, bordées par la dune et la forêt de pins.</p>
+        </article>
+        <article class="card">
+          <h3>La forêt des Pays de Monts</h3>
+          <p>Plus de 2 000 hectares de pins maritimes et de chênes verts, plantés au XIX<sup>e</sup>
+             siècle pour fixer les dunes. Sentiers de randonnée et pistes cyclables.</p>
+        </article>
+        <article class="card">
+          <h3>Le passage du Gois</h3>
+          <p>Chaussée submersible de 4,125 km qui relie le continent à l'île de Noirmoutier.
+             On la franchit à marée basse, dans une fenêtre d'environ trois heures.</p>
+        </article>
+        <article class="card">
+          <h3>Le marais breton-vendéen</h3>
+          <p>Un réseau de canaux, de prairies humides et de polders, classé Natura 2000,
+             à découvrir à vélo sur les petites routes.</p>
+        </article>
+      </div>
+      </div>
+  </section>
+
+  <!-- LA FOUGÈRE. Elle ferme la page : une dernière image, seule, sans texte.
+       Demande du client : « la fougère, je veux l'intégrer à la fin ». -->
+  <section class="bande-photo bande-fin">
+    <figure class="photo-pleine" style="--photo: url('images/fougere.jpg')">
+      <img src="images/fougere.jpg"
+           alt="Fougère dans la lumière du soir, sous les pins"
+           loading="lazy" decoding="async">
+    </figure>
+  </section>
+
+  <!-- La fenêtre d'agrandissement. Elle vit ici, à la fin du contenu, et
+       s'ouvre au clic sur n'importe quelle bande photo : le script la cherche
+       par son identifiant, pas par sa place. -->
+  <dialog id="visionneuse" class="visionneuse" aria-label="Photo agrandie">
+    <button type="button" class="visionneuse-fermer" id="visionneuse-fermer"
+            aria-label="Fermer la photo agrandie">&times;</button>
+    <img id="visionneuse-image" src="" alt="">
+    <p class="visionneuse-legende" id="visionneuse-legende"></p>
+  </dialog>
+</main>
+
+<!-- ===================== PIED DE PAGE ===================== -->
+<footer class="site-foot">
+      <div class="wrap foot-grille">
+
+        <!-- LE LOGO, A GAUCHE ------------------------------------------------->
+        <div class="foot-logo">
+          <svg class="monogramme-pied" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <circle cx="32" cy="32" r="29.2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+            <text x="32" y="33.5" text-anchor="middle" dominant-baseline="middle"
+                  font-family="Georgia, serif" font-size="21" letter-spacing="1.5">MD</text>
+          </svg>
+          <p class="foot-name">La Maison dans les Dunes</p>
+        </div>
+
+        <!-- L'ADRESSE DU BIEN -------------------------------------------------->
+        <address class="foot-adresse">
+          4 impasse des Dunes
+          <br>85160 Saint-Jean-de-Monts
+          <br>Vendée, France
+        </address>
+
+        <!-- LE TELEPHONE, PUIS LE COMPTE INSTAGRAM EN DESSOUS ------------------>
+        <div class="foot-contact">
+          <a class="foot-tel" href="tel:+33662674414">06 62 67 44 14</a>
+          <p class="foot-insta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                 stroke-linecap="round" aria-hidden="true" focusable="false">
+              <rect x="3" y="3" width="18" height="18" rx="5.2"/>
+              <circle cx="12" cy="12" r="4.1"/>
+              <circle cx="17.3" cy="6.7" r="1.05" fill="currentColor" stroke="none"/>
+            </svg>
+          </p>
+        </div>
+
+        <p class="foot-bas">
+          © <span id="annee">2026</span> La Maison dans les Dunes ·
+          <a href="index.html#contact">Demander une disponibilité</a> ·
+          <a href="mentions-legales.html">Mentions légales</a>
+        </p>
+      </div>
+    </footer>
+
+<!-- ===================== NOTES DU GABARIT =====================
+     Ce bloc est un aide-mémoire interne. Supprimez tout ce qui se trouve
+     entre les deux repères « BLOC GABARIT » avant de mettre le site en ligne.
+     ============================================================ -->
+  
+
+<!-- BLOC GABARIT -->
+<section class="gabarit">
+  <div class="wrap">
+    <h2>Notes du gabarit — à supprimer avant la mise en ligne</h2>
+    <ul>
+      <li>Tout ce qui est surligné en jaune sur la page est un contenu à compléter.</li>
+      <li>Toutes les photos du dossier <code>images/</code> sont des images de synthèse à remplacer.</li>
+      <li>Le calendrier lit ses tarifs et ses jours réservés dans <code>calendrier-donnees.js</code> :
+          c'est le seul fichier à modifier au quotidien.</li>
+      <li>Le plan est centré sur la commune, pas sur la maison : coordonnées à ajuster.</li>
+      <li>Le formulaire n'envoie rien pour l'instant : voir le README, section « Brancher le formulaire ».</li>
+      <li>Pour changer le jeu de couleurs : l'attribut <code>data-palette</code> sur la balise
+          <code>&lt;html&gt;</code> de <code>index.html</code>. Trois jeux sont prêts — Forêt, Sable,
+          Atlantique — et c'est un seul mot à changer.</li>
+    </ul>
+  </div>
+</section>
+<!-- /BLOC GABARIT -->
+
+<script src="calendrier-donnees.js"></script>
+<script src="calendrier.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,787 @@
+/* =========================================================================
+   Cap Encre — feuille de style unique
+   -------------------------------------------------------------------------
+   • MÊME IDENTITÉ QUE LA DÉMONSTRATION : sable chaud, vert pin, laiton doré.
+     Cohérence voulue — un prospect qui compare la démonstration et cette page
+     doit voir le même travail, pas deux niveaux de finition.
+   • Aucun framework. Les polices sont hébergées par le site (voir ci-dessous).
+   • Aucun dégradé décoratif, aucune animation gratuite. Les seuls dégradés
+     sont les voiles sombres posés sur la photo d'accueil : ils servent à
+     rendre le texte lisible.
+   • Tout est pensé pour le téléphone d'abord, puis élargi pour l'ordinateur.
+
+   DIFFÉRENCE ASSUMÉE AVEC LE GÎTE : c'est un site professionnel qui parle à
+   des propriétaires. On garde la sobriété — la palette, la typographie et la
+   disparition du blanc, oui ; l'immersion photographique pleine page partout,
+   non. Les zones sombres servent le propos, elles ne décorent pas.
+   ========================================================================= */
+
+/* =========================================================================
+   LES POLICES
+   -------------------------------------------------------------------------
+   Trois fichiers, hébergés sur le site. Jamais de lien vers un service
+   extérieur : c'est plus lent, cela transmet l'adresse IP du visiteur à un
+   tiers, et cela casse le jour où le service ferme.
+
+   Licence Open Font (SIL OFL 1.1) : libres, y compris pour un usage
+   commercial. C'est la seule licence acceptable ici. Les licences sont dans
+   public/polices/, avec leur texte complet.
+
+   Les MÊMES fichiers que ceux de la démonstration : on ne paie pas deux fois
+   le téléchargement, et le visage du site est le même des deux côtés.
+   ========================================================================= */
+@font-face {
+  font-family: "Inter";
+  src: url("polices/inter-400-600.woff2") format("woff2");
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("polices/cormorant-garamond-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Marcellus";
+  src: url("polices/marcellus-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* ---- Les trois couleurs de l'identité ----
+     Cap Encre a la sienne, distincte de la démonstration : le gîte raconte une
+     maison au bord de l'Atlantique en vert forêt, la vitrine parle aux
+     propriétaires en bleu Atlantique profond. Deux identités, une même main :
+     même typographie, mêmes gestes, même disparition du blanc. */
+  --fond: #F5F3EE;            /* sable chaud — le blanc pur n'existe pas */
+  --fond-alt: #EAE7E0;        /* sable plus soutenu, pour alterner les zones */
+  --sombre: #16324B;          /* bleu Atlantique profond — les zones sombres */
+  --laiton: #C0A46A;          /* laiton doré — petits éléments seulement */
+
+  /* ---- Encre et papier ---- */
+  --encre: #1B2733;
+  --encre-douce: #33414E;
+  --gris: #55626E;
+  --trait: #DCD8CF;
+  --trait-fort: #C4BFB4;
+
+  /* ---- LE TEXTE SUR LES ZONES SOMBRES ----
+     --sur-sombre-doux n'existait pas, et c'est la cause exacte du bug de la
+     carte « Direct » : le texte discret d'un bloc sombre héritait de sa couleur
+     prévue pour le fond clair et disparaissait — mesuré 1,14:1 et 1,99:1.
+     Toute zone sombre doit fixer EXPLICITEMENT ces deux couleurs. */
+  --sur-sombre: #F5F3EE;
+  --sur-sombre-doux: #C8CFD6;
+
+  /* ---- L'ACCENT EXISTE EN DEUX VERSIONS, ET C'EST ESSENTIEL ----
+     Le laiton est clair : sur le sable il ne porte que 2,3:1, illisible. Il est
+     donc réservé au graphique et au GRAND texte ; tout ce qui est écrit petit
+     prend --accent-texte, sa version assombrie. */
+  --accent: #C0A46A;
+  --accent-texte: #75643F;
+  --accent-fonce: #5B4C2C;
+  --accent-clair: #F2EDDE;
+  --sur-accent: #12161B;
+
+  /* Repères « contenu à compléter » */
+  --note-fond: #FAF4E4;
+  --note-trait: #D8C48A;
+  --note-encre: #6A4A0D;
+
+  --rayon: 4px;              /* presque carré : le coin arrondi est un détail
+                                d'interface, pas une décoration */
+  --largeur: 1140px;
+  --marge: clamp(1.15rem, 4vw, 2.5rem);
+  --bloc-y: clamp(3.75rem, 9vw, 7rem);
+
+  /* LE COUPLE DE POLICES — le seul endroit à changer */
+  --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+  --initiales: "Marcellus", "Cormorant Garamond", Georgia, serif;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--fond);
+  color: var(--encre);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+a { color: var(--accent-texte); }
+
+h1, h2, h3 {
+  font-family: var(--serif);
+  font-weight: 500;          /* la seule graisse embarquée de Cormorant */
+  letter-spacing: 0;
+  color: var(--encre);
+}
+/* Les titres sont plus GRANDS et plus FINS qu'avant. Cormorant a l'œil plus
+   petit que Georgia : à taille égale, il paraît plus petit — il faut donc
+   viser plus haut pour retrouver la même présence. */
+h1 { font-size: clamp(2.85rem, 8vw, 5.1rem); line-height: 1.02; margin: 0 0 1rem; }
+h2 { font-size: clamp(2.05rem, 5.1vw, 3.2rem); line-height: 1.08; margin: 0 0 1.1rem; }
+h3 { font-size: 1.34rem; line-height: 1.25; margin: 0 0 0.5rem; }
+
+p { margin: 0 0 1rem; }
+p:last-child { margin-bottom: 0; }
+strong { font-weight: 600; }
+
+.wrap { width: min(var(--largeur), 100% - (var(--marge) * 2)); margin-inline: auto; }
+
+.section { padding: var(--bloc-y) 0; }
+.section-alt { background: var(--fond-alt); }
+section[id] { scroll-margin-top: 1rem; }
+
+/* ======================= Les zones en vert pin ========================
+   Elles donnent le rythme : sans elles, la page est un long ruban de sable.
+   Trois, pas une de plus, et chacune a une raison :
+     · « Pourquoi maintenant » — l'argument des commissions. Le fond sombre
+       lui donne du poids : ce n'est pas une remarque, c'est un constat.
+     · « Exemple » — l'aperçu de la démonstration est une image sombre. Sur
+       un fond sombre, elle s'intègre au lieu de flotter sur du blanc.
+     · le pied de page.
+   ===================================================================== */
+#pourquoi, #exemple { background: var(--sombre); color: var(--sur-sombre); }
+#pourquoi h1, #pourquoi h2, #pourquoi h3,
+#exemple h1, #exemple h2, #exemple h3 { color: var(--sur-sombre); }
+#pourquoi .lead, #exemple .lead,
+#exemple figcaption { color: var(--sur-sombre-doux); }
+#pourquoi strong, #exemple strong { color: var(--sur-sombre); }
+#pourquoi .eyebrow, #exemple .eyebrow { color: var(--laiton); }
+#pourquoi a, #exemple a { color: var(--laiton); }
+
+.eyebrow {
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  color: var(--accent-texte);
+  margin: 0 0 0.85rem;
+}
+
+.lead { font-size: clamp(1.06rem, 2.1vw, 1.22rem); color: var(--encre-douce); }
+.lead strong { color: var(--encre); }
+
+/* Repère de contenu manquant ------------------------------------------- */
+.todo {
+  color: var(--note-encre);
+  background: var(--note-fond);
+  border: 1px dashed var(--note-trait);
+  border-radius: 6px;
+  padding: 0.32rem 0.58rem;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+p.todo { display: block; margin: 1.3rem 0 0; }
+.todo code { font-size: 0.92em; }
+
+/* Lien d'évitement (accessibilité clavier) ------------------------------ */
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 100;
+  background: var(--sombre); color: var(--sur-sombre); padding: 0.7rem 1rem;
+  border-radius: 0 0 var(--rayon) 0; text-decoration: none;
+}
+.skip:focus { left: 0; }
+
+/* ======================= En-tête ====================================== */
+.site-head {
+  position: absolute; inset: 0 0 auto 0; z-index: 20;
+  padding: 1rem 0;
+  color: #fff;
+}
+.head-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+
+.brand {
+  font-family: var(--serif); font-size: 1.3rem; color: #fff;
+  text-decoration: none; letter-spacing: 0.005em;
+  padding: 0.5rem 0; white-space: nowrap;
+}
+
+.nav { display: none; gap: 1.5rem; }
+.nav a {
+  color: rgba(255, 255, 255, 0.86); text-decoration: none;
+  font-size: 0.94rem; padding: 0.55rem 0;
+  border-bottom: 1px solid transparent;
+}
+.nav a:hover { color: #fff; border-bottom-color: rgba(255, 255, 255, 0.75); }
+
+.head-tel {
+  color: #fff; text-decoration: none;
+  font-size: 0.92rem; font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 99px; padding: 0.48rem 0.95rem;
+  white-space: nowrap;
+}
+.head-tel:hover { background: rgba(255, 255, 255, 0.14); }
+
+@media (min-width: 960px) { .nav { display: flex; } }
+
+/* ======================= Accueil ====================================== */
+.hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 680px;
+  color: #fff;
+  overflow: hidden;
+}
+.hero-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  /* Le cadrage privilégie la bande basse : la rangée de cabanes et le sable
+     restent visibles même sur un écran très large, où la photo est rognée
+     en hauteur. */
+  object-position: center 60%;
+}
+.hero-scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg,
+    rgba(8, 14, 19, 0.66) 0%,
+    rgba(8, 14, 19, 0.34) 20%,
+    rgba(8, 14, 19, 0.76) 46%,
+    rgba(8, 14, 19, 0.90) 74%,
+    rgba(8, 14, 19, 0.94) 100%);
+}
+.hero-content {
+  position: relative;
+  padding-top: 7rem;
+  padding-bottom: clamp(2.75rem, 7vw, 5rem);
+  max-width: 46rem;
+}
+.hero-loc {
+  font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.17em; text-transform: uppercase;
+  color: #FFFFFF;
+  margin: 0 0 1rem;
+}
+.hero h1 {
+  color: #fff;
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.45),
+    0 6px 30px rgba(0, 0, 0, 0.42);
+  max-width: 16ch;
+}
+.hero-facts {
+  font-size: clamp(1.04rem, 2.3vw, 1.28rem);
+  color: rgba(255, 255, 255, 0.98);
+  /* 45ch et non 40 : la phrase d'activité a été rallongée (« Création de
+     site internet… ») et sa première moitié mesure 497 px. En dessous de
+     45ch, elle se coupait en trois lignes avec « tourisme, » orphelin. */
+  max-width: 45ch;
+  margin: 0 0 2rem;
+}
+.hero-actions { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+
+/* SUR LE HERO, LE BOUTON PRINCIPAL EST CLAIR.
+   Le fond du hero est une photo sombre : un bouton sombre y disparaît — on ne
+   voit plus un bouton, juste une tache. C'est la même règle que dans la
+   démonstration, où l'équivalent est crème et saute aux yeux. */
+.hero .btn-primary { background: var(--sur-sombre); color: var(--encre); }
+.hero .btn-primary:hover { background: #E6E2D8; }
+.hero-open {
+  margin: 1.5rem 0 0;
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.94);
+}
+
+/* ======================= Boutons ====================================== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 54px; padding: 0.9rem 1.7rem;
+  border-radius: 8px; border: 1px solid transparent;
+  font-size: 1rem; font-weight: 600; font-family: var(--sans);
+  text-decoration: none; cursor: pointer; text-align: center;
+}
+/* Un bouton plein est une grande surface : il prend le bleu profond, pas le
+   laiton. Le laiton est trop clair pour porter du texte, et trop précieux pour
+   couvrir un grand aplat. */
+.btn-primary { background: var(--sombre); color: var(--sur-sombre); }
+.btn-primary:hover { background: #1E4260; }
+.btn-ghost {
+  background: rgba(8, 14, 19, 0.52); color: #fff;
+  border-color: rgba(255, 255, 255, 0.72);
+}
+.btn-ghost:hover { background: rgba(8, 14, 19, 0.72); }
+.btn-block { width: 100%; }
+
+/* ======================= Colonnes ===================================== */
+.cols { display: grid; gap: clamp(1.75rem, 4vw, 3.25rem); margin-top: 1.5rem; }
+@media (min-width: 900px) {
+  .cols { grid-template-columns: 1.05fr 0.95fr; align-items: start; }
+  .cols-contact { grid-template-columns: 0.85fr 1.15fr; }
+}
+
+/* ======================= Comparaison de commission ==================== */
+/* La comparaison vit dans une zone sombre : elle n'a plus besoin d'un fond ni
+   d'une bordure. Un filet de laiton à gauche la pose, et tout passe en clair. */
+.compare {
+  background: none;
+  border: 0;
+  border-left: 2px solid var(--laiton);
+  border-radius: 0;
+  padding: 0.2rem 0 0.2rem clamp(1.1rem, 2.6vw, 1.7rem);
+}
+
+.compare-titre {
+  font-size: 0.76rem; font-weight: 600;
+  letter-spacing: 0.13em; text-transform: uppercase;
+  color: var(--laiton);
+  margin: 0 0 1.5rem;
+}
+.compare-ligne {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "label valeur"
+    "barre barre";
+  gap: 0.4rem 1rem;
+  margin-bottom: 1.35rem;
+}
+.compare-label { grid-area: label; font-size: 0.9rem; color: var(--sur-sombre-doux); }
+.compare-valeur {
+  grid-area: valeur;
+  font-family: var(--serif); font-size: 1.5rem; line-height: 1.2;
+  color: var(--sur-sombre);
+  white-space: nowrap;
+}
+.compare-valeur.accent { color: var(--laiton); }
+.compare-barre {
+  grid-area: barre;
+  display: block; height: 9px;
+  background: #454F42;
+  border-radius: 99px; overflow: hidden;
+}
+.compare-remplissage {
+  display: block; height: 100%;
+  background: #C2C7BA;
+  border-radius: 99px;
+}
+.compare-remplissage.accent { background: var(--laiton); }
+.compare-note {
+  font-size: 0.82rem; color: var(--sur-sombre-doux);
+  margin: 1.4rem 0 0;
+  padding-top: 1.1rem;
+  border-top: 1px solid rgba(247, 244, 239, 0.2);
+}
+
+/* ======================= Cartes de prestations ======================== */
+/* align-items: start — les cartes gardent leur hauteur naturelle.
+   Sans cela, une carte au texte court est étirée à la hauteur de sa voisine
+   et se retrouve avec un grand vide au bas. Mieux vaut un bord inférieur
+   légèrement irrégulier qu'un vide à l'intérieur d'une carte. */
+.cards { display: grid; gap: clamp(1.6rem, 3.6vw, 2.7rem); margin-top: 2.5rem; align-items: start; }
+@media (min-width: 760px) { .cards { grid-template-columns: 1fr 1fr; } }
+
+/* La cinquième carte occupe toute la largeur. Sur une grille de deux
+   colonnes, la laisser en demi-largeur créerait une rangée orpheline
+   à moitié vide — et c'est la fonction qui distingue Cap Encre, elle
+   mérite d'être vue en entier. */
+.cards .card-large { grid-column: 1 / -1; }
+
+/* Plus de carte blanche à bordure grise. Sur la démonstration, les blocs se
+   séparent par l'ESPACE et par un simple filet chaud. C'est ce qui distingue
+   « une page de blocs encadrés » d'une page composée. */
+.card {
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--trait);
+  border-radius: 0;
+  padding: clamp(1.15rem, 2.6vw, 1.6rem) 0 0;
+}
+.card h3 { margin-bottom: 0.55rem; }
+.card p { font-size: 0.98rem; color: var(--encre-douce); margin: 0; }
+
+/* La précision sous le texte d'une carte. Elle doit se lire comme une note,
+   pas comme la suite du paragraphe : un filet la sépare. */
+.card .card-precision {
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--trait);
+  font-size: 0.86rem;
+}
+
+/* ======================= Formules ===================================== */
+.formules { display: grid; gap: 1.25rem; margin-top: 2.75rem; }
+@media (min-width: 900px) {
+  /* Les cartes ne sont PAS étirées à la même hauteur.
+     Celle du milieu a plus de contenu : l'étirer ne faisait que remplir les
+     deux autres d'un vide (229 px mesurés). Alignées en haut, les trois
+     titres et les trois prix restent parfaitement alignés, et chaque carte
+     s'arrête là où son contenu s'arrête. */
+  .formules { grid-template-columns: repeat(3, 1fr); align-items: start; }
+}
+
+.formule {
+  position: relative;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--trait);
+  border-radius: 0;
+  /* EXACTEMENT le même retrait que la carte mise en avant. Sans cela, le bloc
+     sombre décale ses titre et prix de quelques pixels vers le bas et les
+     trois formules ne sont plus alignées — ce que le contrôle a détecté. */
+  padding: clamp(1.5rem, 3.2vw, 2rem);
+}
+/* La formule mise en avant est le SEUL bloc sombre de la section. C'est le bleu
+   qui la désigne, pas une bordure colorée : une seule zone sombre attire l'œil,
+   trois bordures ne disent rien.
+
+   ET LES VARIABLES DE TEXTE BASCULENT ICI. C'est le bug qui a été mesuré : le
+   texte de ce bloc gardait les couleurs prévues pour le fond clair et
+   disparaissait — 1,14:1 pour une ligne, 1,99:1 pour « une fois ». Corriger
+   élément par élément ne suffit pas : le prochain texte ajouté retomberait
+   dedans. En basculant les variables, plus rien ne peut hériter du clair. */
+.formule-choisie {
+  background: var(--sombre);
+  border-top-color: var(--sombre);
+  border-radius: var(--rayon);
+  padding: clamp(1.5rem, 3.2vw, 2rem);
+  color: var(--sur-sombre);
+  --encre: var(--sur-sombre);
+  --encre-douce: var(--sur-sombre-doux);
+  --gris: var(--sur-sombre-doux);
+  --trait: rgba(245, 243, 238, 0.24);
+}
+
+/* La pastille sort du flux : posée à cheval sur la bordure haute, elle ne
+   décale plus le titre et le prix de la carte du milieu. */
+.formule-tag {
+  position: absolute;
+  top: 0;
+  left: clamp(1.35rem, 3vw, 1.85rem);
+  transform: translateY(-50%);
+  background: var(--laiton);
+  color: var(--sur-accent);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.09em; text-transform: uppercase;
+  padding: 0.32rem 0.75rem;
+  border-radius: 99px;
+  margin: 0;
+  white-space: nowrap;
+}
+.formule h3 { font-size: 1.28rem; margin-bottom: 0.15rem; }
+.formule-prix {
+  font-family: var(--serif);
+  font-size: clamp(1.9rem, 5vw, 2.25rem);
+  line-height: 1.1;
+  margin: 0.35rem 0 1.1rem;
+}
+.formule-prix small {
+  font-family: var(--sans);
+  font-size: 0.84rem; font-weight: 400; color: var(--gris);
+}
+.formule ul { list-style: none; margin: 0; padding: 0; }
+.formule li {
+  position: relative;
+  padding-left: 1.4rem;
+  margin: 0.45rem 0;
+  font-size: 0.95rem;
+  color: var(--encre-douce);
+}
+.formule li strong { color: var(--encre); }
+.formule-precision {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--gris);
+}
+.formule li::before {
+  content: ""; position: absolute; left: 0; top: 0.58em;
+  width: 6px; height: 6px; border-radius: 2px;
+  background: var(--accent);
+}
+
+.formules-mention {
+  margin: 1.4rem 0 0;
+  font-size: 0.88rem;
+  color: var(--gris);
+}
+.formules-mention strong { color: var(--encre); }
+
+/* ======================= Étapes ======================================= */
+.etapes {
+  list-style: none;
+  margin: 2.75rem 0 0; padding: 0;
+  display: grid; gap: 1.75rem;
+}
+@media (min-width: 820px) {
+  .etapes { grid-template-columns: repeat(4, 1fr); gap: 1.85rem; }
+}
+.etape { border-top: 2px solid var(--trait-fort); padding-top: 1.15rem; }
+.etape-num {
+  display: block;
+  font-family: var(--serif);
+  font-size: 3rem; line-height: 1;
+  color: var(--accent-texte);
+  margin-bottom: 0.6rem;
+}
+.etape h3 { font-size: 1.08rem; font-family: var(--sans); font-weight: 600; margin-bottom: 0.4rem; }
+.etape p { font-size: 0.95rem; color: var(--encre-douce); margin: 0; }
+
+/* ======================= Aperçu du gabarit ============================ */
+.apercu { display: grid; gap: 1.1rem; margin-top: 2.75rem; }
+@media (min-width: 900px) { .apercu { grid-template-columns: 1fr; } }
+
+.apercu figure { margin: 0; }
+.apercu img {
+  width: 100%; height: auto;
+  border: 1px solid var(--trait);
+  border-radius: var(--rayon);
+}
+.apercu figcaption {
+  font-size: 0.86rem; color: var(--gris);
+  padding-top: 0.55rem;
+}
+
+
+.apercu-actions { margin-top: 2rem; }
+
+/* ======================= Engagements (section dédiée) ================= */
+.engagements-liste {
+  list-style: none;
+  margin: 2.25rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 1.5rem;
+}
+@media (min-width: 860px) {
+  /* Trois promesses : trois colonnes, pas de case vide. */
+  .engagements-liste { grid-template-columns: repeat(3, 1fr); gap: 1.6rem 2.25rem; }
+}
+.engagements-liste li {
+  position: relative;
+  padding-left: 1.75rem;
+  color: var(--encre-douce);
+}
+.engagements-liste li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0.45em;
+  width: 9px; height: 9px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.engagements-liste strong {
+  display: block;
+  color: var(--encre);
+  font-size: 1.08rem;
+  margin-bottom: 0.1rem;
+}
+
+/* ======================= Contact ====================================== */
+.coordonnees { display: grid; gap: 0.15rem; align-content: start; }
+.co-label {
+  font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.13em; text-transform: uppercase;
+  color: var(--gris);
+  margin: 1.2rem 0 0.15rem;
+}
+.coordonnees .co-label:first-child { margin-top: 0; }
+.co-valeur { margin: 0; font-size: 1.05rem; }
+.co-valeur a { text-decoration: none; font-weight: 600; }
+.co-valeur a:hover { text-decoration: underline; }
+
+.form {
+  display: grid; gap: 1.15rem;
+  background: var(--fond-alt);
+  border: 1px solid var(--trait);
+  border-radius: var(--rayon);
+  padding: clamp(1.3rem, 3vw, 2rem);
+}
+.section-alt .form { background: var(--fond); }
+
+.form-row { display: grid; gap: 1.15rem; }
+@media (min-width: 620px) { .form-row { grid-template-columns: 1fr 1fr; } }
+
+.field { display: grid; gap: 0.4rem; }
+.field label { font-size: 0.88rem; font-weight: 600; }
+.field input, .field select, .field textarea {
+  font-family: var(--sans);
+  font-size: 16px; /* 16px minimum : sinon l'iPhone zoome tout seul au clic */
+  color: var(--encre);
+  background: #fff;
+  border: 1px solid var(--trait-fort);
+  border-radius: 8px;
+  padding: 0.78rem 0.9rem;
+  min-height: 52px;
+  width: 100%;
+}
+.field textarea { min-height: 130px; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: 2px solid var(--accent-texte); outline-offset: 1px;
+  border-color: var(--accent-texte);
+}
+
+.form-note {
+  margin: 0; padding: 0.95rem 1.05rem;
+  background: var(--accent-clair); color: var(--accent-fonce);
+  border-radius: 8px; font-size: 0.92rem;
+}
+.form-aide {
+  margin: 0; font-size: 0.85rem; color: var(--gris);
+}
+
+/* ======================= Pied de page ================================= */
+.site-foot {
+  background: var(--sombre);
+  color: var(--sur-sombre-doux);
+  padding: clamp(2.75rem, 6vw, 4.25rem) 0;
+  font-size: 0.95rem;
+}
+.foot-inner { display: grid; gap: 2rem; }
+@media (min-width: 760px) {
+  .foot-inner { grid-template-columns: 1fr 1fr; align-items: start; }
+}
+.site-foot a { color: var(--sur-sombre); text-decoration: none; }
+.site-foot a:hover { text-decoration: underline; }
+.foot-name {
+  font-family: var(--serif); font-size: 1.6rem; color: var(--sur-sombre);
+  margin: 0 0 0.5rem;
+}
+.foot-mentions { margin-bottom: 1rem; }
+.site-foot .todo { margin-top: 1.1rem; }
+
+/* ======================= Engagements (section Formules) =============== */
+.engagements {
+  margin-top: 3rem;
+  border: 0;
+  border-top: 1px solid var(--trait);
+  border-radius: 0;
+  padding: clamp(1.5rem, 3vw, 2rem) 0 0;
+  background: none;
+}
+.engagements h3 {
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 700;
+  letter-spacing: 0.13em; text-transform: uppercase;
+  color: var(--accent-texte);
+  margin: 0 0 1rem;
+}
+.engagements ul { list-style: none; margin: 0; padding: 0; }
+.engagements li {
+  position: relative;
+  padding-left: 1.6rem;
+  margin: 1rem 0;
+  color: var(--encre-douce);
+  font-size: 0.98rem;
+}
+.engagements li::before {
+  content: ""; position: absolute; left: 0; top: 0.6em;
+  width: 8px; height: 8px; border-radius: 2px; background: var(--accent);
+}
+.engagements strong { display: block; color: var(--encre); }
+
+/* ======================= Barre d'appel (téléphone uniquement) ========= */
+/* ======================= Barre d'appel, sur téléphone ===================
+   Elle est CRÉÉE par script.js : elle n'est jamais présente dans le HTML.
+   Sans JavaScript, il n'y a pas de barre du tout — et le site reste
+   parfaitement utilisable.
+
+   Elle n'apparaît qu'après une hauteur d'écran de défilement, et disparaît
+   dès que la section contact arrive dans l'écran. Si le visiteur remonte
+   au-dessus du contact, elle revient : elle suit la position, elle ne garde
+   aucune mémoire de ce qu'elle a vu.
+   Le glissement dure 150 ms, et disparaît si le visiteur a demandé moins
+   d'animations dans les réglages de son système. */
+.barre-appel {
+  position: fixed;
+  left: max(0.9rem, env(safe-area-inset-left, 0px));
+  right: max(0.9rem, env(safe-area-inset-right, 0px)); bottom: calc(0.7rem + env(safe-area-inset-bottom, 0px));
+  z-index: 40;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 999px;
+  min-height: 46px;
+  /* env(safe-area-inset-bottom) réserve la hauteur de la barre de geste des
+     iPhone récents : sans elle, le texte passerait dessous. Vaut 0 ailleurs. */
+  padding: 0.5rem 1.2rem;
+  background: var(--accent); color: #fff;
+  font-weight: 600; font-size: 0.95rem;
+  text-decoration: none;
+  box-shadow: 0 -2px 14px rgba(0, 0, 0, 0.16);
+  transform: translateY(115%);          /* au repos : hors de l'écran, en bas */
+  transition: transform 150ms ease-out;
+}
+.barre-appel.visible { transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .barre-appel { transition: none; }
+}
+/* Sécurité : le JavaScript ne la crée déjà pas au-dessus de 768 px, mais on
+   le redit ici pour qu'un élargissement de fenêtre ne la laisse pas traîner. */
+@media (min-width: 768px) { .barre-appel { display: none; } }
+
+/* ======================= Pages simples (mentions, merci) ============== */
+.page-head {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--trait);
+  background: var(--fond);
+}
+.brand-sombre { color: var(--encre); }
+.head-tel-sombre { color: var(--encre); border-color: var(--trait-fort); }
+.head-tel-sombre:hover { background: var(--fond-alt); }
+
+.page { padding: clamp(2.5rem, 6vw, 4.5rem) 0; }
+.page-contenu { max-width: 46rem; }
+.page-contenu h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); margin-bottom: 1.5rem; }
+.page-contenu h2 {
+  font-family: var(--sans);
+  font-size: 0.8rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent-texte);
+  margin: 2.4rem 0 0.7rem;
+}
+.page-contenu p { color: var(--encre-douce); }
+.page-retour {
+  margin-top: 3rem; padding-top: 1.5rem;
+  border-top: 1px solid var(--trait);
+}
+.page-actions { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 2rem; }
+.page-merci { padding: clamp(3rem, 8vw, 6rem) 0; }
+
+.btn-contour {
+  background: var(--fond); color: var(--encre); border-color: var(--trait-fort);
+}
+.btn-contour:hover { border-color: var(--accent-texte); color: var(--accent-texte); }
+
+/* Champ anti-robots de Netlify : présent dans la page, invisible pour un humain */
+.form-piege { display: none; }
+
+.site-foot .foot-lien {
+  display: inline-block;
+  margin-left: 0.7rem;
+  color: rgba(255, 255, 255, 0.62);
+  text-decoration: underline;
+  font-size: 0.88rem;
+}
+.site-foot .foot-lien:hover { color: #fff; }
+
+/* ======================= Accessibilité ================================ */
+:focus-visible { outline: 2px solid var(--accent-texte); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
+
+@media print {
+  .site-head, .hero-actions, .form { display: none; }
+  .hero { min-height: auto; color: var(--encre); }
+}
