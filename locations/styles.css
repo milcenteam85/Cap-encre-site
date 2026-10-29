@@ -785,3 +785,6 @@ p.todo { display: block; margin: 1.3rem 0 0; }
   .site-head, .hero-actions, .form { display: none; }
   .hero { min-height: auto; color: var(--encre); }
 }
+
+/* mobile : évite le zoom automatique iOS sur les champs */
+@media (max-width:900px){input,select,textarea{font-size:16px}}

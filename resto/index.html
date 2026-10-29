@@ -86,7 +86,7 @@ header{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba
 .booking{background:var(--paper);color:var(--ink);border-radius:12px;padding:26px;max-width:720px}
 .booking .row{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:14px}
 .booking label{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);font-weight:700;margin-bottom:6px}
-.booking input,.booking select{width:100%;background:#fff;border:1px solid var(--line);border-radius:6px;padding:11px 12px;font:inherit;font-size:15px;color:var(--ink)}
+.booking input,.booking select{width:100%;background:#fff;border:1px solid var(--line);border-radius:6px;padding:11px 12px;font:inherit;font-size:16px;color:var(--ink)}
 .booking input:focus,.booking select:focus{outline:none;border-color:var(--accent)}
 .booking button{margin-top:18px;width:100%;background:var(--accent);color:#fff;border:0;padding:14px;border-radius:6px;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
 .booking button:hover{background:var(--accent-2)}
@@ -121,6 +121,8 @@ footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 /* garde-fou : les paddings verticaux des sections ne doivent pas annuler
    les marges latérales de .wrap */
 .wrap{padding-left:24px;padding-right:24px}
+
+@media (max-width:900px){input,select,textarea{font-size:16px}}
 </style>
 </head>
 <body>
