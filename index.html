@@ -97,6 +97,27 @@ header{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba
 .contact .who{font-size:14px;color:var(--grey);line-height:1.7}
 .contact .who b{color:var(--ink)}
 
+/* ---------- formulaire ---------- */
+.contact .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:start}
+.form{display:grid;gap:18px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);font-weight:700}
+.field input,.field select,.field textarea{
+  background:transparent;border:0;border-bottom:1.5px solid var(--line);
+  padding:9px 2px;font:inherit;font-size:15px;color:var(--ink);border-radius:0;
+}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-bottom-color:var(--red)}
+.field textarea{resize:vertical;min-height:74px}
+.form .row2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.submit{
+  justify-self:start;background:var(--ink);color:var(--paper);border:0;
+  padding:14px 26px;font:inherit;font-size:14.5px;font-weight:600;border-radius:4px;cursor:pointer;
+  transition:background .15s;
+}
+.submit:hover{background:var(--red)}
+.fine{font-size:11.5px;color:var(--grey);max-width:44ch;line-height:1.5}
+@media (max-width:900px){ .contact .grid{grid-template-columns:1fr;gap:32px} }
+
 footer{border-top:1px solid var(--line);padding:24px 0;font-size:12.5px;color:var(--grey)}
 footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
@@ -199,9 +220,34 @@ footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   </div>
 </section>
 
-<section class="wrap contact">
-  <div class="box">
+<section class="wrap contact" id="contact">
+  <div class="box" style="border:0;padding-top:0;margin-bottom:34px">
     <h2>On en parle ?</h2>
+  </div>
+  <div class="grid">
+    <form class="form" name="contact" method="POST" action="/merci" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="contact">
+      <p hidden><label>Ne pas remplir <input name="bot-field"></label></p>
+      <div class="row2">
+        <div class="field"><label for="n">Votre nom</label><input id="n" name="nom" required autocomplete="name"></div>
+        <div class="field"><label for="t">Téléphone</label><input id="t" name="telephone" type="tel" autocomplete="tel"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label for="e">Courriel</label><input id="e" name="email" type="email" required autocomplete="email"></div>
+        <div class="field"><label for="m">Vous êtes</label>
+          <select id="m" name="metier">
+            <option value="">— choisir —</option>
+            <option>Restaurant</option>
+            <option>Artisan</option>
+            <option>Location saisonnière</option>
+            <option>Autre</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label for="msg">Votre projet, en deux lignes</label><textarea id="msg" name="message" placeholder="Ce que vous faites, ce que vous cherchez."></textarea></div>
+      <button class="submit" type="submit">Envoyer</button>
+      <p class="fine">Réponse sous 48 heures. Vos informations ne servent qu'à vous rappeler — rien d'autre.</p>
+    </form>
     <div class="who">
       <b>Cap Encre</b><br>
       06 62 67 44 14<br>
