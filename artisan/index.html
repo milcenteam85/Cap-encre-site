@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sites et veille des permis pour artisans — Cap Encre</title>
-<meta name="description" content="Un site vitrine, la veille des permis de construire dans votre rayon et des cartes à QR code. 35 € par mois, logiciel compris.">
+<meta name="description" content="Un site vitrine et la veille des permis de construire dans votre rayon. 75 € par mois, logiciel compris.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f3f0e8'/%3E%3Crect x='9' y='9' width='14' height='14' fill='%23e8b33a' transform='rotate(45 16 16)'/%3E%3C/svg%3E">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="4d385258-635b-476a-b26a-f96fae2d3959"></script>
 <style>
@@ -64,20 +64,6 @@ header{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba
 .g b{display:block;font-size:15.5px;margin-bottom:6px}
 .g span{font-size:13.8px;color:var(--grey)}
 
-/* carte QR */
-.qrsec{background:var(--ink);color:var(--paper);padding:72px 0;margin-top:72px}
-.qrgrid{display:grid;grid-template-columns:1.05fr .95fr;gap:54px;align-items:center}
-.qrsec h2{font-size:clamp(24px,3.2vw,40px);color:#fff}
-.qrsec p{color:#b9b6ab;margin-top:14px;max-width:44ch}
-.qrsec ul{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:10px}
-.qrsec li{font-size:14.5px;color:#d8d4c6;padding-left:20px;position:relative}
-.qrsec li::before{content:"—";position:absolute;left:0;color:var(--accent)}
-.card-demo{background:var(--paper);color:var(--ink);border-radius:10px;padding:20px;display:flex;gap:18px;align-items:center;max-width:420px;box-shadow:0 26px 60px -40px rgba(0,0,0,.9)}
-.card-demo img{width:96px;height:96px;display:block}
-.card-demo .who b{display:block;font-size:16px;letter-spacing:-.01em}
-.card-demo .who span{display:block;font-size:12px;color:var(--grey);margin-top:2px}
-.card-demo .who .mini{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);font-weight:700;margin-bottom:6px}
-
 /* prix */
 .price{padding:76px 0}
 .price .box{display:flex;justify-content:space-between;align-items:center;gap:40px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:34px}
@@ -90,11 +76,10 @@ footer{border-top:1px solid var(--line);padding:24px 0;font-size:12.5px;color:va
 footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 @media (max-width:900px){
-  .cards3,.grid3,.qrgrid{grid-template-columns:1fr;gap:16px}
+  .cards3,.grid3{grid-template-columns:1fr;gap:16px}
   .hero{padding-top:44px;padding-bottom:10px}
   .back{display:none}
   .cta{padding:10px 13px;font-size:13px;white-space:nowrap}
-  .card-demo{max-width:none}
 }
 
 /* garde-fou : les paddings verticaux des sections ne doivent pas annuler
@@ -117,9 +102,9 @@ footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <section class="wrap hero">
   <div class="k">Artisans du bâtiment</div>
   <h1>Les chantiers se voient<br><em>avant les appels.</em></h1>
-  <p>Chaque mois, les permis de construire déposés dans votre rayon. Plus un site qui vous ressemble, et des cartes à QR code pour vos compagnons. 35 € par mois, logiciel compris.</p>
+  <p>Chaque mois, les permis de construire déposés dans votre rayon. Plus un site qui vous ressemble. 75 € par mois, logiciel compris.</p>
   <div class="actions">
-    <a class="cta" href="/veille/">Voir un exemple de veille</a>
+    <a class="cta" href="/veille/">Découvrir la veille</a>
     <a class="ghost" href="#inclus">Ce qui est compris</a>
   </div>
 </section>
@@ -156,48 +141,28 @@ footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <div class="grid3">
     <div class="g"><span class="n">01</span><b>Votre site</b><span>Vos réalisations, votre zone, votre téléphone. Une page qui rassure avant le premier rendez-vous.</span></div>
     <div class="g"><span class="n">02</span><b>La veille</b><span>Les permis déposés autour de vous, chaque mois, avec la nature du projet et la surface.</span></div>
-    <div class="g"><span class="n">03</span><b>Les cartes</b><span>Une carte par personne, un QR par personne. Le client scanne, il arrive sur la bonne fiche.</span></div>
+    <div class="g"><span class="n">03</span><b>Le délai</b><span>Huit jours entre le premier appel et la mise en ligne. Pas deux mois.</span></div>
   </div>
 </section>
 
-<section class="qrsec">
-  <div class="wrap qrgrid">
-    <div>
-      <h2>Le QR qui remplace la carte froissée.</h2>
-      <p>Chaque compagnon a la sienne. Le client scanne, il tombe sur votre site, votre numéro, vos réalisations — sans taper une adresse.</p>
-      <ul>
-        <li>Une carte par personne, avec son nom et sa fonction</li>
-        <li>Un QR unique, qui mène à la bonne page</li>
-        <li>Recto sobre, verso avec le QR — imprimé à la demande</li>
-      </ul>
-    </div>
-    <div class="card-demo">
-      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXQAAAF0AQMAAAAJrVAQAAAABlBMVEXw+P8PDw3kwZr0AAAAAXRSTlMAQObYZgAAAZdJREFUeNrtmlmOAyEMRK25APe/JTdgogG8sDREydfoWa2ITkr5sEp2lY0IQXwSqWi83kpuT/2pPg7w8+a/g//f+D+SuIMxp1MrAsgn+Ik/ypPXIfeyU2tRKQFAPsE/8KfWnDzVH/gD/rL+qNRJTRHBH/C3+scLZhXS6B/wl/4rrR/8F/i32plyhnyCP4Z5rmTKp37ZGpm5ePIJfs2fNvkRCe2sv3Y5TT7BT/zxPisbnRpt3BSIfILf+fdmuEo4i9toUH/A7+qPqZ0FZ/xSg3yC37j43IkkNn8e5kLkE/xa/6RRLQ++jPoDflt5fM/qhj0oIrvUQT7Bn1jkupiSp9s08gl+rXzUyHs5bSxifwr+QQLpzCdHRTRsV8kn+E3zMs+e7S5ioxP9C/xj/1K3HsbO2XYZzA/B36vo4VI98x/wh+alk+cy7UzdaIh8gp/54w/asxxn/KVo8gl+4s9wT15kuLzhtmDkE/yeP5MKMncPf8Bf8Mf7LxGbRXP/GfxZ/6S4uShxLgR/wB/9V3b7i/hJ/wJPEF+NX5L+hq0FXmnzAAAAAElFTkSuQmCC" alt="QR code de démonstration">
-      <div class="who">
-        <div class="mini">Cap Encre</div>
-        <b>Menuiserie Lefèvre</b>
-        <span>Challans · 06 00 00 00 00</span>
-        <span style="margin-top:6px">Scannez : devis, réalisations, contact.</span>
-      </div>
-    </div>
-  </div>
-</section>
+
 
 <section class="wrap price" id="essai">
   <div class="box">
     <div>
-      <h2>Moins qu'un<br>déjeuner par semaine.</h2>
+      <h2>Un seul prix.<br>Tout compris.</h2>
       <p style="color:var(--grey);margin-top:14px;max-width:34ch">Pas de frais d'entrée, pas de supplément pour la veille, pas d'engagement de durée.</p>
     </div>
     <div>
-      <div class="num">35 €<small> / mois</small></div>
+      <div class="num">75 €<small> / mois</small></div>
       <ul>
         <li>· Le site vitrine, nom de domaine et hébergement</li>
         <li>· La veille des permis, 15 km autour de votre dépôt</li>
-        <li>· Les cartes à QR code, imprimées et livrées</li>
+        <li>· Un interlocuteur unique, qui décroche</li>
         <li>· Deux modifications par mois</li>
       </ul>
       <a class="cta" style="display:inline-block;margin-top:22px" href="mailto:Milcent-benjamin@orange.fr?subject=Veille%20permis%20-%20artisan">Demander un essai</a>
+      <p style="margin-top:14px;font-size:12.5px;color:var(--grey)"><a href="/pro/" style="text-decoration:underline">Voir l'outil de suivi de chantier</a> — maquette, données fictives</p>
     </div>
   </div>
 </section>

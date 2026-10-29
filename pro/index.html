@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Cap Encre Pro — maquette</title>
+<style>
+:root{
+  --ink:#0f0f0d;--paper:#f3f0e8;--accent:#e8b33a;--accent-ink:#7a5209;
+  --grey:#6d6d63;--line:#d6d1c4;--card:#fff;--side:#eae5d8;
+  --red:#c0392b;--green:#2f6b4f;--blue:#2b4c7e;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.shell{display:grid;grid-template-columns:216px 1fr;min-height:100vh}
+
+/* barre latérale */
+aside{background:var(--side);border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column;gap:22px;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:-.03em;font-size:15px;padding:0 8px}
+.brand i{width:9px;height:9px;background:var(--accent);transform:rotate(45deg);border-radius:2px}
+nav{display:flex;flex-direction:column;gap:2px}
+nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:6px;color:var(--ink);text-decoration:none;font-weight:600;font-size:13.5px;position:relative}
+nav a span.dot{width:16px;text-align:center;opacity:.55;font-weight:700}
+nav a:hover{background:rgba(0,0,0,.04)}
+nav a[aria-current="true"]{background:#fff;box-shadow:0 1px 0 rgba(0,0,0,.04)}
+nav a[aria-current="true"]::before{content:"";position:absolute;left:-12px;top:8px;bottom:8px;width:3px;background:var(--accent);border-radius:2px}
+nav a b{margin-left:auto;font-size:10.5px;background:var(--accent);color:#3a2a05;padding:1px 6px;border-radius:99px}
+.who{margin-top:auto;padding:10px;border-radius:8px;background:#fff;font-size:12px}
+.who b{display:block;font-size:12.5px}
+.who span{color:var(--grey)}
+
+/* zone principale */
+main{padding:22px 26px 60px;max-width:1180px}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+h1{margin:0;font-size:24px;letter-spacing:-.03em;font-weight:800}
+.sub{color:var(--grey);font-size:13px;margin-top:4px}
+.acts{display:flex;gap:8px}
+.btn{background:#fff;border:1px solid var(--line);border-radius:6px;padding:8px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink)}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.accent{background:var(--accent);border-color:var(--accent);color:#3a2a05}
+.btn.small{padding:5px 10px;font-size:12px}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px}
+.pad{padding:16px}
+.h{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--line)}
+.h b{font-size:13.5px;letter-spacing:-.01em}
+.h span{font-size:12px;color:var(--grey)}
+
+/* kanban */
+.kb{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.col{background:var(--side);border-radius:10px;padding:10px;min-height:340px}
+.col h4{margin:2px 4px 10px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);display:flex;justify-content:space-between}
+.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 11px;margin-bottom:8px;box-shadow:0 6px 16px -14px rgba(0,0,0,.5)}
+.card .cli{font-weight:700;font-size:13px;letter-spacing:-.01em}
+.card .vil{font-size:11.5px;color:var(--grey);margin-top:1px}
+.card .amt{font-weight:800;font-size:13.5px;margin-top:8px;letter-spacing:-.02em}
+.card .meta{font-size:11px;color:var(--grey);margin-top:4px;display:flex;justify-content:space-between;align-items:center}
+.pill{font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:#efeada;color:#5a5a4f;text-transform:uppercase;letter-spacing:.06em}
+.pill.late{background:#f6ded9;color:#8f2c1c}
+.pill.ok{background:#dcebe1;color:#23543c}
+.pill.wait{background:#e6e9f3;color:#33436b}
+
+/* tableaux */
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);padding:10px 16px;border-bottom:1px solid var(--line);font-weight:700}
+td{padding:12px 16px;border-bottom:1px solid #eee8d9;font-size:13px;vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td b{font-weight:700}
+td .gray{color:var(--grey);font-size:12px}
+.av{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#3a2a05;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;margin-right:9px;vertical-align:middle}
+.right{text-align:right}
+
+/* relances */
+.split{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;align-items:start}
+.mail{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;font-size:13px;line-height:1.6}
+.mail .to{color:var(--grey);font-size:12px;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:12px}
+.mail .hello{display:block;margin-bottom:10px;font-size:13.5px;font-weight:700}
+.mail p{margin:0 0 10px}
+.mail .sig{color:var(--grey);font-size:12px;margin-top:14px}
+
+/* veille (rappel) */
+.filt{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 11px;font-size:12px;font-weight:600}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#3a2a05}
+.vrow{display:grid;grid-template-columns:96px 1fr auto;gap:14px;align-items:center;padding:11px 16px;border-bottom:1px solid #eee8d9;font-size:13px}
+.vrow:last-child{border-bottom:0}
+.vrow .d{font-size:11.5px;font-weight:700}
+.vrow .d small{display:block;color:var(--grey);font-weight:500}
+.vrow .m b{font-size:13.5px}
+.vrow .m div{font-size:11.5px;color:var(--grey)}
+.vrow .k{font-size:12.5px;color:var(--grey);text-align:right}
+.vrow .k b{color:var(--ink)}
+
+/* réglages */
+.form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.f label{display:block;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);font-weight:700;margin-bottom:5px}
+.f input,.f select{width:100%;border:1px solid var(--line);border-radius:6px;padding:9px 10px;font-size:13.5px;background:#fff}
+.f.full{grid-column:1/-1}
+.hint{font-size:11.5px;color:var(--grey);margin-top:5px}
+
+.tabpage{display:none}
+.tabpage.on{display:block}
+.note{margin-top:16px;font-size:11.5px;color:var(--grey)}
+
+@media (max-width:880px){
+  .shell{grid-template-columns:1fr}
+  aside{position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;flex-direction:row;padding:6px;border-right:0;border-top:1px solid var(--line);z-index:20;gap:0}
+  .brand,.who{display:none}
+  nav{flex-direction:row;width:100%;justify-content:space-around}
+  nav a{flex-direction:column;gap:2px;font-size:10px;padding:6px 4px}
+  nav a span.dot{font-size:14px}
+  main{padding:16px 14px 90px}
+  .top{gap:10px}
+  h1{font-size:21px}
+  .acts .btn{padding:7px 10px;font-size:12px}
+  .kb{grid-template-columns:1fr;gap:10px}
+  .col{min-height:0}
+  .split,.form{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div style="background:#e8b33a;color:#3a2a05;font:600 12.5px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;padding:7px 16px;text-align:center;letter-spacing:.01em">
+  Maquette de démonstration — les chantiers, clients et montants affichés sont fictifs.
+</div>
+<div class="shell">
+
+  <aside>
+    <div class="brand"><i></i>CAP ENCRE PRO</div>
+    <nav>
+      <a href="#" data-tab="veille" aria-current="true"><span class="dot">◎</span> Veille <b>12</b></a>
+      <a href="#" data-tab="chantiers"><span class="dot">▤</span> Chantiers</a>
+      <a href="#" data-tab="clients"><span class="dot">◍</span> Clients</a>
+      <a href="#" data-tab="relances"><span class="dot">↻</span> Relances <b>3</b></a>
+      <a href="#" data-tab="reglages"><span class="dot">⚙</span> Réglages</a>
+    </nav>
+    <div class="who"><b>Menuiserie Lefèvre</b><span>Challans · abonnement Pro</span>
+      <a href="/artisan/" style="display:block;margin-top:7px;color:#7a5209;font-weight:600;text-decoration:underline">← Retour à l'offre</a></div>
+  </aside>
+
+  <main>
+    <!-- VEILLE -->
+    <section class="tabpage on" id="veille">
+      <div class="top">
+        <div><h1>Veille des permis</h1><div class="sub">Autour de Challans · 15 km · 12 derniers mois</div></div>
+        <div class="acts"><button class="btn">Exporter</button></div>
+      </div>
+      <div class="filt">
+        <span class="chip on">Tout 394</span><span class="chip">Maison 121</span><span class="chip">Extension 87</span>
+        <span class="chip">Garage 42</span><span class="chip">Local 19</span><span class="chip">Rénovation 33</span>
+      </div>
+      <div class="panel">
+        <div class="vrow"><div class="d">sept. 2026<small>permis</small></div>
+          <div class="m"><b>Maison — 142 m²</b><div>Challans · 12 rue des Sables · parcelle AB 124</div></div>
+          <div class="k"><b>2,1 km</b></div></div>
+        <div class="vrow"><div class="d">sept. 2026<small>déclaration</small></div>
+          <div class="m"><b>Extension — 38 m²</b><div>Sallertaine · 4 impasse du Moulin · parcelle ZC 88</div></div>
+          <div class="k"><b>4,6 km</b></div></div>
+        <div class="vrow"><div class="d">août 2026<small>permis</small></div>
+          <div class="m"><b>Local / bâtiment — 310 m²</b><div>Saint-Christophe-du-Ligneron · ZA de la Gare</div></div>
+          <div class="k"><b>9,2 km</b></div></div>
+        <div class="vrow"><div class="d">août 2026<small>permis</small></div>
+          <div class="m"><b>Maison — 96 m²</b><div>Le Perrier · 22 route de Saint-Jean · parcelle AH 55</div></div>
+          <div class="k"><b>7,4 km</b></div></div>
+      </div>
+      <div class="note">Maquette — les données affichées sont fictives.</div>
+    </section>
+
+    <!-- CHANTIERS -->
+    <section class="tabpage" id="chantiers">
+      <div class="top">
+        <div><h1>Chantiers</h1><div class="sub">4 en cours · 2 devis en attente · 21 400 € à encaisser</div></div>
+        <div class="acts"><button class="btn primary">+ Nouveau chantier</button></div>
+      </div>
+      <div class="kb">
+        <div class="col">
+          <h4>À chiffrer <span>2</span></h4>
+          <div class="card"><div class="cli">M. Roux</div><div class="vil">Challans · maison 142 m²</div>
+            <div class="amt">≈ 24 000 €</div><div class="meta"><span class="pill">permis 09/26</span><span>J+4</span></div></div>
+          <div class="card"><div class="cli">SCI Bellevue</div><div class="vil">Sallertaine · extension 38 m²</div>
+            <div class="amt">≈ 8 500 €</div><div class="meta"><span class="pill">visite faite</span><span>J+11</span></div></div>
+        </div>
+        <div class="col">
+          <h4>Devis envoyé <span>2</span></h4>
+          <div class="card"><div class="cli">Mme Giraud</div><div class="vil">Le Perrier · garage 28 m²</div>
+            <div class="amt">6 250 €</div><div class="meta"><span class="pill wait">envoyé J-9</span><span>relance J+2</span></div></div>
+          <div class="card"><div class="cli">Camping Les Oyats</div><div class="vil">Saint-Jean · 4 mobil-homes</div>
+            <div class="amt">12 900 €</div><div class="meta"><span class="pill wait">envoyé J-15</span><span>relance J+1</span></div></div>
+        </div>
+        <div class="col">
+          <h4>En cours <span>3</span></h4>
+          <div class="card"><div class="cli">M. et Mme Blanchard</div><div class="vil">Challans · ossature terrasse</div>
+            <div class="amt">14 800 €</div><div class="meta"><span class="pill ok">semaine 2/3</span><span>acompte reçu</span></div></div>
+          <div class="card"><div class="cli">Boulangerie Marchand</div><div class="vil">Sallertaine · devanture</div>
+            <div class="amt">7 400 €</div><div class="meta"><span class="pill ok">semaine 1/2</span><span>acompte reçu</span></div></div>
+        </div>
+        <div class="col">
+          <h4>Facturé, en attente <span>3</span></h4>
+          <div class="card"><div class="cli">M. Lamy</div><div class="vil">Commequiers · réception faite</div>
+            <div class="amt">5 900 €</div><div class="meta"><span class="pill late">J+6</span><span>facture 038</span></div></div>
+          <div class="card"><div class="cli">École Sainte-Marie</div><div class="vil">Le Perrier · préau</div>
+            <div class="amt">11 200 €</div><div class="meta"><span class="pill late">J+12</span><span>facture 041</span></div></div>
+          <div class="card"><div class="cli">M. Guérin</div><div class="vil">Saint-Gervais · salle de bain</div>
+            <div class="amt">4 300 €</div><div class="meta"><span class="pill late">J+21</span><span>facture 033</span></div></div>
+        </div>
+      </div>
+      <div class="note">Maquette — noms et montants fictifs.</div>
+    </section>
+
+    <!-- CLIENTS -->
+    <section class="tabpage" id="clients">
+      <div class="top">
+        <div><h1>Clients</h1><div class="sub">39 fiches · 7 prospects issus de la veille</div></div>
+        <div class="acts"><button class="btn primary">+ Nouveau client</button></div>
+      </div>
+      <div class="panel">
+        <table>
+          <tr><th>Client</th><th>Commune</th><th>Dernier chantier</th><th class="right">CA 2026</th><th class="right">Reste dû</th></tr>
+          <tr><td><span class="av">MB</span><b>M. et Mme Blanchard</b><div class="gray">06 12 44 87 21</div></td>
+              <td>Challans</td><td>Terrasse · en cours</td><td class="right">14 800 €</td><td class="right"><span class="pill ok">à jour</span></td></tr>
+          <tr><td><span class="av">LM</span><b>M. Lamy</b><div class="gray">06 78 21 09 55</div></td>
+              <td>Commequiers</td><td>Réception · 09/2026</td><td class="right">5 900 €</td><td class="right"><span class="pill late">5 900 €</span></td></tr>
+          <tr><td><span class="av">BM</span><b>Boulangerie Marchand</b><div class="gray">02 51 68 44 10</div></td>
+              <td>Sallertaine</td><td>Devanture · en cours</td><td class="right">7 400 €</td><td class="right"><span class="pill ok">à jour</span></td></tr>
+          <tr><td><span class="av">CL</span><b>Camping Les Oyats</b><div class="gray">02 51 58 90 12</div></td>
+              <td>Saint-Jean-de-Monts</td><td>Devis envoyé</td><td class="right">0 €</td><td class="right"><span class="pill wait">devis</span></td></tr>
+          <tr><td><span class="av">MG</span><b>M. Guérin</b><div class="gray">06 22 71 40 09</div></td>
+              <td>Saint-Gervais</td><td>Salle de bain · 07/2026</td><td class="right">4 300 €</td><td class="right"><span class="pill late">4 300 €</span></td></tr>
+          <tr><td><span class="av">MR</span><b>M. Roux</b><div class="gray">06 45 33 12 78</div></td>
+              <td>Challans</td><td>À chiffrer</td><td class="right">0 €</td><td class="right"><span class="pill">prospect</span></td></tr>
+        </table>
+      </div>
+      <div class="note">Maquette — noms et montants fictifs.</div>
+    </section>
+
+    <!-- RELANCES -->
+    <section class="tabpage" id="relances">
+      <div class="top">
+        <div><h1>Relances</h1><div class="sub">3 factures en retard · 21 400 € à encaisser</div></div>
+        <div class="acts"><button class="btn">Tout relancer</button></div>
+      </div>
+      <div class="split">
+        <div class="panel">
+          <table>
+            <tr><th>Client</th><th class="right">Montant</th><th class="right">Retard</th><th></th></tr>
+            <tr><td><b>École Sainte-Marie</b><div class="gray">Facture 2026-041 · 11 200 €</div></td>
+                <td class="right">11 200 €</td><td class="right"><span class="pill late">J+12</span></td>
+                <td class="right"><button class="btn small">Relancer</button></td></tr>
+            <tr><td><b>M. Lamy</b><div class="gray">Facture 2026-038 · 5 900 €</div></td>
+                <td class="right">5 900 €</td><td class="right"><span class="pill late">J+6</span></td>
+                <td class="right"><button class="btn small">Relancer</button></td></tr>
+            <tr><td><b>M. Guérin</b><div class="gray">Facture 2026-033 · 4 300 €</div></td>
+                <td class="right">4 300 €</td><td class="right"><span class="pill late">J+21</span></td>
+                <td class="right"><button class="btn small">Relancer</button></td></tr>
+          </table>
+        </div>
+        <div class="mail">
+          <div class="to">À : comptabilite@ecole-sainte-marie.fr · Objet : Facture 2026-041 — relance</div>
+          <span class="hello">Bonjour Madame,</span>
+          <p>Je me permets de revenir vers vous concernant la facture <b>2026-041</b> du 14 septembre,
+          d'un montant de <b>11 200,00 €</b>, échue depuis le 14 octobre.</p>
+          <p>Si un règlement a été effectué entre-temps, merci de ne pas tenir compte de ce message.
+          Dans le cas contraire, je reste à votre disposition pour convenir d'un échéancier.</p>
+          <div class="sig">Bien cordialement,<br>Menuiserie Lefèvre<br>06 12 34 56 78</div>
+          <div style="margin-top:14px;display:flex;gap:8px">
+            <button class="btn accent">Envoyer</button><button class="btn">Modifier</button>
+          </div>
+        </div>
+      </div>
+      <div class="note">Maquette — le texte de relance est un modèle, modifiable avant envoi.</div>
+    </section>
+
+    <!-- RÉGLAGES -->
+    <section class="tabpage" id="reglages">
+      <div class="top">
+        <div><h1>Réglages</h1><div class="sub">Vos informations, reprises sur les documents et les relances</div></div>
+        <div class="acts"><button class="btn primary">Enregistrer</button></div>
+      </div>
+      <div class="panel pad">
+        <div class="form">
+          <div class="f"><label>Entreprise</label><input value="Menuiserie Lefèvre"></div>
+          <div class="f"><label>SIRET</label><input value="812 456 789 00027"></div>
+          <div class="f"><label>Téléphone</label><input value="06 12 34 56 78"></div>
+          <div class="f"><label>Email</label><input value="contact@menuiserie-lefevre.fr"></div>
+          <div class="f full"><label>Adresse</label><input value="14 rue des Artisans, 85300 Challans"></div>
+          <div class="f"><label>Zone de veille</label><input value="Challans · 15 km"></div>
+          <div class="f"><label>TVA</label><select><option>Assujetti (20 %)</option><option>Franchise en base</option></select></div>
+          <div class="f full"><label>Signature des relances</label><input value="Bien cordialement, Menuiserie Lefèvre — 06 12 34 56 78"></div>
+          <div class="f full"><div class="hint">Le logo de l'entreprise, l'IBAN et les mentions légales viendront ici.</div></div>
+        </div>
+      </div>
+      <div class="note">Maquette — les champs ne sont pas encore enregistrés.</div>
+    </section>
+  </main>
+</div>
+
+<script>
+document.querySelectorAll("nav a").forEach(a => a.onclick = e => {
+  e.preventDefault();
+  document.querySelectorAll("nav a").forEach(x => x.removeAttribute("aria-current"));
+  a.setAttribute("aria-current", "true");
+  document.querySelectorAll(".tabpage").forEach(p => p.classList.remove("on"));
+  document.getElementById(a.dataset.tab).classList.add("on");
+  window.scrollTo(0, 0);
+});
+</script>
+</body>
+</html>
