@@ -4,3 +4,4 @@ apercu-*.png
 veille/data/*.csv
 veille/data/raw.json
 veille/apercu-*.png
+veille/serveur-test.py
