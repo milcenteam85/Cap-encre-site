@@ -62,7 +62,7 @@ exports.handler = async (event) => {
   const options = { name: "capencre-pro", consistency: "strong" };
   if (!process.env.NETLIFY_BLOBS_CONTEXT && process.env.SITE_ID) {
     options.siteID = process.env.SITE_ID;
-    options.token = process.env.NETLIFY_FUNCTIONS_TOKEN || process.env.NETLIFY_API_TOKEN || "";
+    options.token = process.env.BLOBS_TOKEN || process.env.NETLIFY_API_TOKEN || "";
   }
   const store = getStore(options);
   const cle = `client/${client.id}.json`;
