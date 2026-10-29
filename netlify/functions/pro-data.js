@@ -57,7 +57,14 @@ exports.handler = async (event) => {
     return { statusCode: 503, body: JSON.stringify({ erreur: "stockage indisponible", detail: errBlobs }) };
   }
 
-  const store = getStore({ name: "capencre-pro", consistency: "strong" });
+  // Sur Netlify, le contexte Blobs n'est pas toujours injecté : on le reconstitue
+  // avec l'identifiant du site et le jeton fourni au runtime des fonctions.
+  const options = { name: "capencre-pro", consistency: "strong" };
+  if (!process.env.NETLIFY_BLOBS_CONTEXT && process.env.SITE_ID) {
+    options.siteID = process.env.SITE_ID;
+    options.token = process.env.NETLIFY_FUNCTIONS_TOKEN || process.env.NETLIFY_API_TOKEN || "";
+  }
+  const store = getStore(options);
   const cle = `client/${client.id}.json`;
 
   try {
