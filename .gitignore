@@ -1,2 +1,6 @@
 apercu-*.png
 .DS_Store
+
+veille/data/*.csv
+veille/data/raw.json
+veille/apercu-*.png
