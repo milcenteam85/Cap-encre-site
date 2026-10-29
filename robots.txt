@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# espaces réservés aux clients
+Disallow: /pro/
+Disallow: /veille/
+
+Sitemap: https://capencre.fr/sitemap.xml
