@@ -244,7 +244,7 @@ function filtrer(){
 }
 
 function render(){
-  localStorage.setItem(CLE, JSON.stringify(state));
+  localStorage.setItem(CLE_STATE, JSON.stringify(state));
   const items = filtrer();
 
   byId("s-count").textContent = items.length.toLocaleString("fr-FR");
