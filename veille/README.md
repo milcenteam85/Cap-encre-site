@@ -22,6 +22,30 @@ Deux fichiers sont utilisés :
 On ne conserve que le département **85 (Vendée)**, les types **PC / DP / PA**,
 et les **30 derniers mois**.
 
+## Accès
+
+L'outil est réservé aux clients qui paient l'abonnement. Les données vivent dans
+`netlify/functions/_data/` et ne sont servies que par la fonction
+`veille-data`, après vérification d'un code.
+
+Un code par client, dans la variable d'environnement **VEILLE_CODES** de Netlify :
+
+```
+CAP-LEFE-7K2M:Menuiserie Lefèvre|CAP-DUPO-9X4Q:Dupont Couverture
+```
+
+- séparateur `|` entre les clients (`;` et `,` acceptés)
+- `code:nom` — le nom s'affiche dans l'en-tête de l'outil et dans les logs
+- codes de 6 caractères minimum, insensibles à la casse
+- pour couper un client : supprimer son entrée et redéployer (les autres ne bougent pas)
+
+Chaque ouverture est tracée dans les logs de la fonction
+(*Functions → veille-data → Logs*), ce qui permet de savoir qui utilise l'outil.
+
+Limite assumée : ce n'est pas une authentification forte. Un client qui prête son
+code ouvre l'accès à un tiers. Pour de la vraie sécurité par utilisateur, il
+faudrait un compte nominatif avec mot de passe — autre chantier.
+
 ## Mise à jour mensuelle
 
 ```bash
