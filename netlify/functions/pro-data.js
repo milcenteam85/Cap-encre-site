@@ -8,10 +8,11 @@
 const crypto = require("crypto");
 
 let getStore = null;
+let errBlobs = "";
 try {
   ({ getStore } = require("@netlify/blobs"));
 } catch (e) {
-  // le module n'est pas disponible : on le signale clairement plus bas
+  errBlobs = String(e && e.message || e);
 }
 
 function codes() {
@@ -53,7 +54,7 @@ exports.handler = async (event) => {
     return { statusCode: 401, body: JSON.stringify({ erreur: "code invalide" }) };
   }
   if (!getStore) {
-    return { statusCode: 503, body: JSON.stringify({ erreur: "stockage indisponible" }) };
+    return { statusCode: 503, body: JSON.stringify({ erreur: "stockage indisponible", detail: errBlobs }) };
   }
 
   const store = getStore({ name: "capencre-pro", consistency: "strong" });
