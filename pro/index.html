@@ -3,307 +3,772 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cap Encre Pro</title>
 <meta name="robots" content="noindex">
-<title>Cap Encre Pro — maquette</title>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="4d385258-635b-476a-b26a-f96fae2d3959"></script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f3f0e8'/%3E%3Crect x='9' y='9' width='14' height='14' fill='%23e8b33a' transform='rotate(45 16 16)'/%3E%3C/svg%3E">
 <style>
-:root{
-  --ink:#0f0f0d;--paper:#f3f0e8;--accent:#e8b33a;--accent-ink:#7a5209;
-  --grey:#6d6d63;--line:#d6d1c4;--card:#fff;--side:#eae5d8;
-  --red:#c0392b;--green:#2f6b4f;--blue:#2b4c7e;
-}
+:root{--ink:#0f0f0d;--paper:#f3f0e8;--accent:#e8b33a;--accent-ink:#7a5209;--grey:#6d6d63;--line:#d6d1c4;--card:#fff;--side:#eae5d8;--late:#a8321c}
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-.shell{display:grid;grid-template-columns:216px 1fr;min-height:100vh}
+button,select,input,textarea{font:inherit}
+a{color:inherit}
 
-/* barre latérale */
-aside{background:var(--side);border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column;gap:22px;position:sticky;top:0;height:100vh}
+/* porte */
+#gate{display:none;position:fixed;inset:0;z-index:60;background:var(--paper);align-items:center;justify-content:center;padding:30px 20px;overflow:auto}
+body.locked #gate{display:flex}
+body.locked .shell,body.locked footer.app{display:none}
+.gate-box{max-width:430px;width:100%}
+.gate-box .mark{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:-.03em;font-size:15px;margin-bottom:26px}
+.gate-box .mark i{width:9px;height:9px;background:var(--accent);transform:rotate(45deg);border-radius:2px}
+.gate-box h1{font-size:clamp(25px,4vw,34px);letter-spacing:-.035em;line-height:1.06;margin:0 0 12px;font-weight:800}
+.gate-box p{color:var(--grey);font-size:14px;margin:0 0 22px}
+.gate-box label{display:block;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--grey);font-weight:700;margin-bottom:6px}
+.gate-box input{width:100%;background:#fff;border:1px solid var(--line);border-radius:6px;padding:13px 14px;font-size:16px;letter-spacing:.06em;text-transform:uppercase}
+.gate-box input:focus{outline:none;border-color:var(--accent-ink)}
+.gate-box button{width:100%;margin-top:12px;background:var(--ink);color:var(--paper);border:0;border-radius:6px;padding:14px;font-size:14.5px;font-weight:700;cursor:pointer}
+.gate-box button:disabled{opacity:.55}
+.gate-err{margin-top:12px;font-size:13px;color:var(--late);min-height:18px;font-weight:600}
+.gate-note{margin-top:26px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--grey)}
+.gate-note a{text-decoration:underline}
+
+/* coquille */
+.shell{display:grid;grid-template-columns:216px 1fr;min-height:100vh}
+aside{background:var(--side);border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column;gap:20px;position:sticky;top:0;height:100vh}
 .brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:-.03em;font-size:15px;padding:0 8px}
 .brand i{width:9px;height:9px;background:var(--accent);transform:rotate(45deg);border-radius:2px}
 nav{display:flex;flex-direction:column;gap:2px}
-nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:6px;color:var(--ink);text-decoration:none;font-weight:600;font-size:13.5px;position:relative}
-nav a span.dot{width:16px;text-align:center;opacity:.55;font-weight:700}
+nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:6px;font-weight:600;font-size:13.5px;position:relative;cursor:pointer}
+nav a .dot{width:16px;text-align:center;opacity:.55}
 nav a:hover{background:rgba(0,0,0,.04)}
-nav a[aria-current="true"]{background:#fff;box-shadow:0 1px 0 rgba(0,0,0,.04)}
+nav a[aria-current="true"]{background:#fff}
 nav a[aria-current="true"]::before{content:"";position:absolute;left:-12px;top:8px;bottom:8px;width:3px;background:var(--accent);border-radius:2px}
-nav a b{margin-left:auto;font-size:10.5px;background:var(--accent);color:#3a2a05;padding:1px 6px;border-radius:99px}
+nav a b{margin-left:auto;font-size:10px;background:#dcd6c6;color:#6b675a;padding:1px 6px;border-radius:99px}
 .who{margin-top:auto;padding:10px;border-radius:8px;background:#fff;font-size:12px}
 .who b{display:block;font-size:12.5px}
 .who span{color:var(--grey)}
+.who button{margin-top:8px;width:100%;background:transparent;border:1px solid var(--line);border-radius:5px;padding:5px;font-size:11.5px;font-weight:600;cursor:pointer;color:var(--grey)}
+.who button:hover{border-color:var(--accent-ink);color:var(--accent-ink)}
 
-/* zone principale */
-main{padding:22px 26px 60px;max-width:1180px}
-.top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+main{padding:22px 26px 40px;max-width:1180px}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
 h1{margin:0;font-size:24px;letter-spacing:-.03em;font-weight:800}
 .sub{color:var(--grey);font-size:13px;margin-top:4px}
-.acts{display:flex;gap:8px}
+.acts{display:flex;gap:8px;align-items:center}
 .btn{background:#fff;border:1px solid var(--line);border-radius:6px;padding:8px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink)}
+.btn:hover{border-color:var(--accent-ink);color:var(--accent-ink)}
 .btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.primary:hover{background:#000;color:#fff}
 .btn.accent{background:var(--accent);border-color:var(--accent);color:#3a2a05}
-.btn.small{padding:5px 10px;font-size:12px}
+.btn.small{padding:5px 9px;font-size:12px}
+.saved{font-size:11.5px;color:var(--grey);min-width:74px;text-align:right}
 
-.panel{background:var(--card);border:1px solid var(--line);border-radius:10px}
-.pad{padding:16px}
-.h{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--line)}
-.h b{font-size:13.5px;letter-spacing:-.01em}
-.h span{font-size:12px;color:var(--grey)}
+/* veille */
+.filters{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.f label{display:block;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--grey);font-weight:700;margin-bottom:5px}
+.f select,.f input,.f textarea{width:100%;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:9px 10px;font-size:14px;color:var(--ink)}
+.f select:focus,.f input:focus,.f textarea:focus{outline:none;border-color:var(--accent-ink)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0 16px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#3a2a05}
+.chip small{opacity:.6}
+.stats{display:flex;flex-wrap:wrap;gap:22px;align-items:baseline;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;margin-bottom:18px}
+.stat b{font-size:22px;font-weight:800;letter-spacing:-.03em}
+.stat span{font-size:12px;color:var(--grey);display:block}
+.stat.hl b{color:var(--accent-ink)}
+.list{display:grid;gap:9px}
+.row{display:grid;grid-template-columns:104px 1fr auto;gap:16px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:13px 15px;cursor:pointer}
+.row:hover{border-color:var(--accent-ink)}
+.row .date{font-size:12.5px;font-weight:700}
+.row .date small{display:block;font-weight:500;color:var(--grey);font-size:11px}
+.row .mid b{font-size:14.5px;font-weight:700}
+.row .mid .meta{font-size:12.5px;color:var(--grey);margin-top:2px}
+.row .dist{text-align:right;font-size:12.5px;color:var(--grey);white-space:nowrap}
+.row .dist b{display:block;color:var(--ink);font-size:13.5px}
+.tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:#eee9db;color:#5a5a4f;margin-left:6px}
+.tag.encours{background:#e9e2d1;color:#6b5a2a}
+.empty{text-align:center;padding:54px 20px;color:var(--grey)}
+.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:6px}
+.empty p{margin:8px 0 16px}
 
-/* kanban */
+/* chantiers */
 .kb{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.col{background:var(--side);border-radius:10px;padding:10px;min-height:340px}
-.col h4{margin:2px 4px 10px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);display:flex;justify-content:space-between}
-.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 11px;margin-bottom:8px;box-shadow:0 6px 16px -14px rgba(0,0,0,.5)}
-.card .cli{font-weight:700;font-size:13px;letter-spacing:-.01em}
+.col{background:var(--side);border-radius:10px;padding:10px;min-height:220px}
+.col h4{margin:2px 4px 10px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);display:flex;justify-content:space-between;font-weight:700}
+.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 11px;margin-bottom:8px;cursor:pointer}
+.card:hover{border-color:var(--accent-ink)}
+.card .cli{font-weight:700;font-size:13px}
 .card .vil{font-size:11.5px;color:var(--grey);margin-top:1px}
-.card .amt{font-weight:800;font-size:13.5px;margin-top:8px;letter-spacing:-.02em}
-.card .meta{font-size:11px;color:var(--grey);margin-top:4px;display:flex;justify-content:space-between;align-items:center}
+.card .amt{font-weight:800;font-size:13.5px;margin-top:8px}
+.card .meta{font-size:11px;color:var(--grey);margin-top:4px;display:flex;justify-content:space-between;align-items:center;gap:6px}
 .pill{font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:#efeada;color:#5a5a4f;text-transform:uppercase;letter-spacing:.06em}
 .pill.late{background:#f6ded9;color:#8f2c1c}
 .pill.ok{background:#dcebe1;color:#23543c}
-.pill.wait{background:#e6e9f3;color:#33436b}
+.addr{width:100%;background:transparent;border:1px dashed var(--line);border-radius:7px;padding:8px;font-size:12px;color:var(--grey);cursor:pointer;margin-top:2px}
+.addr:hover{border-color:var(--accent-ink);color:var(--accent-ink)}
 
 /* tableaux */
-table{width:100%;border-collapse:collapse}
-th{text-align:left;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);padding:10px 16px;border-bottom:1px solid var(--line);font-weight:700}
-td{padding:12px 16px;border-bottom:1px solid #eee8d9;font-size:13px;vertical-align:middle}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{text-align:left;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);padding:10px 15px;border-bottom:1px solid var(--line);font-weight:700}
+td{padding:12px 15px;border-bottom:1px solid #eee8d9;font-size:13px;vertical-align:middle}
 tr:last-child td{border-bottom:0}
-td b{font-weight:700}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:#faf7ee}
 td .gray{color:var(--grey);font-size:12px}
 .av{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#3a2a05;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;margin-right:9px;vertical-align:middle}
 .right{text-align:right}
 
 /* relances */
-.split{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;align-items:start}
-.mail{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;font-size:13px;line-height:1.6}
+.mail{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;font-size:13px;line-height:1.6;margin-top:14px}
 .mail .to{color:var(--grey);font-size:12px;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:12px}
-.mail .hello{display:block;margin-bottom:10px;font-size:13.5px;font-weight:700}
 .mail p{margin:0 0 10px}
-.mail .sig{color:var(--grey);font-size:12px;margin-top:14px}
+.mail .sig{color:var(--grey);font-size:12px;margin-top:14px;white-space:pre-line}
 
-/* veille (rappel) */
-.filt{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.chip{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 11px;font-size:12px;font-weight:600}
-.chip.on{background:var(--accent);border-color:var(--accent);color:#3a2a05}
-.vrow{display:grid;grid-template-columns:96px 1fr auto;gap:14px;align-items:center;padding:11px 16px;border-bottom:1px solid #eee8d9;font-size:13px}
-.vrow:last-child{border-bottom:0}
-.vrow .d{font-size:11.5px;font-weight:700}
-.vrow .d small{display:block;color:var(--grey);font-weight:500}
-.vrow .m b{font-size:13.5px}
-.vrow .m div{font-size:11.5px;color:var(--grey)}
-.vrow .k{font-size:12.5px;color:var(--grey);text-align:right}
-.vrow .k b{color:var(--ink)}
+/* modale */
+#modal{position:fixed;inset:0;background:rgba(15,15,13,.5);display:none;z-index:50;align-items:center;justify-content:center;padding:20px}
+#modal.open{display:flex}
+#modal .box{background:var(--paper);width:100%;max-width:520px;border-radius:12px;padding:22px;max-height:90vh;overflow:auto}
+#modal h3{margin:0 0 16px;font-size:19px;letter-spacing:-.02em}
+#modal .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#modal .f.full{grid-column:1/-1}
+#modal .pied{display:flex;justify-content:space-between;gap:10px;margin-top:20px;flex-wrap:wrap}
+#modal .pied .gauche{display:flex;gap:8px}
+#modal textarea{min-height:64px;resize:vertical}
 
-/* réglages */
-.form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.f label{display:block;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);font-weight:700;margin-bottom:5px}
-.f input,.f select{width:100%;border:1px solid var(--line);border-radius:6px;padding:9px 10px;font-size:13.5px;background:#fff}
-.f.full{grid-column:1/-1}
-.hint{font-size:11.5px;color:var(--grey);margin-top:5px}
+/* fiche permis */
+.sheet{position:fixed;inset:0;background:rgba(15,15,13,.45);display:none;z-index:40;align-items:flex-end;justify-content:center}
+.sheet.open{display:flex}
+.sheet .box{background:var(--paper);width:100%;max-width:560px;border-radius:12px 12px 0 0;padding:22px;max-height:88vh;overflow:auto}
+.sheet h3{margin:0 0 4px;font-size:19px}
+.sheet .sh-sub{color:var(--grey);font-size:13px;margin-bottom:16px}
+.kv{display:grid;grid-template-columns:130px 1fr;gap:9px 12px;font-size:13.5px}
+.kv dt{color:var(--grey)}
+.kv dd{margin:0;font-weight:600}
 
 .tabpage{display:none}
 .tabpage.on{display:block}
-.note{margin-top:16px;font-size:11.5px;color:var(--grey)}
+footer.app{padding:0 26px 34px;color:var(--grey);font-size:11.5px;line-height:1.6;max-width:1180px}
 
 @media (max-width:880px){
   .shell{grid-template-columns:1fr}
-  aside{position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;flex-direction:row;padding:6px;border-right:0;border-top:1px solid var(--line);z-index:20;gap:0}
+  aside{position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;flex-direction:row;padding:6px;border-right:0;border-top:1px solid var(--line);z-index:30}
   .brand,.who{display:none}
   nav{flex-direction:row;width:100%;justify-content:space-around}
-  nav a{flex-direction:column;gap:2px;font-size:10px;padding:6px 4px}
-  nav a span.dot{font-size:14px}
+  nav a{flex-direction:column;gap:2px;font-size:9.5px;padding:6px 2px;text-align:center}
+  nav a .dot{font-size:14px}
+  nav a b{display:none}
   main{padding:16px 14px 90px}
-  .top{gap:10px}
-  h1{font-size:21px}
-  .acts .btn{padding:7px 10px;font-size:12px}
-  .kb{grid-template-columns:1fr;gap:10px}
-  .col{min-height:0}
-  .split,.form{grid-template-columns:1fr}
+  h1{font-size:20px}
+  .filters,.kb{grid-template-columns:1fr;gap:10px}
+  .col{min-height:auto;padding:8px}
+  .col h4{margin-bottom:6px}
+  .filters .f:first-child{grid-column:auto}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+  .stat b{font-size:18px}
+  .row{grid-template-columns:1fr auto;gap:8px}
+  .row .date{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center}
+  .row .date small{display:inline;margin-left:8px}
+  #modal .grid{grid-template-columns:1fr}
+  table{display:block;overflow-x:auto}
+  footer.app{display:none}
 }
 </style>
 </head>
-<body>
-<div style="background:#e8b33a;color:#3a2a05;font:600 12.5px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;padding:7px 16px;text-align:center;letter-spacing:.01em">
-  Maquette de démonstration — les chantiers, clients et montants affichés sont fictifs.
-</div>
-<div class="shell">
+<body class="locked">
 
+<div id="gate">
+  <form class="gate-box" id="gate-form">
+    <div class="mark"><i></i>CAP ENCRE PRO</div>
+    <h1>Cet outil est réservé aux clients Cap Encre.</h1>
+    <p>La veille des permis, vos chantiers, vos clients et vos relances, dans une seule application. Votre code d'accès est personnel.</p>
+    <label for="code">Votre code d'accès</label>
+    <input id="code" name="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="CAP-XXXX-XXXX" required>
+    <button type="submit" id="gate-btn">Entrer</button>
+    <div class="gate-err" id="gate-err"></div>
+    <div class="gate-note">Pas encore client ? <a href="/artisan/">Voir l'offre artisan</a> — ou appelez le <a href="tel:+33662674414">06 62 67 44 14</a>.</div>
+  </form>
+</div>
+
+<div class="shell">
   <aside>
     <div class="brand"><i></i>CAP ENCRE PRO</div>
     <nav>
-      <a href="#" data-tab="veille" aria-current="true"><span class="dot">◎</span> Veille <b>12</b></a>
-      <a href="#" data-tab="chantiers"><span class="dot">▤</span> Chantiers</a>
-      <a href="#" data-tab="clients"><span class="dot">◍</span> Clients</a>
-      <a href="#" data-tab="relances"><span class="dot">↻</span> Relances <b>3</b></a>
-      <a href="#" data-tab="reglages"><span class="dot">⚙</span> Réglages</a>
+      <a data-tab="veille" aria-current="true"><span class="dot">◎</span> Veille <b id="n-veille" hidden></b></a>
+      <a data-tab="chantiers"><span class="dot">▤</span> Chantiers <b id="n-chantiers" hidden></b></a>
+      <a data-tab="clients"><span class="dot">◍</span> Clients <b id="n-clients" hidden></b></a>
+      <a data-tab="relances"><span class="dot">↻</span> Relances <b id="n-relances" hidden></b></a>
+      <a data-tab="reglages"><span class="dot">⚙</span> Réglages</a>
     </nav>
-    <div class="who"><b>Menuiserie Lefèvre</b><span>Challans · abonnement Pro</span>
-      <a href="/artisan/" style="display:block;margin-top:7px;color:#7a5209;font-weight:600;text-decoration:underline">← Retour à l'offre</a></div>
+    <div class="who">
+      <b id="who-name">—</b>
+      <span>Abonnement Cap Encre</span>
+      <button id="lock">Verrouiller</button>
+    </div>
   </aside>
 
   <main>
     <!-- VEILLE -->
     <section class="tabpage on" id="veille">
       <div class="top">
-        <div><h1>Veille des permis</h1><div class="sub">Autour de Challans · 15 km · 12 derniers mois</div></div>
-        <div class="acts"><button class="btn">Exporter</button></div>
+        <div><h1>Veille des permis</h1><div class="sub" id="veille-sub">Chargement…</div></div>
+        <div class="acts">
+          <button class="btn" id="reset">Réinitialiser</button>
+          <button class="btn" id="export">Exporter</button>
+        </div>
       </div>
-      <div class="filt">
-        <span class="chip on">Tout 394</span><span class="chip">Maison 121</span><span class="chip">Extension 87</span>
-        <span class="chip">Garage 42</span><span class="chip">Local 19</span><span class="chip">Rénovation 33</span>
+      <div class="filters">
+        <div class="f"><label for="commune">Autour de</label><select id="commune"><option value="">Toute la Vendée</option></select></div>
+        <div class="f"><label for="rayon">Rayon</label><select id="rayon"><option value="5">5 km</option><option value="10">10 km</option><option value="15" selected>15 km</option><option value="25">25 km</option><option value="50">50 km</option></select></div>
+        <div class="f"><label for="periode">Période</label><select id="periode"><option value="3">3 mois</option><option value="6">6 mois</option><option value="12" selected>12 mois</option><option value="24">24 mois</option><option value="99">Tout</option></select></div>
       </div>
-      <div class="panel">
-        <div class="vrow"><div class="d">sept. 2026<small>permis</small></div>
-          <div class="m"><b>Maison — 142 m²</b><div>Challans · 12 rue des Sables · parcelle AB 124</div></div>
-          <div class="k"><b>2,1 km</b></div></div>
-        <div class="vrow"><div class="d">sept. 2026<small>déclaration</small></div>
-          <div class="m"><b>Extension — 38 m²</b><div>Sallertaine · 4 impasse du Moulin · parcelle ZC 88</div></div>
-          <div class="k"><b>4,6 km</b></div></div>
-        <div class="vrow"><div class="d">août 2026<small>permis</small></div>
-          <div class="m"><b>Local / bâtiment — 310 m²</b><div>Saint-Christophe-du-Ligneron · ZA de la Gare</div></div>
-          <div class="k"><b>9,2 km</b></div></div>
-        <div class="vrow"><div class="d">août 2026<small>permis</small></div>
-          <div class="m"><b>Maison — 96 m²</b><div>Le Perrier · 22 route de Saint-Jean · parcelle AH 55</div></div>
-          <div class="k"><b>7,4 km</b></div></div>
+      <div class="chips" id="chips"></div>
+      <div class="stats">
+        <div class="stat hl"><b id="s-count">—</b><span>autorisations</span></div>
+        <div class="stat"><b id="s-communes">—</b><span>communes</span></div>
+        <div class="stat"><b id="s-new">—</b><span id="s-new-lbl">dernier mois</span></div>
+        <div class="stat"><b id="s-surf">—</b><span>m² créés</span></div>
       </div>
-      <div class="note">Maquette — les données affichées sont fictives.</div>
+      <div class="list" id="list"></div>
+      <div id="more" style="color:var(--grey);font-size:12px;padding:14px 2px 0"></div>
     </section>
 
     <!-- CHANTIERS -->
     <section class="tabpage" id="chantiers">
       <div class="top">
-        <div><h1>Chantiers</h1><div class="sub">4 en cours · 2 devis en attente · 21 400 € à encaisser</div></div>
-        <div class="acts"><button class="btn primary">+ Nouveau chantier</button></div>
+        <div><h1>Chantiers</h1><div class="sub" id="ch-sub">—</div></div>
+        <div class="acts"><span class="saved" id="save-1"></span><button class="btn primary" id="new-ch">+ Nouveau chantier</button></div>
       </div>
-      <div class="kb">
-        <div class="col">
-          <h4>À chiffrer <span>2</span></h4>
-          <div class="card"><div class="cli">M. Roux</div><div class="vil">Challans · maison 142 m²</div>
-            <div class="amt">≈ 24 000 €</div><div class="meta"><span class="pill">permis 09/26</span><span>J+4</span></div></div>
-          <div class="card"><div class="cli">SCI Bellevue</div><div class="vil">Sallertaine · extension 38 m²</div>
-            <div class="amt">≈ 8 500 €</div><div class="meta"><span class="pill">visite faite</span><span>J+11</span></div></div>
-        </div>
-        <div class="col">
-          <h4>Devis envoyé <span>2</span></h4>
-          <div class="card"><div class="cli">Mme Giraud</div><div class="vil">Le Perrier · garage 28 m²</div>
-            <div class="amt">6 250 €</div><div class="meta"><span class="pill wait">envoyé J-9</span><span>relance J+2</span></div></div>
-          <div class="card"><div class="cli">Camping Les Oyats</div><div class="vil">Saint-Jean · 4 mobil-homes</div>
-            <div class="amt">12 900 €</div><div class="meta"><span class="pill wait">envoyé J-15</span><span>relance J+1</span></div></div>
-        </div>
-        <div class="col">
-          <h4>En cours <span>3</span></h4>
-          <div class="card"><div class="cli">M. et Mme Blanchard</div><div class="vil">Challans · ossature terrasse</div>
-            <div class="amt">14 800 €</div><div class="meta"><span class="pill ok">semaine 2/3</span><span>acompte reçu</span></div></div>
-          <div class="card"><div class="cli">Boulangerie Marchand</div><div class="vil">Sallertaine · devanture</div>
-            <div class="amt">7 400 €</div><div class="meta"><span class="pill ok">semaine 1/2</span><span>acompte reçu</span></div></div>
-        </div>
-        <div class="col">
-          <h4>Facturé, en attente <span>3</span></h4>
-          <div class="card"><div class="cli">M. Lamy</div><div class="vil">Commequiers · réception faite</div>
-            <div class="amt">5 900 €</div><div class="meta"><span class="pill late">J+6</span><span>facture 038</span></div></div>
-          <div class="card"><div class="cli">École Sainte-Marie</div><div class="vil">Le Perrier · préau</div>
-            <div class="amt">11 200 €</div><div class="meta"><span class="pill late">J+12</span><span>facture 041</span></div></div>
-          <div class="card"><div class="cli">M. Guérin</div><div class="vil">Saint-Gervais · salle de bain</div>
-            <div class="amt">4 300 €</div><div class="meta"><span class="pill late">J+21</span><span>facture 033</span></div></div>
-        </div>
-      </div>
-      <div class="note">Maquette — noms et montants fictifs.</div>
+      <div class="kb" id="kb"></div>
     </section>
 
     <!-- CLIENTS -->
     <section class="tabpage" id="clients">
       <div class="top">
-        <div><h1>Clients</h1><div class="sub">39 fiches · 7 prospects issus de la veille</div></div>
-        <div class="acts"><button class="btn primary">+ Nouveau client</button></div>
+        <div><h1>Clients</h1><div class="sub" id="cl-sub">—</div></div>
+        <div class="acts"><span class="saved" id="save-2"></span><button class="btn primary" id="new-cl">+ Nouveau client</button></div>
       </div>
-      <div class="panel">
-        <table>
-          <tr><th>Client</th><th>Commune</th><th>Dernier chantier</th><th class="right">CA 2026</th><th class="right">Reste dû</th></tr>
-          <tr><td><span class="av">MB</span><b>M. et Mme Blanchard</b><div class="gray">06 12 44 87 21</div></td>
-              <td>Challans</td><td>Terrasse · en cours</td><td class="right">14 800 €</td><td class="right"><span class="pill ok">à jour</span></td></tr>
-          <tr><td><span class="av">LM</span><b>M. Lamy</b><div class="gray">06 78 21 09 55</div></td>
-              <td>Commequiers</td><td>Réception · 09/2026</td><td class="right">5 900 €</td><td class="right"><span class="pill late">5 900 €</span></td></tr>
-          <tr><td><span class="av">BM</span><b>Boulangerie Marchand</b><div class="gray">02 51 68 44 10</div></td>
-              <td>Sallertaine</td><td>Devanture · en cours</td><td class="right">7 400 €</td><td class="right"><span class="pill ok">à jour</span></td></tr>
-          <tr><td><span class="av">CL</span><b>Camping Les Oyats</b><div class="gray">02 51 58 90 12</div></td>
-              <td>Saint-Jean-de-Monts</td><td>Devis envoyé</td><td class="right">0 €</td><td class="right"><span class="pill wait">devis</span></td></tr>
-          <tr><td><span class="av">MG</span><b>M. Guérin</b><div class="gray">06 22 71 40 09</div></td>
-              <td>Saint-Gervais</td><td>Salle de bain · 07/2026</td><td class="right">4 300 €</td><td class="right"><span class="pill late">4 300 €</span></td></tr>
-          <tr><td><span class="av">MR</span><b>M. Roux</b><div class="gray">06 45 33 12 78</div></td>
-              <td>Challans</td><td>À chiffrer</td><td class="right">0 €</td><td class="right"><span class="pill">prospect</span></td></tr>
-        </table>
-      </div>
-      <div class="note">Maquette — noms et montants fictifs.</div>
+      <table>
+        <thead><tr><th>Client</th><th>Commune</th><th>Chantiers</th><th class="right">CA</th><th class="right">Reste dû</th></tr></thead>
+        <tbody id="cl-body"></tbody>
+      </table>
+      <div id="cl-empty"></div>
     </section>
 
     <!-- RELANCES -->
     <section class="tabpage" id="relances">
       <div class="top">
-        <div><h1>Relances</h1><div class="sub">3 factures en retard · 21 400 € à encaisser</div></div>
-        <div class="acts"><button class="btn">Tout relancer</button></div>
+        <div><h1>Relances</h1><div class="sub" id="rel-sub">—</div></div>
+        <div class="acts"><span class="saved" id="save-3"></span></div>
       </div>
-      <div class="split">
-        <div class="panel">
-          <table>
-            <tr><th>Client</th><th class="right">Montant</th><th class="right">Retard</th><th></th></tr>
-            <tr><td><b>École Sainte-Marie</b><div class="gray">Facture 2026-041 · 11 200 €</div></td>
-                <td class="right">11 200 €</td><td class="right"><span class="pill late">J+12</span></td>
-                <td class="right"><button class="btn small">Relancer</button></td></tr>
-            <tr><td><b>M. Lamy</b><div class="gray">Facture 2026-038 · 5 900 €</div></td>
-                <td class="right">5 900 €</td><td class="right"><span class="pill late">J+6</span></td>
-                <td class="right"><button class="btn small">Relancer</button></td></tr>
-            <tr><td><b>M. Guérin</b><div class="gray">Facture 2026-033 · 4 300 €</div></td>
-                <td class="right">4 300 €</td><td class="right"><span class="pill late">J+21</span></td>
-                <td class="right"><button class="btn small">Relancer</button></td></tr>
-          </table>
-        </div>
-        <div class="mail">
-          <div class="to">À : comptabilite@ecole-sainte-marie.fr · Objet : Facture 2026-041 — relance</div>
-          <span class="hello">Bonjour Madame,</span>
-          <p>Je me permets de revenir vers vous concernant la facture <b>2026-041</b> du 14 septembre,
-          d'un montant de <b>11 200,00 €</b>, échue depuis le 14 octobre.</p>
-          <p>Si un règlement a été effectué entre-temps, merci de ne pas tenir compte de ce message.
-          Dans le cas contraire, je reste à votre disposition pour convenir d'un échéancier.</p>
-          <div class="sig">Bien cordialement,<br>Menuiserie Lefèvre<br>06 12 34 56 78</div>
-          <div style="margin-top:14px;display:flex;gap:8px">
-            <button class="btn accent">Envoyer</button><button class="btn">Modifier</button>
-          </div>
-        </div>
-      </div>
-      <div class="note">Maquette — le texte de relance est un modèle, modifiable avant envoi.</div>
+      <div id="rel-list"></div>
     </section>
 
     <!-- RÉGLAGES -->
     <section class="tabpage" id="reglages">
       <div class="top">
-        <div><h1>Réglages</h1><div class="sub">Vos informations, reprises sur les documents et les relances</div></div>
-        <div class="acts"><button class="btn primary">Enregistrer</button></div>
+        <div><h1>Réglages</h1><div class="sub">Vos informations, reprises sur les relances</div></div>
+        <div class="acts"><span class="saved" id="save-4"></span><button class="btn primary" id="save-reg">Enregistrer</button></div>
       </div>
-      <div class="panel pad">
-        <div class="form">
-          <div class="f"><label>Entreprise</label><input value="Menuiserie Lefèvre"></div>
-          <div class="f"><label>SIRET</label><input value="812 456 789 00027"></div>
-          <div class="f"><label>Téléphone</label><input value="06 12 34 56 78"></div>
-          <div class="f"><label>Email</label><input value="contact@menuiserie-lefevre.fr"></div>
-          <div class="f full"><label>Adresse</label><input value="14 rue des Artisans, 85300 Challans"></div>
-          <div class="f"><label>Zone de veille</label><input value="Challans · 15 km"></div>
-          <div class="f"><label>TVA</label><select><option>Assujetti (20 %)</option><option>Franchise en base</option></select></div>
-          <div class="f full"><label>Signature des relances</label><input value="Bien cordialement, Menuiserie Lefèvre — 06 12 34 56 78"></div>
-          <div class="f full"><div class="hint">Le logo de l'entreprise, l'IBAN et les mentions légales viendront ici.</div></div>
-        </div>
+      <div class="filters" style="grid-template-columns:1fr 1fr">
+        <div class="f"><label for="r-entreprise">Entreprise</label><input id="r-entreprise"></div>
+        <div class="f"><label for="r-siret">SIRET</label><input id="r-siret"></div>
+        <div class="f"><label for="r-tel">Téléphone</label><input id="r-tel"></div>
+        <div class="f"><label for="r-email">Email</label><input id="r-email" type="email"></div>
+        <div class="f" style="grid-column:1/-1"><label for="r-adresse">Adresse</label><input id="r-adresse"></div>
+        <div class="f" style="grid-column:1/-1"><label for="r-signature">Signature des relances</label><textarea id="r-signature" style="min-height:70px"></textarea></div>
       </div>
-      <div class="note">Maquette — les champs ne sont pas encore enregistrés.</div>
     </section>
   </main>
 </div>
 
+<footer class="app" id="foot"></footer>
+
+<!-- modale générique -->
+<div id="modal"><div class="box" id="modal-box"></div></div>
+
+<!-- fiche permis -->
+<div class="sheet" id="sheet">
+  <div class="box">
+    <h3 id="sh-title">—</h3>
+    <div class="sh-sub" id="sh-sub"></div>
+    <dl class="kv" id="sh-kv"></dl>
+  </div>
+</div>
+
 <script>
-document.querySelectorAll("nav a").forEach(a => a.onclick = e => {
-  e.preventDefault();
+/* ---------- état ---------- */
+const MOIS = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const CLE_STATE = "capencre.pro.state";
+const CLE_CODE = "capencre.pro.code";
+const STATUTS = [
+  {k:"a_chiffrer", lbl:"À chiffrer"},
+  {k:"devis", lbl:"Devis envoyé"},
+  {k:"en_cours", lbl:"En cours"},
+  {k:"facture", lbl:"Facturé, en attente"},
+  {k:"paye", lbl:"Payé"}
+];
+
+let PERMIS = [], COMMUNES = {}, CLIENT = "";
+let DB = {clients:[], chantiers:[], reglages:{}};
+let state = Object.assign({commune:"", rayon:15, periode:12, natures:[]}, JSON.parse(localStorage.getItem(CLE_STATE) || "{}"));
+let minuteur = null;
+
+const byId = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const eur = n => (Number(n)||0).toLocaleString("fr-FR", {maximumFractionDigits:0}) + " €";
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : "id" + Date.now() + Math.random().toString(16).slice(2));
+const jours = d => Math.floor((Date.now() - new Date(d).getTime()) / 86400000);
+
+function moisLisible(d){ const [a,m] = d.split("-"); return `${MOIS[(+m||1)-1]} ${a}`; }
+function jolie(s){
+  const petits = ["de","du","des","la","le","les","l'","d'","au","aux","et","sur","sous","en"];
+  return String(s).toLowerCase().split(/(\s|-)/).map((m,i) => petits.includes(m) && i>0 ? m : m.charAt(0).toUpperCase()+m.slice(1)).join("");
+}
+function km(a,b,c,d){
+  const R=6371, p=Math.PI/180, dLat=(c-a)*p, dLon=(d-b)*p;
+  const h = Math.sin(dLat/2)**2 + Math.cos(a*p)*Math.cos(c*p)*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(h));
+}
+function depuis(mois){ const d=new Date(); d.setMonth(d.getMonth()-mois); return d.toISOString().slice(0,7); }
+
+/* ---------- onglets ---------- */
+document.querySelectorAll("nav a").forEach(a => a.onclick = () => {
   document.querySelectorAll("nav a").forEach(x => x.removeAttribute("aria-current"));
-  a.setAttribute("aria-current", "true");
+  a.setAttribute("aria-current","true");
   document.querySelectorAll(".tabpage").forEach(p => p.classList.remove("on"));
-  document.getElementById(a.dataset.tab).classList.add("on");
-  window.scrollTo(0, 0);
+  byId(a.dataset.tab).classList.add("on");
+  window.scrollTo(0,0);
 });
+
+/* ---------- accès + données ---------- */
+async function chargerTout(code){
+  const r = await fetch("/.netlify/functions/veille-data", { headers: { "x-veille-code": code } });
+  if (r.status === 401) return false;
+  if (!r.ok) throw new Error("veille " + r.status);
+  const d = await r.json();
+  PERMIS = d.permis; COMMUNES = d.communes; CLIENT = d.client || "";
+
+  try {
+    const r2 = await fetch("/.netlify/functions/pro-data", { headers: { "x-veille-code": code } });
+    if (r2.ok) {
+      const d2 = await r2.json();
+      DB = Object.assign({clients:[], chantiers:[], reglages:{}}, d2.data || {});
+    }
+  } catch (e) { /* l'outil marche sans stockage : on le signale à l'enregistrement */ }
+  return true;
+}
+
+function enregistre(etat){
+  document.querySelectorAll(".saved").forEach(el => el.textContent = etat);
+}
+function sauver(){
+  enregistre("enregistrement…");
+  clearTimeout(minuteur);
+  minuteur = setTimeout(async () => {
+    try {
+      const r = await fetch("/.netlify/functions/pro-data", {
+        method: "POST",
+        headers: { "x-veille-code": localStorage.getItem(CLE_CODE) || "", "content-type": "application/json" },
+        body: JSON.stringify({ data: DB })
+      });
+      enregistre(r.ok ? "enregistré ✓" : "échec ✕");
+    } catch (e) { enregistre("hors ligne"); }
+  }, 600);
+}
+
+function demarrer(){
+  byId("who-name").textContent = CLIENT || "Votre entreprise";
+  document.body.classList.remove("locked");
+  initCommunes(); initChips(); render();
+  renderChantiers(); renderClients(); renderRelances(); remplirReglages();
+  byId("foot").textContent = `Source : Sitadel / SDES — autorisations d'urbanisme, données ouvertes (mise à jour mensuelle). ${PERMIS.length.toLocaleString("fr-FR")} autorisations en Vendée sur les 30 derniers mois. Vos chantiers et vos clients sont enregistrés sur votre espace, rattaché à votre code.`;
+}
+
+async function deverrouiller(code, silencieux){
+  const btn = byId("gate-btn");
+  btn.disabled = true;
+  if (!silencieux) byId("gate-err").textContent = "";
+  try {
+    if (await chargerTout(code)) { localStorage.setItem(CLE_CODE, code); demarrer(); }
+    else if (!silencieux) byId("gate-err").textContent = "Code refusé. Vérifiez celui reçu avec votre abonnement.";
+  } catch (e) {
+    if (!silencieux) byId("gate-err").textContent = "Service momentanément indisponible. Réessayez dans un instant.";
+  } finally { btn.disabled = false; }
+}
+
+byId("gate-form").onsubmit = e => { e.preventDefault(); const c = byId("code").value.trim().toUpperCase(); if (c) deverrouiller(c); };
+byId("lock").onclick = () => { localStorage.removeItem(CLE_CODE); location.reload(); };
+
+/* ---------- veille ---------- */
+function initCommunes(){
+  const sel = byId("commune");
+  const liste = Object.entries(COMMUNES).filter(([c,v]) => v && v.n).map(([c,v]) => [c, v.n]).sort((a,b) => a[1].localeCompare(b[1],"fr"));
+  sel.innerHTML = '<option value="">Toute la Vendée</option>' + liste.map(([c,n]) => `<option value="${c}">${esc(n)}</option>`).join("");
+  sel.value = state.commune; byId("rayon").value = state.rayon; byId("periode").value = state.periode;
+}
+function initChips(){
+  const compte = {};
+  PERMIS.forEach(p => compte[p.n] = (compte[p.n]||0)+1);
+  const natures = Object.keys(compte).sort((a,b) => compte[b]-compte[a]).slice(0,7);
+  byId("chips").innerHTML = natures.map(n => `<button class="chip" data-n="${esc(n)}" aria-pressed="${state.natures.includes(n)}">${esc(n)} <small>${compte[n]}</small></button>`).join("");
+  byId("chips").querySelectorAll(".chip").forEach(b => b.onclick = () => {
+    const n = b.dataset.n;
+    state.natures = state.natures.includes(n) ? state.natures.filter(x => x!==n) : [...state.natures, n];
+    b.setAttribute("aria-pressed", state.natures.includes(n)); render();
+  });
+}
+function filtrer(){
+  const seuil = state.periode >= 99 ? "1900-01" : depuis(state.periode);
+  const base = state.commune && COMMUNES[state.commune] ? COMMUNES[state.commune] : null;
+  const out = [];
+  for (const p of PERMIS){
+    if (p.d < seuil) continue;
+    if (state.natures.length && !state.natures.includes(p.n)) continue;
+    let dist = null;
+    if (base){ const c = COMMUNES[p.c] || base; dist = km(base.lat, base.lon, c.lat, c.lon); if (dist > state.rayon) continue; }
+    out.push({...p, dist});
+  }
+  return out;
+}
+function render(){
+  localStorage.setItem(CLE_STATE, JSON.stringify(state));
+  const items = filtrer();
+  byId("s-count").textContent = items.length.toLocaleString("fr-FR");
+  byId("s-communes").textContent = new Set(items.map(i => i.c)).size;
+  const mc = items.length ? items[0].d : new Date().toISOString().slice(0,7);
+  byId("s-new").textContent = items.filter(i => i.d === mc).length;
+  byId("s-new-lbl").textContent = items.length ? (items[0].m ? "dépôts " + items[0].d.slice(0,4) : moisLisible(items[0].d)) : "dernier mois";
+  byId("s-surf").textContent = Math.round(items.reduce((a,i) => a + (i.s||0), 0)).toLocaleString("fr-FR");
+  const lib = state.periode >= 99 ? "tout l'historique" : `${state.periode} derniers mois`;
+  byId("veille-sub").textContent = state.commune && COMMUNES[state.commune] ? `${COMMUNES[state.commune].n} · ${state.rayon} km · ${lib}` : `Toute la Vendée · ${lib}`;
+  const nv = byId("n-veille"); nv.hidden = !items.length; nv.textContent = items.length;
+
+  const list = byId("list");
+  if (!items.length){
+    list.innerHTML = `<div class="empty"><b>Aucune autorisation sur ce périmètre.</b>Élargissez le rayon ou la période.</div>`;
+    byId("more").textContent = ""; return;
+  }
+  list.innerHTML = items.slice(0,300).map((p,i) => {
+    const c = COMMUNES[p.c] || {};
+    const etat = p.e === "E" ? '<span class="tag encours">en cours</span>' : "";
+    return `<div class="row" data-i="${i}">
+      <div class="date">${p.m ? p.d.slice(0,4) : moisLisible(p.d)}<small>${p.t==="PC"?"permis":p.t==="DP"?"déclaration":"aménager"}</small></div>
+      <div class="mid"><b>${esc(p.n)}${p.s?` — ${Math.round(p.s)} m²`:""}</b>${etat}
+        <div class="meta">${esc(c.n || p.c)}${p.a ? " · " + esc(jolie(p.a)) : ""}${p.p ? " · parcelle " + esc(p.p) : ""}</div></div>
+      <div class="dist">${p.dist != null ? `<b>${p.dist.toFixed(1).replace('.',',')} km</b>du dépôt` : (c.pop ? `<b>${c.pop.toLocaleString("fr-FR")}</b>habitants` : "")}</div>
+    </div>`;
+  }).join("");
+  list.querySelectorAll(".row").forEach(el => el.onclick = () => fichePermis(items[+el.dataset.i]));
+  byId("more").textContent = items.length > 300 ? `300 affichées sur ${items.length.toLocaleString("fr-FR")} — affinez les filtres ou exportez le fichier.` : "";
+}
+function fichePermis(p){
+  const c = COMMUNES[p.c] || {};
+  byId("sh-title").textContent = `${p.n}${p.s ? " — " + Math.round(p.s) + " m²" : ""}`;
+  byId("sh-sub").textContent = `${c.n || p.c}${p.dist != null ? " · à " + p.dist.toFixed(1).replace(".",",") + " km" : ""}`;
+  byId("sh-kv").innerHTML = `
+    <dt>Décision</dt><dd>${p.m ? "dépôt en " + p.d.slice(0,4) : moisLisible(p.d)} ${p.e==="E"?"(en cours)":""}</dd>
+    <dt>Type</dt><dd>${p.t==="PC"?"Permis de construire":p.t==="DP"?"Déclaration préalable":"Permis d'aménager"}</dd>
+    <dt>Nature</dt><dd>${esc(p.n)}</dd>
+    <dt>Surface créée</dt><dd>${p.s ? Math.round(p.s)+" m²" : "non renseignée"}</dd>
+    ${p.l ? `<dt>Logements</dt><dd>${p.l}</dd>` : ""}
+    <dt>Adresse</dt><dd>${p.a ? esc(jolie(p.a)) : "non renseignée"}</dd>
+    <dt>Commune</dt><dd>${esc(c.n||"")} (${p.c})</dd>
+    <dt>Parcelle</dt><dd>${p.p ? esc(p.p) : "non renseignée"}</dd>
+    <dt>Distance</dt><dd>${p.dist != null ? p.dist.toFixed(1).replace(".",",")+" km du centre de votre commune" : "—"}</dd>`;
+  byId("sheet").classList.add("open");
+}
+byId("sheet").onclick = e => { if (e.target.id === "sheet") byId("sheet").classList.remove("open"); };
+byId("commune").onchange = e => { state.commune = e.target.value; render(); };
+byId("rayon").onchange = e => { state.rayon = +e.target.value; render(); };
+byId("periode").onchange = e => { state.periode = +e.target.value; render(); };
+byId("reset").onclick = () => { localStorage.removeItem(CLE_STATE); state = {commune:"", rayon:15, periode:12, natures:[]}; initCommunes(); initChips(); render(); };
+byId("export").onclick = () => {
+  const items = filtrer();
+  const entete = ["Date de décision","Type","Nature","Surface (m²)","Logements","Adresse","Commune","Parcelle","Distance (km)","État"];
+  const lignes = items.map(p => [p.m?p.d.slice(0,4):p.d, p.t, p.n, p.s||"", p.l||"", p.a||"", (COMMUNES[p.c]||{}).n||p.c, p.p||"", p.dist!=null?p.dist.toFixed(1).replace('.',','):"", p.e==="E"?"En cours":"Autorisé"]);
+  const csv = "\ufeff" + [entete, ...lignes].map(l => l.map(v => `"${String(v).replace(/"/g,'""')}"`).join(";")).join("\r\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv;charset=utf-8"}));
+  a.download = `veille-permis-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+};
+
+/* ---------- clients ---------- */
+const clientDe = ch => DB.clients.find(c => c.id === ch.clientId);
+function resteDu(ch){ return (Number(ch.montant)||0) - (Number(ch.acompte)||0); }
+
+function renderClients(){
+  const corps = byId("cl-body");
+  const lignes = DB.clients.slice().sort((a,b) => (a.nom||"").localeCompare(b.nom||"","fr"));
+  if (!lignes.length){
+    corps.innerHTML = "";
+    byId("cl-empty").innerHTML = `<div class="empty"><b>Aucun client pour l'instant.</b><p>Ajoutez votre premier client, même sans chantier.</p><button class="btn primary" onclick="nouveauClient()">+ Nouveau client</button></div>`;
+    byId("cl-sub").textContent = "Aucune fiche";
+    byId("n-clients").hidden = true;
+    return;
+  }
+  byId("cl-empty").innerHTML = "";
+  corps.innerHTML = lignes.map(c => {
+    const chs = DB.chantiers.filter(ch => ch.clientId === c.id);
+    const ca = chs.reduce((a,ch) => a + (Number(ch.montant)||0), 0);
+    const du = chs.filter(ch => ch.statut !== "paye").reduce((a,ch) => a + resteDu(ch), 0);
+    const ini = (c.nom||"?").split(/[\s-]+/).filter(Boolean).slice(0,2).map(w => w[0]).join("").toUpperCase();
+    return `<tr data-id="${c.id}">
+      <td><span class="av">${esc(ini)}</span><b>${esc(c.nom||"—")}</b><div class="gray">${esc(c.tel||"")}</div></td>
+      <td>${esc(c.commune||"—")}</td>
+      <td>${chs.length}</td>
+      <td class="right">${ca ? eur(ca) : "—"}</td>
+      <td class="right">${du ? `<span class="pill late">${eur(du)}</span>` : '<span class="pill ok">à jour</span>'}</td>
+    </tr>`;
+  }).join("");
+  corps.querySelectorAll("tr").forEach(tr => tr.onclick = () => editerClient(tr.dataset.id));
+  byId("cl-sub").textContent = `${DB.clients.length} fiche${DB.clients.length>1?"s":""}`;
+  const n = byId("n-clients"); n.hidden = false; n.textContent = DB.clients.length;
+  renderChantiers(); renderRelances();
+}
+
+function nouveauClient(){ editerClient(null); }
+function editerClient(id){
+  const c = id ? DB.clients.find(x => x.id === id) : {id:null, nom:"", tel:"", email:"", commune:"", adresse:"", notes:""};
+  ouvrirModal(`<h3>${id ? "Modifier le client" : "Nouveau client"}</h3>
+    <div class="grid">
+      <div class="f full"><label>Nom</label><input id="m-nom" value="${esc(c.nom)}" placeholder="M. et Mme Blanchard"></div>
+      <div class="f"><label>Téléphone</label><input id="m-tel" value="${esc(c.tel)}"></div>
+      <div class="f"><label>Email</label><input id="m-email" value="${esc(c.email)}"></div>
+      <div class="f"><label>Commune</label><input id="m-commune" value="${esc(c.commune)}"></div>
+      <div class="f"><label>Adresse</label><input id="m-adresse" value="${esc(c.adresse)}"></div>
+      <div class="f full"><label>Notes</label><textarea id="m-notes">${esc(c.notes)}</textarea></div>
+    </div>
+    <div class="pied">
+      <div class="gauche">${id ? '<button class="btn" id="m-del">Supprimer</button>' : ""}</div>
+      <div class="gauche"><button class="btn" id="m-cancel">Annuler</button><button class="btn primary" id="m-ok">Enregistrer</button></div>
+    </div>`, () => {
+    byId("m-ok").onclick = () => {
+      const v = {
+        id: id || uid(),
+        nom: byId("m-nom").value.trim(),
+        tel: byId("m-tel").value.trim(),
+        email: byId("m-email").value.trim(),
+        commune: byId("m-commune").value.trim(),
+        adresse: byId("m-adresse").value.trim(),
+        notes: byId("m-notes").value.trim()
+      };
+      if (!v.nom) { byId("m-nom").focus(); return; }
+      if (id) DB.clients = DB.clients.map(x => x.id === id ? v : x);
+      else DB.clients.push(v);
+      fermerModal(); sauver(); renderClients();
+    };
+    byId("m-cancel").onclick = fermerModal;
+    const del = byId("m-del");
+    if (del) del.onclick = () => {
+      const n = DB.chantiers.filter(ch => ch.clientId === id).length;
+      if (n && !confirm(`Ce client a ${n} chantier(s). Les supprimer aussi ?`)) return;
+      DB.clients = DB.clients.filter(x => x.id !== id);
+      DB.chantiers = DB.chantiers.filter(ch => ch.clientId !== id);
+      fermerModal(); sauver(); renderClients();
+    };
+  });
+}
+
+/* ---------- chantiers ---------- */
+function renderChantiers(){
+  const kb = byId("kb");
+  const actifs = DB.chantiers.filter(ch => ch.statut !== "paye");
+  const enCours = DB.chantiers.filter(ch => ch.statut === "en_cours").length;
+  const aEncaisser = DB.chantiers.filter(ch => ch.statut === "facture" || ch.statut === "paye" && false)
+    .reduce((a,ch) => a + resteDu(ch), 0);
+  byId("ch-sub").textContent = `${enCours} en cours · ${DB.chantiers.length} au total · ${aEncaisser ? eur(aEncaisser) + " à encaisser" : "rien à encaisser"}`;
+  const n = byId("n-chantiers"); n.hidden = !actifs.length; n.textContent = actifs.length;
+
+  kb.innerHTML = STATUTS.filter(s => s.k !== "paye").map(s => {
+    const items = DB.chantiers.filter(ch => ch.statut === s.k);
+    return `<div class="col">
+      <h4>${s.lbl} <span>${items.length || ""}</span></h4>
+      ${items.map(ch => carteChantier(ch)).join("")}
+      <button class="addr" onclick="nouveauChantier('${s.k}')">+ ajouter</button>
+    </div>`;
+  }).join("");
+  kb.querySelectorAll(".card").forEach(el => el.onclick = () => editerChantier(el.dataset.id));
+  renderClientsLeger();
+}
+
+function carteChantier(ch){
+  const c = clientDe(ch);
+  const du = resteDu(ch);
+  const retard = ch.statut === "facture" && ch.echeance ? jours(ch.echeance) : null;
+  const pill = retard !== null && retard > 0
+    ? `<span class="pill late">J+${retard}</span>`
+    : `<span class="pill">${ch.date ? new Date(ch.date).toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit"}) : ""}</span>`;
+  return `<div class="card" data-id="${ch.id}">
+    <div class="cli">${esc((c && c.nom) || "Sans client")}</div>
+    <div class="vil">${esc(ch.titre || "")}${c && c.commune ? " · " + esc(c.commune) : ""}</div>
+    <div class="amt">${ch.montant ? eur(ch.montant) : "—"}${du && du !== Number(ch.montant) ? ` <span style="font-weight:600;font-size:11.5px;color:var(--grey)">reste ${eur(du)}</span>` : ""}</div>
+    <div class="meta">${pill}<span>${esc(STATUTS.find(s => s.k === ch.statut).lbl.split(",")[0])}</span></div>
+  </div>`;
+}
+function renderClientsLeger(){ /* garde-fou : évite la récursion */ }
+
+function nouveauChantier(statut){ editerChantier(null, statut); }
+function editerChantier(id, statutDefaut){
+  const ch = id ? DB.chantiers.find(x => x.id === id) : {id:null, clientId:(DB.clients[0]||{}).id||"", titre:"", statut:statutDefaut||"a_chiffrer", montant:"", acompte:"", echeance:"", date:new Date().toISOString().slice(0,10), notes:""};
+  const options = DB.clients.map(c => `<option value="${c.id}" ${c.id===ch.clientId?"selected":""}>${esc(c.nom)}</option>`).join("");
+  ouvrirModal(`<h3>${id ? "Modifier le chantier" : "Nouveau chantier"}</h3>
+    <div class="grid">
+      <div class="f full"><label>Client</label><select id="m-client">${options || '<option value="">— aucun client, créez-en un d\'abord —</option>'}</select></div>
+      <div class="f full"><label>Chantier</label><input id="m-titre" value="${esc(ch.titre)}" placeholder="Terrasse, extension, salle de bain…"></div>
+      <div class="f"><label>Montant (€)</label><input id="m-montant" type="number" inputmode="numeric" value="${ch.montant||""}"></div>
+      <div class="f"><label>Acompte reçu (€)</label><input id="m-acompte" type="number" inputmode="numeric" value="${ch.acompte||""}"></div>
+      <div class="f"><label>Statut</label><select id="m-statut">${STATUTS.map(s => `<option value="${s.k}" ${s.k===ch.statut?"selected":""}>${s.lbl}</option>`).join("")}</select></div>
+      <div class="f"><label>Échéance de paiement</label><input id="m-echeance" type="date" value="${ch.echeance||""}"></div>
+      <div class="f full"><label>Notes</label><textarea id="m-notes">${esc(ch.notes)}</textarea></div>
+    </div>
+    <div class="pied">
+      <div class="gauche">${id ? '<button class="btn" id="m-del">Supprimer</button>' : ""}</div>
+      <div class="gauche"><button class="btn" id="m-cancel">Annuler</button><button class="btn primary" id="m-ok">Enregistrer</button></div>
+    </div>`, () => {
+    byId("m-ok").onclick = () => {
+      const v = {
+        id: id || uid(),
+        clientId: byId("m-client").value,
+        titre: byId("m-titre").value.trim(),
+        montant: Number(byId("m-montant").value) || 0,
+        acompte: Number(byId("m-acompte").value) || 0,
+        statut: byId("m-statut").value,
+        echeance: byId("m-echeance").value,
+        date: ch.date || new Date().toISOString().slice(0,10),
+        notes: byId("m-notes").value.trim()
+      };
+      if (!v.clientId) { alert("Choisissez un client."); return; }
+      if (id) DB.chantiers = DB.chantiers.map(x => x.id === id ? v : x);
+      else DB.chantiers.push(v);
+      fermerModal(); sauver(); renderChantiers(); renderClients(); renderRelances();
+    };
+    byId("m-cancel").onclick = fermerModal;
+    const del = byId("m-del");
+    if (del) del.onclick = () => {
+      if (!confirm("Supprimer ce chantier ?")) return;
+      DB.chantiers = DB.chantiers.filter(x => x.id !== id);
+      fermerModal(); sauver(); renderChantiers(); renderClients(); renderRelances();
+    };
+  });
+}
+
+/* ---------- relances ---------- */
+function enRetard(){
+  return DB.chantiers
+    .filter(ch => ch.statut === "facture" && ch.echeance && jours(ch.echeance) > 0)
+    .sort((a,b) => jours(b.echeance) - jours(a.echeance));
+}
+function renderRelances(){
+  const liste = enRetard();
+  const total = liste.reduce((a,ch) => a + resteDu(ch), 0);
+  byId("rel-sub").textContent = liste.length
+    ? `${liste.length} facture${liste.length>1?"s":""} en retard · ${eur(total)} à encaisser`
+    : "Aucune facture en retard";
+  const n = byId("n-relances"); n.hidden = !liste.length; n.textContent = liste.length;
+
+  const zone = byId("rel-list");
+  if (!liste.length){
+    zone.innerHTML = `<div class="empty"><b>Rien à relancer.</b><p>Les factures apparaissent ici dès que leur échéance est passée.</p></div>`;
+    return;
+  }
+  zone.innerHTML = `<table><thead><tr><th>Client</th><th>Chantier</th><th class="right">Reste dû</th><th class="right">Retard</th><th></th></tr></thead><tbody>
+    ${liste.map(ch => {
+      const c = clientDe(ch) || {};
+      return `<tr>
+        <td><b>${esc(c.nom||"—")}</b><div class="gray">${esc(c.email||c.tel||"")}</div></td>
+        <td>${esc(ch.titre||"—")}</td>
+        <td class="right">${eur(resteDu(ch))}</td>
+        <td class="right"><span class="pill late">J+${jours(ch.echeance)}</span></td>
+        <td class="right"><button class="btn small" onclick="preparerRelance('${ch.id}')">Relancer</button></td>
+      </tr>`;
+    }).join("")}
+  </tbody></table><div id="rel-mail"></div>`;
+}
+function preparerRelance(id){
+  const ch = DB.chantiers.find(x => x.id === id);
+  const c = clientDe(ch) || {};
+  const r = DB.reglages || {};
+  const montant = resteDu(ch);
+  const dateEch = ch.echeance ? new Date(ch.echeance).toLocaleDateString("fr-FR") : "—";
+  const nom = (c.nom || "").trim();
+  let salut = "Bonjour,";
+  if (/^m\.?\s*et\s*mme/i.test(nom)) salut = "Bonjour Madame, Monsieur,";
+  else if (/^mm?e\.?\s/i.test(nom)) salut = "Bonjour Madame,";
+  else if (/^m\.?\s/i.test(nom) || /^monsieur/i.test(nom)) salut = "Bonjour Monsieur,";
+  else if (nom && !/^(sci|sarl|sas|eurl|ei)\b/i.test(nom)) salut = "Bonjour " + nom + ",";
+  else if (nom) salut = "Bonjour,";
+  const corps = `${salut}
+
+Je me permets de revenir vers vous au sujet de la facture du chantier « ${ch.titre || "—"} », d'un montant de ${eur(montant)}, échue le ${dateEch}.
+
+Si un règlement a été effectué entre-temps, merci de ne pas tenir compte de ce message. Dans le cas contraire, je reste à votre disposition pour convenir d'un échéancier.
+
+${r.signature || ""}`;
+  const sujet = `Relance — ${ch.titre || "facture"} — ${eur(montant)}`;
+  const lien = c.email ? `mailto:${encodeURIComponent(c.email)}?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}` : "";
+  byId("rel-mail").innerHTML = `<div class="mail">
+    <div class="to">À : ${esc(c.email || "— email non renseigné —")} · Objet : ${esc(sujet)}</div>
+    <p style="white-space:pre-line">${esc(corps)}</p>
+    <div class="sig"></div>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      ${lien ? `<a class="btn accent" href="${lien}">Envoyer par mail</a>` : `<span class="pill late">Ajoutez l'email du client</span>`}
+      <button class="btn" onclick="copierTexte(${JSON.stringify(corps).replace(/"/g,"&quot;")})">Copier le texte</button>
+      <button class="btn" onclick="marquerPaye('${ch.id}')">Marquer payé</button>
+    </div>
+  </div>`;
+  byId("rel-mail").scrollIntoView({behavior:"smooth", block:"center"});
+}
+function copierTexte(t){
+  navigator.clipboard.writeText(t).then(() => alert("Texte copié.")).catch(() => alert("Copie impossible sur cet appareil."));
+}
+function marquerPaye(id){
+  DB.chantiers = DB.chantiers.map(ch => ch.id === id ? {...ch, statut:"paye", acompte: ch.montant} : ch);
+  sauver(); renderChantiers(); renderClients(); renderRelances();
+}
+
+/* ---------- réglages ---------- */
+function remplirReglages(){
+  const r = DB.reglages || {};
+  byId("r-entreprise").value = r.entreprise || "";
+  byId("r-siret").value = r.siret || "";
+  byId("r-tel").value = r.tel || "";
+  byId("r-email").value = r.email || "";
+  byId("r-adresse").value = r.adresse || "";
+  byId("r-signature").value = r.signature || "";
+}
+byId("save-reg").onclick = () => {
+  DB.reglages = {
+    entreprise: byId("r-entreprise").value.trim(),
+    siret: byId("r-siret").value.trim(),
+    tel: byId("r-tel").value.trim(),
+    email: byId("r-email").value.trim(),
+    adresse: byId("r-adresse").value.trim(),
+    signature: byId("r-signature").value.trim()
+  };
+  sauver(); renderRelances();
+  byId("save-reg").textContent = "Enregistré ✓";
+  setTimeout(() => byId("save-reg").textContent = "Enregistrer", 1800);
+};
+
+/* ---------- modale ---------- */
+function ouvrirModal(html, apres){
+  const m = byId("modal");
+  byId("modal-box").innerHTML = html;
+  m.classList.add("open");
+  if (apres) apres();
+  const cancel = byId("m-cancel"); if (cancel) cancel.onclick = fermerModal;
+}
+function fermerModal(){ byId("modal").classList.remove("open"); }
+byId("modal").onclick = e => { if (e.target.id === "modal") fermerModal(); };
+document.addEventListener("keydown", e => { if (e.key === "Escape") { fermerModal(); byId("sheet").classList.remove("open"); } });
+
+byId("new-ch").onclick = () => nouveauChantier("a_chiffrer");
+byId("new-cl").onclick = () => nouveauClient();
+
+/* ---------- démarrage ---------- */
+const memorise = localStorage.getItem(CLE_CODE);
+if (memorise) deverrouiller(memorise, true);
 </script>
 </body>
 </html>
