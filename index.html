@@ -134,6 +134,10 @@ footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   .manif .cols{grid-template-columns:1fr;gap:26px}
   .hero{padding:48px 0 30px}
 }
+
+/* garde-fou : les paddings verticaux des sections ne doivent pas annuler
+   les marges latérales de .wrap */
+.wrap{padding-left:24px;padding-right:24px}
 </style>
 </head>
 <body>
@@ -143,7 +147,7 @@ footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <a class="logo" href="#"><i></i>CAP ENCRE</a>
     <nav class="nav">
       <a href="/resto/">Restaurants</a>
-      <a href="#artisan">Artisans</a>
+      <a href="/artisan/">Artisans</a>
       <a href="/locations/">Locations</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -171,7 +175,7 @@ footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="d-arrow">→</div>
     </a>
 
-    <a class="door" href="#artisan" id="artisan">
+    <a class="door" href="/artisan/" id="artisan">
       <div class="d-num">02</div>
       <div>
         <div class="d-name">Artisan</div>
