@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cap Encre — Sites et outils pour les restaurants et les artisans</title>
+<meta name="description" content="Sites internet, réservations sans commission et veille des permis de construire. Pour les restaurants, les artisans et les locations saisonnières.">
+<style>
+:root{
+  --ink:#0f0f0d;
+  --ink-2:#1c1c19;
+  --paper:#f3f0e8;
+  --paper-2:#e9e5da;
+  --red:#e8482b;
+  --grey:#6d6d63;
+  --line:#d6d1c4;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;overflow-x:hidden;background:var(--paper);color:var(--ink);
+  font:16px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.035em;line-height:1.02}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1220px;margin:0 auto;padding:0 24px}
+
+/* ---------- barre ---------- */
+header{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(243,240,232,.92);backdrop-filter:blur(8px);z-index:20}
+.bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-weight:800;letter-spacing:-.04em;font-size:19px;display:flex;align-items:center;gap:9px}
+.logo i{width:10px;height:10px;background:var(--red);border-radius:2px;display:inline-block;transform:rotate(45deg)}
+.nav{display:flex;gap:26px;align-items:center;font-size:14px;color:var(--grey)}
+.nav a:hover{color:var(--ink)}
+.cta{background:var(--ink);color:var(--paper);padding:11px 18px;border-radius:4px;font-size:14px;font-weight:600}
+.cta:hover{background:var(--red)}
+
+/* ---------- héros ---------- */
+.hero{padding:58px 0 34px}
+.kicker{
+  display:inline-flex;align-items:center;gap:8px;font-size:11.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:26px;
+}
+.kicker::before{content:"";width:26px;height:2px;background:var(--red)}
+.hero h1{font-size:clamp(36px,5.6vw,72px);max-width:16ch}
+.hero h1 em{font-style:normal;color:var(--red)}
+.hero p{font-size:clamp(16px,1.6vw,19px);color:var(--grey);max-width:52ch;margin:26px 0 0}
+
+/* ---------- portes ---------- */
+.doors{border-top:1px solid var(--line);margin-top:44px}
+.door{
+  display:grid;grid-template-columns:56px 1.3fr 1.35fr auto;
+  gap:28px;align-items:center;
+  padding:34px 8px;border-bottom:1px solid var(--line);
+  position:relative;transition:background .18s,color .18s,padding .18s;cursor:pointer;
+}
+.door:hover{background:var(--ink);color:var(--paper);padding-left:22px;padding-right:22px}
+.door:hover .d-num{color:var(--red)}
+.door:hover .d-desc,.door:hover .d-tags{color:#b9b6ab}
+.door:hover .d-arrow{background:var(--red);color:#fff;border-color:var(--red);transform:translateX(0)}
+.door:hover .d-price{color:var(--paper)}
+.d-num{font-size:12px;letter-spacing:.14em;color:var(--grey);font-weight:700}
+.d-name{font-size:clamp(24px,3vw,38px);font-weight:800;letter-spacing:-.03em}
+.d-desc{font-size:14.5px;color:var(--grey);margin-top:8px;max-width:44ch;line-height:1.5}
+.d-tags{font-size:12px;color:var(--grey);margin-top:10px;letter-spacing:.02em}
+.d-tags span{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 9px;margin:4px 6px 0 0}
+.door:hover .d-tags span{border-color:#3a3a34}
+.d-price{font-size:13px;text-align:right;line-height:1.5;white-space:nowrap;color:var(--grey)}
+.d-price b{display:block;font-size:20px;color:var(--ink);letter-spacing:-.02em}
+.d-arrow{
+  width:44px;height:44px;border:1px solid var(--line);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+  transition:.18s;transform:translateX(-4px);
+}
+
+/* ---------- bandeau inclus ---------- */
+.incl{padding:64px 0}
+.incl h2{font-size:clamp(22px,2.4vw,30px);margin-bottom:30px}
+.inc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;border-top:1px solid var(--line)}
+.inc{padding-top:18px;border-top:2px solid transparent}
+.inc b{display:block;font-size:14.5px;margin-bottom:5px}
+.inc span{font-size:13.5px;color:var(--grey)}
+
+/* ---------- manifeste ---------- */
+.manif{background:var(--ink);color:var(--paper);padding:76px 0}
+.manif h2{font-size:clamp(26px,4vw,52px);max-width:20ch}
+.manif h2 em{font-style:normal;color:var(--red)}
+.manif .cols{display:grid;grid-template-columns:1fr 1fr;gap:54px;margin-top:38px}
+.manif p{color:#b9b6ab;font-size:15px;margin:0 0 14px}
+.manif strong{color:var(--paper)}
+
+/* ---------- contact ---------- */
+.contact{padding:80px 0}
+.contact .box{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:34px}
+.contact h2{font-size:clamp(28px,4vw,54px)}
+.contact .who{font-size:14px;color:var(--grey);line-height:1.7}
+.contact .who b{color:var(--ink)}
+
+footer{border-top:1px solid var(--line);padding:24px 0;font-size:12.5px;color:var(--grey)}
+footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+@media (max-width:900px){
+  .nav{display:none}
+  .door{grid-template-columns:40px 1fr;gap:12px 16px;padding:26px 4px}
+  .door:hover{padding-left:12px;padding-right:12px}
+  .d-price{grid-column:2;text-align:left;margin-top:6px;white-space:normal}
+  .d-price b{display:block;font-size:17px;margin:0 0 2px}
+  .d-arrow{display:none}
+  .inc-grid{grid-template-columns:1fr 1fr}
+  .manif .cols{grid-template-columns:1fr;gap:26px}
+  .hero{padding:48px 0 30px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#"><i></i>CAP ENCRE</a>
+    <nav class="nav">
+      <a href="#resto">Restaurants</a>
+      <a href="#artisan">Artisans</a>
+      <a href="#logement">Locations</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="cta" href="#contact">Prendre rendez-vous</a>
+  </div>
+</header>
+
+<section class="wrap hero">
+  <div class="kicker">Sites et outils — Vendée</div>
+  <h1>Trois métiers.<br>Trois outils.<br><em>Un seul prix clair.</em></h1>
+  <p>Un site ne sert à rien s'il ne vous amène pas de clients. On construit celui qui travaille pour vous — et l'outil qui va avec.</p>
+</section>
+
+<section class="wrap">
+  <div class="doors">
+
+    <a class="door" href="#resto" id="resto">
+      <div class="d-num">01</div>
+      <div>
+        <div class="d-name">Restaurant</div>
+        <div class="d-desc">Réservations sans commission, carte mise à jour par simple mail, site pensé pour le téléphone.</div>
+        <div class="d-tags"><span>Zéro commission</span><span>Menu par mail</span><span>Réservation directe</span></div>
+      </div>
+      <div class="d-price"><b>75 € / mois</b>sans frais d'entrée</div>
+      <div class="d-arrow">→</div>
+    </a>
+
+    <a class="door" href="#artisan" id="artisan">
+      <div class="d-num">02</div>
+      <div>
+        <div class="d-name">Artisan</div>
+        <div class="d-desc">Site vitrine, veille des permis de construire dans votre rayon, cartes de visite à QR code.</div>
+        <div class="d-tags"><span>Permis en temps réel</span><span>Alertes chantiers</span><span>Cartes QR</span></div>
+      </div>
+      <div class="d-price"><b>35 € / mois</b>logiciel compris</div>
+      <div class="d-arrow">→</div>
+    </a>
+
+    <a class="door" href="#logement" id="logement">
+      <div class="d-num">03</div>
+      <div>
+        <div class="d-name">Location saisonnière</div>
+        <div class="d-desc">Un site qui capte les réservations en direct, sans passer par les plateformes.</div>
+        <div class="d-tags"><span>Réservation directe</span><span>Fiche Google</span><span>Photos</span></div>
+      </div>
+      <div class="d-price"><b>Sur devis</b>selon le nombre de biens</div>
+      <div class="d-arrow">→</div>
+    </a>
+
+  </div>
+</section>
+
+<section class="wrap incl">
+  <h2>Compris dans les trois.</h2>
+  <div class="inc-grid">
+    <div class="inc"><b>Le nom de domaine</b><span>Réservé, configuré et renouvelé pour vous.</span></div>
+    <div class="inc"><b>L'hébergement</b><span>Rapide, sécurisé, sauvegardé chaque nuit.</span></div>
+    <div class="inc"><b>Les modifications</b><span>Deux mises à jour par mois incluses.</span></div>
+    <div class="inc"><b>Le support</b><span>Un interlocuteur unique, qui décroche.</span></div>
+  </div>
+</section>
+
+<section class="manif" id="contact">
+  <div class="wrap">
+    <h2>On ne vend pas un site.<br>On vend <em>des clients qui vous trouvent.</em></h2>
+    <div class="cols">
+      <div>
+        <p><strong>Pas de frais d'entrée.</strong> Vous payez chaque mois, et le site reste allumé tant que le travail se fait. Si vous arrêtez, il s'éteint — c'est aussi simple que ça.</p>
+        <p><strong>Pas de commission sur les réservations.</strong> Une table réservée chez vous reste à vous. Les plateformes prennent 3 à 4 € par couvert ; nous, zéro.</p>
+      </div>
+      <div>
+        <p><strong>Un site par métier, pas un modèle recyclé.</strong> Un restaurant n'a pas besoin de la même chose qu'un couvreur. On construit deux outils différents parce que ce sont deux métiers différents.</p>
+        <p><strong>Et un vrai rendez-vous.</strong> On regarde votre activité, vos clients, votre saison. Si le site ne sert à rien, on vous le dit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap contact">
+  <div class="box">
+    <h2>On en parle ?</h2>
+    <div class="who">
+      <b>Cap Encre</b><br>
+      06 62 67 44 14<br>
+      Milcent-benjamin@orange.fr<br>
+      Vendée et départements limitrophes
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap f">
+    <span>© 2026 Cap Encre</span>
+    <span>Mentions légales · Données personnelles</span>
+  </div>
+</footer>
+
+</body>
+</html>
