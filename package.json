@@ -1,0 +1,8 @@
+{
+  "name": "cap-encre-site",
+  "private": true,
+  "description": "Site et outil Cap Encre",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}
