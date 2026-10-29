@@ -7,3 +7,4 @@ veille/apercu-*.png
 veille/serveur-test.py
 node_modules/
 package-lock.json
+veille/serveur-dev.py

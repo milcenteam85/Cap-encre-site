@@ -201,7 +201,7 @@ footer.app{padding:0 26px 34px;color:var(--grey);font-size:11.5px;line-height:1.
     </nav>
     <div class="who">
       <b id="who-name">—</b>
-      <span>Abonnement Cap Encre</span>
+      <span id="mode-txt">Abonnement Cap Encre</span>
       <button id="lock">Verrouiller</button>
     </div>
   </aside>
@@ -277,6 +277,16 @@ footer.app{padding:0 26px 34px;color:var(--grey);font-size:11.5px;line-height:1.
         <div class="f" style="grid-column:1/-1"><label for="r-adresse">Adresse</label><input id="r-adresse"></div>
         <div class="f" style="grid-column:1/-1"><label for="r-signature">Signature des relances</label><textarea id="r-signature" style="min-height:70px"></textarea></div>
       </div>
+
+      <div class="top" style="margin-top:26px">
+        <div><h1 style="font-size:19px">Sauvegarde</h1>
+          <div class="sub" id="sauv-sub">Vos données sont conservées sur cet appareil. Téléchargez une copie de temps en temps.</div></div>
+        <div class="acts">
+          <button class="btn" id="exp-json">Télécharger mes données</button>
+          <button class="btn" id="imp-btn">Restaurer un fichier</button>
+          <input id="imp-json" type="file" accept="application/json,.json" hidden>
+        </div>
+      </div>
     </section>
   </main>
 </div>
@@ -310,6 +320,7 @@ const STATUTS = [
 
 let PERMIS = [], COMMUNES = {}, CLIENT = "";
 let DB = {clients:[], chantiers:[], reglages:{}};
+let MODE = "local"; // "serveur" si le stockage en ligne répond
 let state = Object.assign({commune:"", rayon:15, periode:12, natures:[]}, JSON.parse(localStorage.getItem(CLE_STATE) || "{}"));
 let minuteur = null;
 
@@ -348,13 +359,21 @@ async function chargerTout(code){
   const d = await r.json();
   PERMIS = d.permis; COMMUNES = d.communes; CLIENT = d.client || "";
 
+  MODE = "local";
   try {
     const r2 = await fetch("/.netlify/functions/pro-data", { headers: { "x-veille-code": code } });
     if (r2.ok) {
       const d2 = await r2.json();
       DB = Object.assign({clients:[], chantiers:[], reglages:{}}, d2.data || {});
+      MODE = "serveur";
+    } else {
+      const local = JSON.parse(localStorage.getItem("capencre.pro.db") || "null");
+      if (local) DB = Object.assign({clients:[], chantiers:[], reglages:{}}, local);
     }
-  } catch (e) { /* l'outil marche sans stockage : on le signale à l'enregistrement */ }
+  } catch (e) {
+    const local = JSON.parse(localStorage.getItem("capencre.pro.db") || "null");
+    if (local) DB = Object.assign({clients:[], chantiers:[], reglages:{}}, local);
+  }
   return true;
 }
 
@@ -365,19 +384,25 @@ function sauver(){
   enregistre("enregistrement…");
   clearTimeout(minuteur);
   minuteur = setTimeout(async () => {
+    localStorage.setItem("capencre.pro.db", JSON.stringify(DB));
+    if (MODE !== "serveur") { enregistre("sur cet appareil"); return; }
     try {
       const r = await fetch("/.netlify/functions/pro-data", {
         method: "POST",
         headers: { "x-veille-code": localStorage.getItem(CLE_CODE) || "", "content-type": "application/json" },
         body: JSON.stringify({ data: DB })
       });
-      enregistre(r.ok ? "enregistré ✓" : "échec ✕");
-    } catch (e) { enregistre("hors ligne"); }
+      enregistre(r.ok ? "enregistré ✓" : "sur cet appareil");
+    } catch (e) { enregistre("sur cet appareil"); }
   }, 600);
 }
 
 function demarrer(){
   byId("who-name").textContent = CLIENT || "Votre entreprise";
+  byId("mode-txt").textContent = MODE === "serveur" ? "Données synchronisées" : "Données sur cet appareil";
+  byId("sauv-sub").textContent = MODE === "serveur"
+    ? "Vos données sont enregistrées sur votre espace, rattaché à votre code. Elles suivent d'un appareil à l'autre."
+    : "Vos données sont conservées dans ce navigateur, sur cet appareil. Si vous videz vos données de navigation, elles disparaissent : téléchargez une copie de temps en temps.";
   document.body.classList.remove("locked");
   initCommunes(); initChips(); render();
   renderChantiers(); renderClients(); renderRelances(); remplirReglages();
@@ -762,6 +787,29 @@ function ouvrirModal(html, apres){
 function fermerModal(){ byId("modal").classList.remove("open"); }
 byId("modal").onclick = e => { if (e.target.id === "modal") fermerModal(); };
 document.addEventListener("keydown", e => { if (e.key === "Escape") { fermerModal(); byId("sheet").classList.remove("open"); } });
+
+byId("exp-json").onclick = () => {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(DB, null, 2)], {type:"application/json"}));
+  a.download = `cap-encre-pro-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+};
+byId("imp-btn").onclick = () => byId("imp-json").click();
+byId("imp-json").onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  const lecteur = new FileReader();
+  lecteur.onload = () => {
+    try {
+      const d = JSON.parse(lecteur.result);
+      if (!d || !Array.isArray(d.clients) || !Array.isArray(d.chantiers)) throw new Error("format");
+      if (!confirm(`Remplacer vos données actuelles par ce fichier ?\n${d.clients.length} client(s), ${d.chantiers.length} chantier(s).`)) return;
+      DB = {clients: d.clients, chantiers: d.chantiers, reglages: d.reglages || {}};
+      sauver(); renderChantiers(); renderClients(); renderRelances(); remplirReglages();
+    } catch (err) { alert("Fichier illisible — ce n'est pas une sauvegarde Cap Encre Pro."); }
+  };
+  lecteur.readAsText(f);
+  e.target.value = "";
+};
 
 byId("new-ch").onclick = () => nouveauChantier("a_chiffrer");
 byId("new-cl").onclick = () => nouveauClient();
