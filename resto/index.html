@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sites et réservations pour restaurants — Cap Encre</title>
+<meta name="description" content="Un site pour votre restaurant, les réservations sans commission et la carte mise à jour par simple mail. 75 € par mois, sans frais d'entrée.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f3f0e8'/%3E%3Crect x='9' y='9' width='14' height='14' fill='%231e4a3c' transform='rotate(45 16 16)'/%3E%3C/svg%3E">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="4d385258-635b-476a-b26a-f96fae2d3959"></script>
+<style>
+:root{
+  --ink:#0f0f0d;
+  --paper:#f3f0e8;
+  --accent:#1e4a3c;
+  --accent-2:#2c6a55;
+  --soft:#dde6e0;
+  --grey:#6d6d63;
+  --line:#d6d1c4;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;overflow-x:hidden;background:var(--paper);color:var(--ink);font:16px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.035em;line-height:1.03}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1220px;margin:0 auto;padding:0 24px}
+
+header{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(243,240,232,.93);backdrop-filter:blur(8px);z-index:20}
+.bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-weight:800;letter-spacing:-.04em;font-size:19px;display:flex;align-items:center;gap:9px}
+.logo i{width:10px;height:10px;background:var(--accent);border-radius:2px;transform:rotate(45deg);display:inline-block}
+.back{font-size:13.5px;color:var(--grey)}
+.cta{background:var(--ink);color:var(--paper);padding:11px 18px;border-radius:4px;font-size:14px;font-weight:600}
+.cta:hover{background:var(--accent)}
+
+/* hero */
+.hero{padding:64px 0 20px}
+.k{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:24px}
+.k::before{content:"";width:26px;height:2px;background:var(--accent)}
+.hero h1{font-size:clamp(36px,5.6vw,72px);max-width:17ch}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{font-size:clamp(16px,1.6vw,19px);color:var(--grey);max-width:54ch;margin:24px 0 0}
+.actions{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+.ghost{border:1.5px solid var(--line);padding:11px 18px;border-radius:4px;font-size:14px;font-weight:600}
+.ghost:hover{border-color:var(--accent);color:var(--accent)}
+
+/* bandeau coût */
+.cost{margin-top:56px;background:var(--ink);color:var(--paper);padding:52px 0}
+.cost h2{font-size:clamp(22px,2.6vw,32px);max-width:26ch;margin-bottom:28px}
+.cost em{font-style:normal;color:#e8482b}
+.calc{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid #33332d}
+.calc div{padding:18px 20px 0 0}
+.calc b{display:block;font-size:clamp(22px,2.6vw,34px);font-weight:800;letter-spacing:-.03em}
+.calc span{font-size:13px;color:#a8a599}
+.calc .total b{color:#e8482b}
+
+/* inclus */
+.incl{padding:66px 0 0}
+.incl h2{font-size:clamp(24px,3vw,38px);margin-bottom:34px;max-width:20ch}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;border-top:1px solid var(--line)}
+.g{padding-top:20px}
+.g b{display:block;font-size:15.5px;margin-bottom:6px}
+.g span{font-size:13.8px;color:var(--grey)}
+.g .n{font-size:11px;letter-spacing:.14em;color:var(--accent);font-weight:700;display:block;margin-bottom:12px}
+
+/* carte par mail */
+.mail{padding:72px 0 0}
+.mailbox{display:grid;grid-template-columns:1.05fr .95fr;gap:54px;align-items:center}
+.mail h2{font-size:clamp(24px,3.2vw,40px);margin-bottom:18px}
+.mail p{color:var(--grey);max-width:46ch}
+.steps3{margin-top:26px;display:grid;gap:16px}
+.step3{display:flex;gap:14px;align-items:flex-start}
+.step3 i{flex:0 0 26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.step3 b{display:block;font-size:14.5px}
+.step3 span{font-size:13.5px;color:var(--grey)}
+.demo-mail{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px;box-shadow:0 18px 40px -30px rgba(0,0,0,.5)}
+.demo-mail .from{font-size:12px;color:var(--grey);border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:14px;display:flex;justify-content:space-between}
+.demo-mail .obj{font-size:14px;font-weight:700;margin-bottom:6px}
+.demo-mail .att{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--grey);background:var(--paper);border:1px dashed var(--line);border-radius:6px;padding:10px}
+.demo-mail .ok{margin-top:14px;font-size:12.5px;color:var(--accent);font-weight:600}
+
+/* réservation */
+.book{background:var(--accent);color:var(--paper);padding:72px 0;margin-top:72px}
+.book .head{max-width:52ch;margin-bottom:34px}
+.book h2{font-size:clamp(24px,3.2vw,40px);color:#fff}
+.book p{color:#c7d6cf;margin-top:14px}
+.booking{background:var(--paper);color:var(--ink);border-radius:12px;padding:26px;max-width:720px}
+.booking .row{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:14px}
+.booking label{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);font-weight:700;margin-bottom:6px}
+.booking input,.booking select{width:100%;background:#fff;border:1px solid var(--line);border-radius:6px;padding:11px 12px;font:inherit;font-size:15px;color:var(--ink)}
+.booking input:focus,.booking select:focus{outline:none;border-color:var(--accent)}
+.booking button{margin-top:18px;width:100%;background:var(--accent);color:#fff;border:0;padding:14px;border-radius:6px;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.booking button:hover{background:var(--accent-2)}
+.booking .retour{margin-top:14px;font-size:13.5px;color:var(--accent);font-weight:600;display:none}
+.booking .note{font-size:12px;color:var(--grey);margin-top:12px}
+.booksplit{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.booksplit ul{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.booksplit li{font-size:14.5px;color:#dfe9e4;padding-left:22px;position:relative}
+.booksplit li::before{content:"→";position:absolute;left:0;color:#9fc3b3}
+
+/* prix */
+.price{padding:76px 0}
+.price .box{display:flex;justify-content:space-between;align-items:center;gap:40px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:34px}
+.price h2{font-size:clamp(26px,3.6vw,46px)}
+.price .num{font-size:clamp(40px,6vw,80px);font-weight:800;letter-spacing:-.045em;line-height:1}
+.price .num small{font-size:15px;font-weight:600;letter-spacing:0;color:var(--grey)}
+.price ul{list-style:none;padding:0;margin:0;display:grid;gap:8px;font-size:14px;color:var(--grey)}
+
+footer{border-top:1px solid var(--line);padding:24px 0;font-size:12.5px;color:var(--grey)}
+footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+@media (max-width:900px){
+  .calc{grid-template-columns:1fr 1fr;gap:0}
+  .calc div{padding:14px 12px 14px 0}
+  .grid4,.mailbox,.booksplit{grid-template-columns:1fr;gap:28px}
+  .booking .row{grid-template-columns:1fr}
+  .hero{padding:44px 0 10px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div style="display:flex;align-items:center;gap:20px">
+      <a class="logo" href="/"><i></i>CAP ENCRE</a>
+      <a class="back" href="/">← Tous nos métiers</a>
+    </div>
+    <a class="cta" href="tel:+33662674414">06 62 67 44 14</a>
+  </div>
+</header>
+
+<section class="wrap hero">
+  <div class="k">Restaurants</div>
+  <h1>Vos tables.<br><em>Sans commission.</em></h1>
+  <p>Un site qui vous ressemble, des réservations qui vous appartiennent, et une carte qui se met à jour d'un simple mail. 75 € par mois, sans frais d'entrée.</p>
+  <div class="actions">
+    <a class="cta" href="#essai">Demander une démo</a>
+    <a class="ghost" href="#reservation">Voir la réservation</a>
+  </div>
+</section>
+
+<section class="cost">
+  <div class="wrap">
+    <h2>Ce que les plateformes vous prennent, chaque année.</h2>
+    <div class="calc">
+      <div><b>400</b><span>couverts réservés en ligne, par mois</span></div>
+      <div><b>3,50 €</b><span>de commission par couvert</span></div>
+      <div><b>12</b><span>mois</span></div>
+      <div class="total"><b>16 800 €</b><span>par an. Pour des clients qui sont déjà les vôtres.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap incl">
+  <h2>Tout est compris. Vraiment.</h2>
+  <div class="grid4">
+    <div class="g"><span class="n">01</span><b>Le site</b><span>Une page qui donne faim, pensée d'abord pour le téléphone.</span></div>
+    <div class="g"><span class="n">02</span><b>La réservation</b><span>Le client demande, vous validez, il reçoit sa confirmation.</span></div>
+    <div class="g"><span class="n">03</span><b>La carte</b><span>Vous envoyez le PDF, il est en ligne dans l'heure.</span></div>
+    <div class="g"><span class="n">04</span><b>Le reste</b><span>Nom de domaine, hébergement, fiche Google, deux modifications par mois.</span></div>
+  </div>
+</section>
+
+<section class="wrap mail">
+  <div class="mailbox">
+    <div>
+      <h2>Changer sa carte ne devrait pas prendre une soirée.</h2>
+      <p>Vous nous envoyez votre menu en PDF ou en photo, comme vous l'envoyez à votre imprimeur. Il est en ligne avant le service.</p>
+      <div class="steps3">
+        <div class="step3"><i>1</i><div><b>Vous envoyez</b><span>Un mail, une pièce jointe. Rien d'autre.</span></div></div>
+        <div class="step3"><i>2</i><div><b>On publie</b><span>Le fichier remplace l'ancienne carte, sans retouche.</span></div></div>
+        <div class="step3"><i>3</i><div><b>Vous vérifiez</b><span>Un lien pour voir le résultat, et c'est tout.</span></div></div>
+      </div>
+    </div>
+    <div class="demo-mail">
+      <div class="from"><span>À : carte@capencre.fr</span><span>aujourd'hui</span></div>
+      <div class="obj">Nouvelle carte — automne</div>
+      <div class="att">📎 carte-automne.pdf · 1,2 Mo</div>
+      <div class="ok">✓ Publiée sur votre site à 11 h 04</div>
+    </div>
+  </div>
+</section>
+
+<section class="book" id="reservation">
+  <div class="wrap">
+    <div class="head">
+      <h2>Une réservation, trois secondes.</h2>
+      <p>Le client choisit son jour, son heure et son nombre de couverts. Vous recevez un mail, vous cliquez pour valider, il reçoit sa confirmation. Aucun compte à créer, aucune application.</p>
+    </div>
+    <div class="booksplit">
+      <form class="booking" id="bk" onsubmit="return demoResa(event)">
+        <div class="row">
+          <div><label for="d">Date</label><input id="d" type="date" required></div>
+          <div><label for="h">Heure</label>
+            <select id="h"><option>12:00</option><option>12:30</option><option>13:00</option><option>19:30</option><option>20:00</option><option>20:30</option></select>
+          </div>
+          <div><label for="c">Couverts</label>
+            <select id="c"><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select>
+          </div>
+        </div>
+        <button type="submit">Demander cette table</button>
+        <div class="retour" id="ret">✓ Demande envoyée au restaurant. Vous recevrez la confirmation par mail.</div>
+        <p class="note">Démonstration — aucune réservation n'est réellement enregistrée.</p>
+      </form>
+      <ul>
+        <li>Le restaurant garde la main : rien n'est confirmé sans son accord.</li>
+        <li>Les demandes arrivent par mail, avec un lien pour valider en un clic.</li>
+        <li>Le client reçoit une confirmation claire, à son nom.</li>
+        <li>Zéro commission, zéro intermédiaire, zéro client captif.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="wrap price" id="essai">
+  <div class="box">
+    <div>
+      <h2>Un prix.<br>Pas un pourcentage.</h2>
+      <p style="color:var(--grey);margin-top:14px;max-width:34ch">Sans frais d'entrée, sans commission sur les couverts, sans engagement de volume. Vous savez ce que ça coûte, et ça ne bouge pas.</p>
+    </div>
+    <div>
+      <div class="num">75 €<small> / mois</small></div>
+      <ul style="margin-top:18px">
+        <li>· Site, réservation, carte par mail</li>
+        <li>· Nom de domaine et hébergement inclus</li>
+        <li>· Deux modifications par mois</li>
+        <li>· Un interlocuteur qui décroche</li>
+      </ul>
+      <a class="cta" style="display:inline-block;margin-top:22px" href="mailto:Milcent-benjamin@orange.fr?subject=D%C3%A9mo%20restaurant">Demander une démo</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap f">
+    <span>© 2026 Cap Encre — <a href="/mentions-legales" style="text-decoration:underline">Mentions légales</a></span>
+    <span>06 62 67 44 14 · Milcent-benjamin@orange.fr</span>
+  </div>
+</footer>
+
+<script>
+function demoResa(e){
+  e.preventDefault();
+  document.getElementById('ret').style.display='block';
+  document.querySelector('#bk button').textContent='Demande envoyée ✓';
+  return false;
+}
+</script>
+</body>
+</html>
