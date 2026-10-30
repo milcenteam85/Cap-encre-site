@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sites et commandes pour les métiers de bouche — Cap Encre</title>
-<meta name="description" content="Un site pour votre boutique : horaires à jour, carte modifiée par simple mail et commandes reçues par mail. 75 € par mois.">
+<meta name="description" content="Un site pour votre boutique : horaires à jour, carte modifiée par simple mail et commandes reçues par mail. 75&nbsp;€ par mois.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f3f0e8'/%3E%3Crect x='9' y='9' width='14' height='14' fill='%235b2a3b' transform='rotate(45 16 16)'/%3E%3C/svg%3E">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="4d385258-635b-476a-b26a-f96fae2d3959"></script>
 <style>
@@ -140,7 +140,7 @@ footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <section class="wrap hero">
   <div class="k">Métiers de bouche</div>
   <h1>Votre ardoise mérite<br>mieux qu'un Post-it<br><em>collé sur la porte.</em></h1>
-  <p>Boulanger, pâtissier, boucher, traiteur : un site qui montre ce que vous faites ce matin, qui donne vos horaires à jour, et qui prend les commandes pendant que vous êtes au fourneau. 75 € par mois, sans frais d'entrée.</p>
+  <p>Boulanger, pâtissier, boucher, traiteur : un site qui montre ce que vous faites ce matin, qui donne vos horaires à jour, et qui prend les commandes pendant que vous êtes au fourneau. 75&nbsp;€ par mois, sans frais d'entrée.</p>
   <div class="actions">
     <a class="cta" href="#essai">Demander une démo</a>
     <a class="ghost" href="#commande">Voir la commande</a>
@@ -198,11 +198,21 @@ footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <div class="booksplit">
       <form class="booking" id="bk" onsubmit="return demoCommande(event)">
         <div class="row">
+          <div style="grid-column:1/-1"><label for="p">Produit</label>
+            <select id="p">
+              <option>Baguettes</option>
+              <option>Croissants</option>
+              <option>Pains au chocolat</option>
+              <option>Brioches</option>
+              <option>Éclairs</option>
+              <option>Tarte</option>
+            </select>
+          </div>
           <div><label for="d">Retrait</label><input id="d" type="date" required></div>
           <div><label for="h">Heure</label>
             <select id="h"><option>7:00</option><option>7:30</option><option>8:00</option><option>9:00</option><option>11:30</option><option>12:00</option></select>
           </div>
-          <div><label for="c">Pièces</label>
+          <div><label for="c">Quantité</label>
             <select id="c"><option>6</option><option>12</option><option>24</option><option>40</option><option>60</option></select>
           </div>
         </div>
@@ -249,8 +259,18 @@ footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <script>
 function demoCommande(e){
   e.preventDefault();
-  document.getElementById('ret').style.display='block';
-  document.querySelector('#bk button').textContent='Commande envoyée ✓';
+  const produit = document.getElementById('p').value;
+  const qte = document.getElementById('c').value;
+  const heure = document.getElementById('h').value;
+  const jour = document.getElementById('d').value;
+  const joli = jour ? new Date(jour).toLocaleDateString('fr-FR',{day:'numeric',month:'long'}) : "la date choisie";
+  const nom = produit.charAt(0).toLowerCase() + produit.slice(1);
+  const mot = Number(qte) > 1 && !nom.endsWith("s") ? nom + "s" : nom;
+  const h = heure.replace(":", " h ");
+  const ret = document.getElementById('ret');
+  ret.textContent = `✓ ${qte} ${mot}, retrait le ${joli} à ${h} — commande envoyée à la boutique.`;
+  ret.style.display = 'block';
+  document.querySelector('#bk button').textContent = 'Commande envoyée ✓';
   return false;
 }
 </script>
