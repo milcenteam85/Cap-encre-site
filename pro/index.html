@@ -275,6 +275,16 @@ footer.app{padding:0 26px 34px;color:var(--grey);font-size:11.5px;line-height:1.
         <div class="f"><label for="r-tel">Téléphone</label><input id="r-tel"></div>
         <div class="f"><label for="r-email">Email</label><input id="r-email" type="email"></div>
         <div class="f" style="grid-column:1/-1"><label for="r-adresse">Adresse</label><input id="r-adresse"></div>
+        <div class="f"><label for="r-messagerie">Ma messagerie</label>
+          <select id="r-messagerie">
+            <option value="gmail">Gmail</option>
+            <option value="outlook">Outlook.com</option>
+            <option value="yahoo">Yahoo Mail</option>
+            <option value="orange">Orange (messagerie web)</option>
+            <option value="defaut">Application par défaut de l'appareil</option>
+            <option value="copier">Aucune — je copie le texte</option>
+          </select></div>
+        <div class="f"><label>&nbsp;</label><div style="font-size:11.5px;color:var(--grey)">Sert au bouton « Relancer » de l'onglet Relances.</div></div>
         <div class="f" style="grid-column:1/-1"><label for="r-signature">Signature des relances</label><textarea id="r-signature" style="min-height:70px"></textarea></div>
       </div>
 
@@ -710,6 +720,20 @@ function renderRelances(){
     }).join("")}
   </tbody></table><div id="rel-mail"></div>`;
 }
+function lienMessagerie(email, sujet, corps){
+  const m = (DB.reglages && DB.reglages.messagerie) || "gmail";
+  const to = encodeURIComponent(email), su = encodeURIComponent(sujet), bd = encodeURIComponent(corps);
+  if (m === "gmail")   return `https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${su}&body=${bd}`;
+  if (m === "outlook") return `https://outlook.live.com/mail/0/deeplink/compose?to=${to}&subject=${su}&body=${bd}`;
+  if (m === "yahoo")   return `https://compose.mail.yahoo.com/?to=${to}&subject=${su}&body=${bd}`;
+  if (m === "orange")  return "https://messagerie.orange.fr/";
+  if (m === "copier")  return "";
+  return `mailto:${to}?subject=${su}&body=${bd}`;
+}
+function libelleMessagerie(){
+  const m = (DB.reglages && DB.reglages.messagerie) || "gmail";
+  return ({gmail:"Ouvrir Gmail", outlook:"Ouvrir Outlook", yahoo:"Ouvrir Yahoo", orange:"Ouvrir Orange (texte copié)", copier:"", defaut:"Ouvrir ma messagerie"})[m] || "Ouvrir ma messagerie";
+}
 function preparerRelance(id){
   const ch = DB.chantiers.find(x => x.id === id);
   const c = clientDe(ch) || {};
@@ -731,18 +755,24 @@ Si un règlement a été effectué entre-temps, merci de ne pas tenir compte de 
 
 ${r.signature || ""}`;
   const sujet = `Relance — ${ch.titre || "facture"} — ${eur(montant)}`;
-  const lien = c.email ? `mailto:${encodeURIComponent(c.email)}?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}` : "";
+  const lien = c.email ? lienMessagerie(c.email, sujet, corps) : "";
+  const libelle = c.email ? libelleMessagerie() : "";
+  window.__dernierTexte = corps;
   byId("rel-mail").innerHTML = `<div class="mail">
     <div class="to">À : ${esc(c.email || "— email non renseigné —")} · Objet : ${esc(sujet)}</div>
     <p style="white-space:pre-line">${esc(corps)}</p>
     <div class="sig"></div>
     <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
-      ${lien ? `<a class="btn accent" href="${lien}">Envoyer par mail</a>` : `<span class="pill late">Ajoutez l'email du client</span>`}
+      ${lien ? `<a class="btn accent" href="${lien}" target="_blank" rel="noopener"${((DB.reglages&&DB.reglages.messagerie)==="orange") ? ` onclick="copierSilencieux()"` : ""}>${esc(libelle)}</a>` : (c.email ? "" : `<span class="pill late">Ajoutez l'email du client</span>`)}
       <button class="btn" onclick="copierTexte(${JSON.stringify(corps).replace(/"/g,"&quot;")})">Copier le texte</button>
       <button class="btn" onclick="marquerPaye('${ch.id}')">Marquer payé</button>
     </div>
   </div>`;
   byId("rel-mail").scrollIntoView({behavior:"smooth", block:"center"});
+}
+function copierSilencieux(){
+  const t = (window.__dernierTexte || "");
+  if (t && navigator.clipboard) navigator.clipboard.writeText(t).catch(() => {});
 }
 function copierTexte(t){
   navigator.clipboard.writeText(t).then(() => alert("Texte copié.")).catch(() => alert("Copie impossible sur cet appareil."));
@@ -761,6 +791,7 @@ function remplirReglages(){
   byId("r-email").value = r.email || "";
   byId("r-adresse").value = r.adresse || "";
   byId("r-signature").value = r.signature || "";
+  byId("r-messagerie").value = r.messagerie || "gmail";
 }
 byId("save-reg").onclick = () => {
   DB.reglages = {
@@ -769,7 +800,8 @@ byId("save-reg").onclick = () => {
     tel: byId("r-tel").value.trim(),
     email: byId("r-email").value.trim(),
     adresse: byId("r-adresse").value.trim(),
-    signature: byId("r-signature").value.trim()
+    signature: byId("r-signature").value.trim(),
+    messagerie: byId("r-messagerie").value
   };
   sauver(); renderRelances();
   byId("save-reg").textContent = "Enregistré ✓";
