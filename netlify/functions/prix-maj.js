@@ -8,6 +8,15 @@
 const crypto = require("crypto");
 const { getStore } = require("@netlify/blobs");
 
+function magasin() {
+  // Sur Netlify, le contexte est fourni automatiquement. En cas de doute,
+  // on peut forcer avec BLOBS_SITE_ID et BLOBS_TOKEN.
+  const siteID = process.env.BLOBS_SITE_ID || process.env.SITE_ID;
+  const token = process.env.BLOBS_TOKEN;
+  return siteID && token ? getStore({ name: "prix", siteID, token }) : getStore("prix");
+}
+
+
 const identiques = (a, b) => {
   const ta = Buffer.from(String(a));
   const tb = Buffer.from(String(b));
@@ -39,7 +48,7 @@ exports.handler = async (event) => {
 
   const cle = client.toLowerCase().replace(/[^a-z0-9]+/g, "-");
   try {
-    const store = getStore("prix");
+    const store = magasin();
     await store.setJSON(cle, corps.data);
   } catch (e) {
     return {
