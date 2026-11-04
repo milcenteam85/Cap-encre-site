@@ -56,6 +56,17 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 0;font-size
  .hide-s{display:none}
  h1{margin-top:22px}
 }
+.voir{background:none;border:1px solid var(--line);border-radius:99px;color:var(--grey);
+ font:inherit;font-size:10.5px;padding:1px 7px;margin-left:6px;cursor:pointer;vertical-align:2px}
+.voir:hover{border-color:var(--red);color:var(--red)}
+.detail td{background:#efece2;padding:0}
+.srcs{padding:4px 8px}
+.src{display:grid;grid-template-columns:90px 1fr 110px 90px;gap:10px;align-items:center;
+ padding:7px 4px;border-bottom:1px solid var(--line);font-size:13px}
+.src:last-child{border-bottom:0}
+.src b{text-align:right;font-variant-numeric:tabular-nums}
+.src a{color:var(--red);text-decoration:underline;text-underline-offset:2px}
+@media (max-width:760px){.src{grid-template-columns:1fr auto;gap:4px 10px}}
 </style>
 </head>
 <body>
@@ -89,6 +100,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 0;font-size
     <select id="fFamille"><option value="">Toutes les familles</option></select>
     <select id="fCons"><option value="">Toutes conservations</option></select>
     <select id="fFour"><option value="">Tous fournisseurs</option></select>
+    <button id="btnExcel" type="button" style="border:1px solid var(--line);background:transparent;border-radius:8px;padding:9px 14px;font:inherit;font-size:14px;cursor:pointer;white-space:nowrap">Excel</button>
   </div>
 
   <table>
@@ -102,12 +114,19 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 0;font-size
     <tbody id="corps"></tbody>
   </table>
   <div class="vide" id="vide" hidden>Aucun produit ne correspond.</div>
+
+  <details id="blocFactures" style="margin-top:34px;border-top:1px solid var(--line);padding-top:18px">
+    <summary style="cursor:pointer;font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--grey);font-weight:700">
+      Les factures reçues (<span id="nbFactures">0</span>)
+    </summary>
+    <ul id="listeFactures" style="list-style:none;padding:0;margin:16px 0 0"></ul>
+  </details>
 </main>
 
 <footer><div class="wrap" id="pied"></div></footer>
 
 <script>
-let DATA = null, tri = { champ: "variation", sens: -1 };
+let DATA = null, CODE = "", tri = { champ: "variation", sens: -1 };
 
 const euros = v => v.toLocaleString("fr-FR", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €";
 const sansAccent = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -126,6 +145,45 @@ function spark(series, w = 74, h = 22) {
   return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
     <polyline points="${pts}" fill="none" stroke="${monte ? "#e8482b" : "#2f6b3a"}" stroke-width="1.8"
       stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+}
+
+function lienPdf(fichier) {
+  const q = new URLSearchParams({ client: DATA.client, fichier, code: CODE });
+  return "/.netlify/functions/prix-facture?" + q.toString();
+}
+
+function remplitFactures() {
+  const fs = DATA.factures || [];
+  document.getElementById("nbFactures").textContent = fs.length;
+  document.getElementById("listeFactures").innerHTML = fs.map(f => `
+    <li style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px">
+      <span>${f.date.split("-").reverse().join("/")} · ${f.fournisseur}</span>
+      <span style="display:flex;gap:14px;align-items:center">
+        <b>${euros(f.montant)}</b>
+        <a href="${lienPdf(f.fichier)}" target="_blank" rel="noopener" style="color:var(--red)">ouvrir</a>
+      </span>
+    </li>`).join("");
+}
+
+function exportCsv() {
+  const mois = [...new Set(DATA.produits.flatMap(p => Object.keys(p.series)))].sort();
+  const entete = ["Produit", "Famille", "Conservation", "Fournisseurs",
+                  "Dernier prix au kg", "Variation %", ...mois.map(m => m)];
+  const lignes = DATA.produits.map(p => [
+    p.nom, p.famille, p.conservation, p.fournisseurs.join(" / "),
+    p.dernier.toFixed(2).replace(".", ","),
+    p.variation === null ? "" : p.variation.toFixed(1).replace(".", ","),
+    ...mois.map(m => p.series[m] ? p.series[m].toFixed(2).replace(".", ",") : ""),
+  ]);
+  const csv = [entete, ...lignes]
+    .map(l => l.map(v => `"${String(v).replace(/"/g, '""')}"`).join(";"))
+    .join("\r\n");
+  const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `prix-${DATA.client.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 
 function affiche() {
@@ -149,7 +207,7 @@ function affiche() {
     return (va - vb) * tri.sens;
   });
 
-  document.getElementById("corps").innerHTML = lignes.map(p => {
+  document.getElementById("corps").innerHTML = lignes.map((p, i) => {
     let badge = '<span class="badge flat">nouveau</span>';
     if (p.variation !== null) {
       const cls = Math.abs(p.variation) < 0.5 ? "flat" : (p.variation > 0 ? "up" : "down");
@@ -157,15 +215,34 @@ function affiche() {
     }
     const etiquettes = [p.famille, p.conservation].filter(Boolean)
       .map(t => `<span class="pill">${t}</span>`).join("");
-    return `<tr>
-      <td><div class="nom">${p.nom[0].toUpperCase() + p.nom.slice(1)}</div>
+    const src = (p.sources || []);
+    const lien = src.length
+      ? `<button class="voir" data-i="${i}" type="button">${src.length} facture${src.length > 1 ? "s" : ""}</button>`
+      : "";
+    const detail = src.length ? `<tr class="detail" id="d${i}" hidden><td colspan="5">
+      <div class="srcs">${src.map(s => `
+        <div class="src">
+          <span>${s.date.split("-").reverse().join("/")}</span>
+          <span>${s.fournisseur}</span>
+          <b>${euros(s.prix_kg)}/kg</b>
+          <a href="${lienPdf(s.fichier)}" target="_blank" rel="noopener">la facture</a>
+        </div>`).join("")}</div></td></tr>` : "";
+    return `<tr class="ligne">
+      <td><div class="nom">${p.nom[0].toUpperCase() + p.nom.slice(1)} ${lien}</div>
           <div class="meta">${etiquettes}${p.fournisseurs.join(" · ")}</div></td>
       <td class="n">${euros(p.dernier)}</td>
       <td class="n">${badge}</td>
       <td class="hide-s n">${p.mois}</td>
       <td class="hide-s">${spark(p.series)}</td>
-    </tr>`;
+    </tr>` + detail;
   }).join("");
+
+  document.querySelectorAll(".voir").forEach(b =>
+    b.addEventListener("click", () => {
+      const d = document.getElementById("d" + b.dataset.i);
+      d.hidden = !d.hidden;
+      b.classList.toggle("ouvert", !d.hidden);
+    }));
 
   document.getElementById("vide").hidden = lignes.length > 0;
 }
@@ -201,6 +278,8 @@ function init() {
   document.getElementById("pied").textContent =
     `Prix calculés sur les quantités facturées. Données ${d.client}, mises à jour automatiquement.`;
 
+  remplitFactures();
+  document.getElementById("btnExcel").addEventListener("click", exportCsv);
   document.getElementById("q").addEventListener("input", affiche);
   ["fFamille", "fCons", "fFour"].forEach(id =>
     document.getElementById(id).addEventListener("change", affiche));
@@ -227,6 +306,7 @@ async function charge(code) {
     return false;
   }
   DATA = await r.json();
+  CODE = code || "";
   document.getElementById("connexion").hidden = true;
   document.getElementById("principal").hidden = false;
   init();
