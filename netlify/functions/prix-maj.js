@@ -38,8 +38,16 @@ exports.handler = async (event) => {
   }
 
   const cle = client.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-  const store = getStore("prix");
-  await store.setJSON(cle, corps.data);
+  try {
+    const store = getStore("prix");
+    await store.setJSON(cle, corps.data);
+  } catch (e) {
+    return {
+      statusCode: 500,
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ erreur: "ecriture impossible", detail: String(e && e.message || e) }),
+    };
+  }
 
   return {
     statusCode: 200,

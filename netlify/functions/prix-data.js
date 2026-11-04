@@ -71,7 +71,7 @@ exports.handler = async (event) => {
     return {
       statusCode: 500,
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ erreur: "lecture impossible" }),
+      body: JSON.stringify({ erreur: "lecture impossible", detail: String(e && e.message || e) }),
     };
   }
 };
