@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prix des achats</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f3f0e8'/%3E%3Crect x='9' y='9' width='14' height='14' fill='%23e8482b' transform='rotate(45 16 16)'/%3E%3C/svg%3E">
+<style>
+:root{--ink:#0f0f0d;--paper:#f3f0e8;--red:#e8482b;--grey:#6d6d63;--line:#d6d1c4;--green:#2f6b3a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+ font:15px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+header{border-bottom:1px solid var(--line);background:rgba(243,240,232,.94);position:sticky;top:0;z-index:10;backdrop-filter:blur(8px)}
+.bar{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.045em;font-size:19px}
+.logo i{width:11px;height:11px;background:var(--red);border-radius:2px;transform:rotate(45deg)}
+.who{font-size:12.5px;color:var(--grey);text-align:right;line-height:1.3}
+h1{font-size:clamp(26px,4vw,40px);letter-spacing:-.035em;margin:34px 0 6px;font-weight:800}
+.sub{color:var(--grey);font-size:14px;margin-bottom:26px}
+
+.alertes{border:1px solid #f0c4ba;background:#fbe9e4;border-radius:12px;padding:16px 18px;margin-bottom:26px}
+.alertes h2{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--red);margin:0 0 10px;font-weight:700}
+.alertes ul{list-style:none;margin:0;padding:0}
+.alertes li{display:flex;justify-content:space-between;gap:12px;padding:6px 0;font-size:14px;border-top:1px solid #f0c4ba}
+.alertes li:first-child{border-top:0}
+
+.outils{display:grid;grid-template-columns:1fr repeat(3,auto);gap:10px;margin-bottom:14px}
+input,select{font:inherit;font-size:14px;color:var(--ink);background:transparent;
+ border:1px solid var(--line);border-radius:8px;padding:9px 11px;width:100%;min-width:0}
+input:focus,select:focus{outline:none;border-color:var(--red)}
+select{appearance:none;padding-right:28px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='m1 1 4 4 4-4' fill='none' stroke='%236d6d63' stroke-width='1.4'/%3E%3C/svg%3E");
+ background-repeat:no-repeat;background-position:right 10px center}
+
+table{width:100%;border-collapse:collapse;margin-top:6px}
+th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--grey);
+ font-weight:700;border-bottom:1px solid var(--line);padding:9px 8px;cursor:pointer;white-space:nowrap;user-select:none}
+th:hover{color:var(--ink)}
+td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.nom{font-weight:600}
+.meta{font-size:11.5px;color:var(--grey);margin-top:2px}
+.pill{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:99px;
+ border:1px solid var(--line);color:var(--grey);margin-right:4px}
+.badge{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.up{background:#fbe3dd;color:var(--red)}
+.down{background:#e3efe3;color:var(--green)}
+.flat{color:var(--grey);font-weight:400}
+svg.spark{display:block}
+.vide{padding:40px 0;color:var(--grey);text-align:center}
+
+footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 0;font-size:12px;color:var(--grey)}
+@media (max-width:760px){
+ .outils{grid-template-columns:1fr 1fr}
+ .outils input{grid-column:1/-1}
+ .hide-s{display:none}
+ h1{margin-top:22px}
+}
+</style>
+</head>
+<body>
+
+<header><div class="wrap bar">
+  <div class="logo"><i></i>CAP ENCRE</div>
+  <div class="who" id="entete">&nbsp;</div>
+</div></header>
+
+<div id="connexion" hidden style="max-width:380px;margin:80px auto;padding:0 20px">
+  <h1 style="font-size:26px;margin:0 0 8px">Accès réservé</h1>
+  <p style="color:var(--grey);font-size:14px;margin:0 0 22px">Entrez le code d'accès qui vous a été transmis.</p>
+  <form id="formConnexion" style="display:grid;gap:12px">
+    <input id="motdepasse" type="text" placeholder="Votre code" autocomplete="off" required>
+    <button type="submit" style="background:var(--ink);color:var(--paper);border:0;border-radius:8px;padding:12px;font:inherit;font-weight:600;cursor:pointer">Entrer</button>
+    <div id="erreur" style="color:var(--red);font-size:13px"></div>
+  </form>
+</div>
+
+<main class="wrap" id="principal" hidden>
+  <h1>Le prix réel de vos achats</h1>
+  <div class="sub" id="sous">&nbsp;</div>
+
+  <section class="alertes" id="zoneAlertes" hidden>
+    <h2>Hausses à surveiller</h2>
+    <ul id="listeAlertes"></ul>
+  </section>
+
+  <div class="outils">
+    <input id="q" type="search" placeholder="Chercher un produit : farine, crème, pain burger…" autocomplete="off">
+    <select id="fFamille"><option value="">Toutes les familles</option></select>
+    <select id="fCons"><option value="">Toutes conservations</option></select>
+    <select id="fFour"><option value="">Tous fournisseurs</option></select>
+  </div>
+
+  <table>
+    <thead><tr>
+      <th data-tri="nom">Produit</th>
+      <th class="n" data-tri="dernier">Prix au kilo</th>
+      <th class="n" data-tri="variation">Évolution</th>
+      <th class="hide-s n" data-tri="mois">Mois</th>
+      <th class="hide-s">Tendance</th>
+    </tr></thead>
+    <tbody id="corps"></tbody>
+  </table>
+  <div class="vide" id="vide" hidden>Aucun produit ne correspond.</div>
+</main>
+
+<footer><div class="wrap" id="pied"></div></footer>
+
+<script>
+let DATA = null, tri = { champ: "variation", sens: -1 };
+
+const euros = v => v.toLocaleString("fr-FR", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €";
+const sansAccent = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+function spark(series, w = 74, h = 22) {
+  const mois = Object.keys(series).sort();
+  if (mois.length < 2) return "";
+  const vals = mois.map(m => series[m]);
+  const min = Math.min(...vals), max = Math.max(...vals), ecart = (max - min) || 1;
+  const pts = vals.map((v, i) => {
+    const x = (i / (vals.length - 1)) * (w - 2) + 1;
+    const y = h - 2 - ((v - min) / ecart) * (h - 4);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(" ");
+  const monte = vals[vals.length - 1] > vals[0];
+  return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <polyline points="${pts}" fill="none" stroke="${monte ? "#e8482b" : "#2f6b3a"}" stroke-width="1.8"
+      stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+}
+
+function affiche() {
+  const q = sansAccent(document.getElementById("q").value.trim());
+  const fam = document.getElementById("fFamille").value;
+  const cons = document.getElementById("fCons").value;
+  const four = document.getElementById("fFour").value;
+
+  let lignes = DATA.produits.filter(p => {
+    if (q && !sansAccent(p.nom).includes(q)) return false;
+    if (fam && p.famille !== fam) return false;
+    if (cons && p.conservation !== cons) return false;
+    if (four && !p.fournisseurs.includes(four)) return false;
+    return true;
+  });
+
+  lignes.sort((a, b) => {
+    const va = a[tri.champ] === null ? -999 : a[tri.champ];
+    const vb = b[tri.champ] === null ? -999 : b[tri.champ];
+    if (typeof va === "string") return va.localeCompare(vb) * tri.sens;
+    return (va - vb) * tri.sens;
+  });
+
+  document.getElementById("corps").innerHTML = lignes.map(p => {
+    let badge = '<span class="badge flat">nouveau</span>';
+    if (p.variation !== null) {
+      const cls = Math.abs(p.variation) < 0.5 ? "flat" : (p.variation > 0 ? "up" : "down");
+      badge = `<span class="badge ${cls}">${p.variation > 0 ? "+" : ""}${p.variation.toFixed(1)} %</span>`;
+    }
+    const etiquettes = [p.famille, p.conservation].filter(Boolean)
+      .map(t => `<span class="pill">${t}</span>`).join("");
+    return `<tr>
+      <td><div class="nom">${p.nom[0].toUpperCase() + p.nom.slice(1)}</div>
+          <div class="meta">${etiquettes}${p.fournisseurs.join(" · ")}</div></td>
+      <td class="n">${euros(p.dernier)}</td>
+      <td class="n">${badge}</td>
+      <td class="hide-s n">${p.mois}</td>
+      <td class="hide-s">${spark(p.series)}</td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("vide").hidden = lignes.length > 0;
+}
+
+function init() {
+  const d = DATA;
+  document.getElementById("entete").innerHTML = `${d.client}<br><span style="opacity:.7">${d.produits.length} produits suivis</span>`;
+  document.getElementById("sous").textContent = d.alertes.length
+    ? `${d.alertes.length} hausse(s) au-dessus de ${d.seuil} % ce mois-ci.`
+    : `Aucune hausse au-dessus de ${d.seuil} % ce mois-ci.`;
+
+  if (d.alertes.length) {
+    document.getElementById("zoneAlertes").hidden = false;
+    document.getElementById("listeAlertes").innerHTML = d.alertes.slice(0, 6).map(a =>
+      `<li><span>${a.nom[0].toUpperCase() + a.nom.slice(1)}</span>
+       <span><b>${euros(a.avant)}</b> → <b>${euros(a.apres)}</b>
+       <span class="badge up">+${a.variation.toFixed(1)} %</span></span></li>`).join("");
+  }
+
+  const remplir = (id, valeurs) => {
+    const sel = document.getElementById(id);
+    valeurs.forEach(v => {
+      const o = document.createElement("option");
+      o.value = v; o.textContent = v[0].toUpperCase() + v.slice(1);
+      sel.appendChild(o);
+    });
+  };
+  remplir("fFamille", d.familles);
+  remplir("fCons", d.conservations);
+  remplir("fFour", d.fournisseurs);
+
+  document.getElementById("pied").textContent =
+    `Prix calculés sur les quantités facturées. Données ${d.client}, mises à jour automatiquement.`;
+
+  document.getElementById("q").addEventListener("input", affiche);
+  ["fFamille", "fCons", "fFour"].forEach(id =>
+    document.getElementById(id).addEventListener("change", affiche));
+  document.querySelectorAll("th[data-tri]").forEach(th =>
+    th.addEventListener("click", () => {
+      const c = th.dataset.tri;
+      tri = { champ: c, sens: tri.champ === c ? -tri.sens : -1 };
+      affiche();
+    }));
+
+  affiche();
+}
+
+const CLE = "prix-code";
+
+async function charge(code) {
+  const r = await fetch("/.netlify/functions/prix-data", {
+    headers: code ? { "x-prix-code": code } : {},
+  });
+  if (r.status !== 200) {
+    document.getElementById("connexion").hidden = false;
+    document.getElementById("principal").hidden = true;
+    if (code) document.getElementById("erreur").textContent = "Code refusé.";
+    return false;
+  }
+  DATA = await r.json();
+  document.getElementById("connexion").hidden = true;
+  document.getElementById("principal").hidden = false;
+  init();
+  return true;
+}
+
+document.getElementById("formConnexion").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const code = document.getElementById("motdepasse").value.trim();
+  if (await charge(code)) {
+    localStorage.setItem(CLE, code);
+    document.getElementById("erreur").textContent = "";
+  } else {
+    document.getElementById("erreur").textContent = "Code refusé.";
+  }
+});
+
+charge(localStorage.getItem(CLE) || "");
+</script>
+</body>
+</html>
