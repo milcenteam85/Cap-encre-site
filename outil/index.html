@@ -173,8 +173,9 @@ function affiche() {
 function init() {
   const d = DATA;
   document.getElementById("entete").innerHTML = `${d.client}<br><span style="opacity:.7">${d.produits.length} produits suivis</span>`;
-  document.getElementById("sous").textContent = d.alertes.length
-    ? `${d.alertes.length} hausse(s) au-dessus de ${d.seuil} % ce mois-ci.`
+  const n = d.alertes.length;
+  document.getElementById("sous").textContent = n
+    ? `${n} hausse${n > 1 ? "s" : ""} au-dessus de ${d.seuil} % ce mois-ci.`
     : `Aucune hausse au-dessus de ${d.seuil} % ce mois-ci.`;
 
   if (d.alertes.length) {
