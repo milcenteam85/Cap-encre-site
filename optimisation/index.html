@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Optimisation opérationnelle et commerciale — Cap Encre</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f3f0e8'/%3E%3Crect x='9' y='9' width='14' height='14' fill='%23e8482b' transform='rotate(45 16 16)'/%3E%3C/svg%3E">
+<meta name="description" content="Optimisation opérationnelle et commerciale : diagnostic, mise en œuvre et suivi. On va chercher l'argent que les entreprises laissent sur la table, en Vendée.">
+<style>
+:root{--ink:#0f0f0d;--paper:#f3f0e8;--red:#e8482b;--grey:#6d6d63;--line:#d6d1c4}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;overflow-x:hidden;background:var(--paper);color:var(--ink);
+ font:16px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.035em;line-height:1.02}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1220px;margin:0 auto;padding:0 24px}
+header{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(243,240,232,.92);backdrop-filter:blur(8px);z-index:20}
+.bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:flex-start;gap:11px;line-height:1;color:var(--ink)}
+.logo i{width:12px;height:12px;background:var(--red);border-radius:2px;display:block;transform:rotate(45deg);flex:none;margin-top:9px}
+.logo .lg{display:block}
+.logo .lg b{display:block;font-weight:800;letter-spacing:-.05em;font-size:33px;color:var(--ink)}
+.logo .lg>span{display:block;margin-top:4px;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--red);font-weight:700}
+.bar{height:88px}
+@media (max-width:600px){.logo .lg b{font-size:22px}.logo i{width:10px;height:10px;margin-top:6px}.logo .lg>span{font-size:8px;letter-spacing:.18em}.bar{height:66px}header a.cta{font-size:12px;padding:10px 12px}}
+.nav{display:flex;gap:26px;align-items:center;font-size:14px;color:var(--grey)}
+.nav a:hover{color:var(--ink)}
+.cta{background:var(--ink);color:var(--paper);padding:11px 18px;border-radius:4px;font-size:14px;font-weight:600}
+.cta:hover{background:var(--red)}
+.hero{padding:64px 0 10px}
+.kicker span{min-width:0}
+.kicker{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:10.5px;letter-spacing:.13em;
+ text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:26px}
+.kicker::before{content:"";width:26px;height:2px;background:var(--red)}
+.hero h1{font-size:clamp(36px,5.2vw,66px);max-width:22ch}
+.hero h1 em{font-style:normal;color:var(--red)}
+.hero p{font-size:clamp(16px,1.7vw,20px);color:var(--grey);max-width:56ch;margin:26px 0 0}
+.constat{padding:64px 0 10px}
+.constat h2{font-size:clamp(22px,2.6vw,32px);margin-bottom:22px;max-width:24ch}
+.constat p{font-size:16.5px;color:#3a3a34;max-width:62ch;margin:0 0 14px}
+.etapes{border-top:1px solid var(--line);margin-top:52px}
+.etape{display:grid;grid-template-columns:64px 1fr 1.15fr;gap:26px;padding:34px 6px;border-bottom:1px solid var(--line);align-items:start}
+.e-num{font-size:12px;letter-spacing:.16em;font-weight:700;color:var(--red)}
+.e-name{font-size:clamp(20px,2.2vw,28px);font-weight:800;letter-spacing:-.03em}
+.e-txt{font-size:15px;color:var(--grey);line-height:1.55}
+.e-txt b{color:var(--ink)}
+.non{padding:64px 0}
+.non h2{font-size:clamp(22px,2.6vw,32px);margin-bottom:26px}
+.non ul{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.non li{padding:18px 0;border-bottom:1px solid var(--line);max-width:70ch;font-size:15.5px}
+.non li b{display:block;margin-bottom:4px}
+.non li span{color:var(--grey)}
+.manif{background:var(--ink);color:var(--paper);padding:70px 0}
+.manif h2{font-size:clamp(24px,3.6vw,46px);max-width:22ch}
+.manif h2 em{font-style:normal;color:var(--red)}
+.manif p{color:#b9b6ab;font-size:15px;max-width:60ch;margin-top:18px}
+.contact{padding:80px 0}
+.contact .box{border-top:1px solid var(--line);padding-top:34px;margin-bottom:34px}
+.contact h2{font-size:clamp(28px,4vw,54px)}
+.contact .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:start}
+.form{display:grid;gap:18px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);font-weight:700}
+.field input,.field select,.field textarea{background:transparent;border:0;border-bottom:1.5px solid var(--line);
+ padding:9px 2px;font:inherit;font-size:15px;color:var(--ink);width:100%;min-width:0}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-bottom-color:var(--red)}
+.field textarea{resize:vertical;min-height:74px}
+.form .row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+.submit{justify-self:start;background:var(--ink);color:var(--paper);border:0;padding:14px 26px;
+ font:inherit;font-size:14.5px;font-weight:600;border-radius:4px;cursor:pointer}
+.submit:hover{background:var(--red)}
+.fine{font-size:11.5px;color:var(--grey);max-width:44ch;line-height:1.5}
+.who{font-size:14px;color:var(--grey);line-height:1.7}
+footer{border-top:1px solid var(--line);padding:24px 0;font-size:12.5px;color:var(--grey)}
+footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media (max-width:900px){
+ .nav{display:none}
+ .etape{grid-template-columns:44px 1fr;gap:10px 16px}
+ .e-txt{grid-column:2}
+ .contact .grid{grid-template-columns:1fr;gap:32px}
+ .hero{padding:48px 0 10px}
+}
+@media (max-width:600px){.form .row2{grid-template-columns:1fr;gap:14px}
+ .kicker{font-size:9.5px;letter-spacing:.08em}}
+@media (max-width:900px){input,select,textarea{font-size:16px}}
+
+/* garde-fou : les paddings verticaux des sections ne doivent pas annuler les marges de .wrap */
+.wrap{padding-left:24px!important;padding-right:24px!important}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="/"><i></i><span class="lg"><b>CAP ENCRE</b><span>Vendée</span></span></a>
+    <nav class="nav">
+      <a href="/site/">Création de site</a>
+      <a href="/optimisation/">Optimisation</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+    <a class="cta" href="#contact">Prendre rendez-vous</a>
+  </div>
+</header>
+
+<section class="wrap hero">
+  <div class="kicker"><span>Optimisation opérationnelle et commerciale</span></div>
+  <h1>On va chercher l'argent<br>que vous laissez<br><em>sur la table.</em></h1>
+  <p>Des clients et des contrats ne se perdent pas faute de les voir. Ils se perdent faute de temps.</p>
+</section>
+
+<section class="wrap constat">
+  <h2>Ce qu'on regarde</h2>
+  <p>Vos demandes entrantes. Le temps qu'elles mettent à recevoir une réponse. Les heures passées en tâches répétables. Ce que votre fiche Google dit de vous.</p>
+  <p>Puis on chiffre : gain, coût, délai. Vous décidez ce qu'on déploie.</p>
+</section>
+
+
+
+<section class="wrap">
+  <div class="constat" style="padding:64px 0 0"><h2>Comment ça se passe</h2></div>
+  <div class="etapes" style="margin-top:26px">
+    <div class="etape">
+      <div class="e-num">01</div>
+      <div class="e-name">Diagnostic</div>
+      <div class="e-txt"><b>Deux jours sur site.</b> Entretiens avec le dirigeant et l'équipe commerciale, relevé des demandes entrantes, comptage des tâches répétables, audit de la présence en ligne. Vous recevez cinq à huit pistes chiffrées.</div>
+    </div>
+    <div class="etape">
+      <div class="e-num">02</div>
+      <div class="e-name">Mise en œuvre</div>
+      <div class="e-txt"><b>Quatre-vingt-dix jours.</b> Trois à cinq leviers déployés : site ou page d'atterrissage, prise de contact et relance automatiques, simplification des devis, tableau de bord, fiche Google et gestion des avis. Formation des équipes incluse.</div>
+    </div>
+    <div class="etape">
+      <div class="e-num">03</div>
+      <div class="e-name">Suivi</div>
+      <div class="e-txt"><b>Une journée par mois.</b> Pilotage des indicateurs, ajustements, corrections. Vous voyez ce que ça produit, mois après mois, sans engagement au-delà de la première année.</div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap non">
+  <h2>Ce qu'on ne fait pas</h2>
+  <ul>
+    <li><b>Pas de mission sans exécution.</b><span>Un rapport qui ne débouche sur rien ne sert à personne.</span></li>
+    <li><b>Pas de promesse de chiffre d'affaires.</b><span>On s'engage sur ce qu'on maîtrise : demandes traitées, délais de réponse, heures récupérées.</span></li>
+    <li><b>Pas de stratégie à six mois.</b><span>Des livraisons chaque semaine, des résultats visibles au premier mois.</span></li>
+  </ul>
+</section>
+
+<section class="manif">
+  <div class="wrap">
+    <h2>Un diagnostic qui ne change rien<br><em>n'est pas un diagnostic.</em></h2>
+    <p>On commence par regarder, on continue en livrant, et on finit par mesurer. Si on ne trouve rien à récupérer, on vous le dit et on s'arrête là.</p>
+  </div>
+</section>
+
+<section class="wrap contact" id="contact">
+  <div class="box"><h2>On en parle&nbsp;?</h2></div>
+  <div class="grid">
+    <form class="form" name="contact" method="POST" action="/merci" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="contact">
+      <p hidden><label>Ne pas remplir <input name="bot-field"></label></p>
+      <div class="row2">
+        <div class="field"><label for="n">Votre nom</label><input id="n" name="nom" required autocomplete="name"></div>
+        <div class="field"><label for="t">Téléphone</label><input id="t" name="telephone" type="tel" autocomplete="tel"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label for="e">Courriel</label><input id="e" name="email" type="email" required autocomplete="email"></div>
+        <div class="field"><label for="s">Votre entreprise</label><input id="s" name="societe" autocomplete="organization"></div>
+      </div>
+      <div class="field"><label for="msg">Où vous perdez du temps, selon vous</label><textarea id="msg" name="message" placeholder="Les devis, les relances, les demandes qui se perdent."></textarea></div>
+      <button class="submit" type="submit">Envoyer</button>
+      <p class="fine">Réponse sous 48 heures. Vos informations ne servent qu'à vous rappeler.</p>
+    </form>
+    <div class="who">
+      <b>Cap Encre</b><br>
+      06 62 67 44 14<br>
+      contact@capencre.fr<br>
+      Vendée et départements limitrophes
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap f">
+    <span>© 2026 Cap Encre</span>
+    <span><a href="/mentions-legales" style="text-decoration:underline;text-underline-offset:3px">Mentions légales</a> · <a href="/mentions-legales#donnees" style="text-decoration:underline;text-underline-offset:3px">Données personnelles</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -3,259 +3,152 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cap Encre — Sites et outils pour les restaurants et les artisans</title>
+<title>Cap Encre — Création de site et optimisation opérationnelle et commerciale en Vendée</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f3f0e8'/%3E%3Crect x='9' y='9' width='14' height='14' fill='%23e8482b' transform='rotate(45 16 16)'/%3E%3C/svg%3E">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="4d385258-635b-476a-b26a-f96fae2d3959"></script>
-<meta name="description" content="Sites internet pour restaurants et artisans, réservations sans commission et veille des permis de construire. En Vendée, 75 € par mois.">
+<meta name="description" content="Deux façons de travailler ensemble : un site qui vous fait trouver, ou une optimisation pour aller chercher les clients que vous perdez. En Vendée.">
 <style>
-:root{
-  --ink:#0f0f0d;
-  --ink-2:#1c1c19;
-  --paper:#f3f0e8;
-  --paper-2:#e9e5da;
-  --red:#e8482b;
-  --grey:#6d6d63;
-  --line:#d6d1c4;
-}
+:root{--ink:#0f0f0d;--paper:#f3f0e8;--red:#e8482b;--grey:#6d6d63;--line:#d6d1c4}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{
-  margin:0;overflow-x:hidden;background:var(--paper);color:var(--ink);
-  font:16px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;
-  -webkit-font-smoothing:antialiased;
-}
-h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.035em;line-height:1.02}
+body{margin:0;overflow-x:hidden;background:var(--paper);color:var(--ink);
+ font:16px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2{margin:0;font-weight:800;letter-spacing:-.035em;line-height:1.02}
 a{color:inherit;text-decoration:none}
 .wrap{max-width:1220px;margin:0 auto;padding:0 24px}
-
-/* ---------- barre ---------- */
 header{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(243,240,232,.92);backdrop-filter:blur(8px);z-index:20}
 .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
-.logo{font-weight:800;letter-spacing:-.04em;font-size:19px;display:flex;align-items:center;gap:9px}
-.logo i{width:10px;height:10px;background:var(--red);border-radius:2px;display:inline-block;transform:rotate(45deg)}
+.logo{display:flex;align-items:flex-start;gap:11px;line-height:1;color:var(--ink)}
+.logo i{width:12px;height:12px;background:var(--red);border-radius:2px;display:block;transform:rotate(45deg);flex:none;margin-top:9px}
+.logo .lg{display:block}
+.logo .lg b{display:block;font-weight:800;letter-spacing:-.05em;font-size:33px;color:var(--ink)}
+.logo .lg>span{display:block;margin-top:4px;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--red);font-weight:700}
+.bar{height:88px}
+@media (max-width:600px){.logo .lg b{font-size:22px}.logo i{width:10px;height:10px;margin-top:6px}.logo .lg>span{font-size:8px;letter-spacing:.18em}.bar{height:66px}header a.cta{font-size:12px;padding:10px 12px}}
 .nav{display:flex;gap:26px;align-items:center;font-size:14px;color:var(--grey)}
 .nav a:hover{color:var(--ink)}
 .cta{background:var(--ink);color:var(--paper);padding:11px 18px;border-radius:4px;font-size:14px;font-weight:600}
 .cta:hover{background:var(--red)}
-
-/* ---------- héros ---------- */
-.hero{padding:58px 0 34px}
-.kicker{
-  display:inline-flex;align-items:center;gap:8px;font-size:11.5px;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:26px;
-}
+.hero{padding:54px 0 6px}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;letter-spacing:.18em;
+ text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:26px}
 .kicker::before{content:"";width:26px;height:2px;background:var(--red)}
-.hero h1{font-size:clamp(36px,5.6vw,72px);max-width:16ch}
-.hero h1 em{font-style:normal;color:var(--red)}
-.hero p{font-size:clamp(16px,1.6vw,19px);color:var(--grey);max-width:52ch;margin:26px 0 0}
+.hero h1{font-size:clamp(38px,6vw,78px);max-width:14ch}
+.hero p{font-size:clamp(19px,2.2vw,26px);color:var(--ink);max-width:44ch;margin:22px 0 0;line-height:1.35;letter-spacing:-.01em}
+.choix{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:46px}
+.porte{display:flex;flex-direction:column;padding:46px 40px 44px;background:var(--ink);color:var(--paper);border-radius:16px;transition:background .25s,color .25s,transform .25s}
+.porte:first-child{border-right:0}
+.porte:hover{background:var(--red)}
+.porte:hover .p-num{color:#fff}
+.porte:hover .p-desc{color:#ffe2db}
+.porte:hover .p-tags span{border-color:rgba(255,255,255,.45);color:#fff}
+.porte:hover .p-arrow{background:#fff;color:var(--red);border-color:#fff;transform:translateX(0)}
 
-/* ---------- portes ---------- */
-.doors{border-top:1px solid var(--line);margin-top:44px}
-.door{
-  display:grid;grid-template-columns:56px 1.3fr 1.35fr auto;
-  gap:28px;align-items:center;
-  padding:34px 8px;border-bottom:1px solid var(--line);
-  position:relative;transition:background .18s,color .18s,padding .18s;cursor:pointer;
-}
-.door:hover{background:var(--ink);color:var(--paper);padding-left:22px;padding-right:22px}
-.door:hover .d-num{color:var(--red)}
-.door:hover .d-desc,.door:hover .d-tags{color:#b9b6ab}
-.door:hover .d-arrow{background:var(--red);color:#fff;border-color:var(--red);transform:translateX(0)}
-.door:hover .d-price{color:var(--paper)}
-.d-num{font-size:12px;letter-spacing:.14em;color:var(--grey);font-weight:700}
-.d-name{font-size:clamp(24px,3vw,38px);font-weight:800;letter-spacing:-.03em}
-.d-desc{font-size:14.5px;color:var(--grey);margin-top:8px;max-width:44ch;line-height:1.5}
-.d-tags{font-size:12px;color:var(--grey);margin-top:10px;letter-spacing:.02em}
-.d-tags span{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 9px;margin:4px 6px 0 0}
-.door:hover .d-tags span{border-color:#3a3a34}
-.d-price{font-size:13px;text-align:right;line-height:1.5;white-space:nowrap;color:var(--grey)}
-.d-price b{display:block;font-size:20px;color:var(--ink);letter-spacing:-.02em}
-.d-arrow{
-  width:44px;height:44px;border:1px solid var(--line);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;font-size:17px;
-  transition:.18s;transform:translateX(-4px);
-}
 
-/* ---------- bandeau inclus ---------- */
+
+.p-num{font-size:12px;letter-spacing:.16em;font-weight:700;color:var(--red);transition:color .25s}
+.p-name{font-size:clamp(28px,3.4vw,44px);font-weight:800;letter-spacing:-.035em;margin-top:10px;line-height:1.02;min-height:3.08em}
+.p-desc{color:#b9b6ab;margin-top:16px;font-size:15.5px;max-width:42ch;line-height:1.55;transition:color .25s}
+@media (min-width:901px){.p-desc{min-height:96px}}
+.p-tags{margin-top:20px;margin-bottom:24px}
+.p-tags span{display:inline-block;border:1px solid #35352f;border-radius:999px;padding:4px 10px;margin:5px 6px 0 0;font-size:12px;color:#b9b6ab;transition:.25s}
+.p-arrow{margin-top:auto;width:46px;height:46px;border:1px solid var(--red);color:var(--red);border-radius:50%;
+ display:flex;align-items:center;justify-content:center;font-size:17px;transition:.2s;transform:translateX(-4px)}
 .incl{padding:64px 0}
 .incl h2{font-size:clamp(22px,2.4vw,30px);margin-bottom:30px}
 .inc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;border-top:1px solid var(--line)}
-.inc{padding-top:18px;border-top:2px solid transparent}
+.inc{padding-top:18px}
 .inc b{display:block;font-size:14.5px;margin-bottom:5px}
 .inc span{font-size:13.5px;color:var(--grey)}
-
-/* ---------- manifeste ---------- */
 .manif{background:var(--ink);color:var(--paper);padding:76px 0}
 .manif h2{font-size:clamp(26px,4vw,52px);max-width:20ch}
 .manif h2 em{font-style:normal;color:var(--red)}
 .manif .cols{display:grid;grid-template-columns:1fr 1fr;gap:54px;margin-top:38px}
 .manif p{color:#b9b6ab;font-size:15px;margin:0 0 14px}
 .manif strong{color:var(--paper)}
-
-/* ---------- contact ---------- */
 .contact{padding:80px 0}
-.contact .box{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:34px}
+.contact .box{border-top:1px solid var(--line);padding-top:34px;margin-bottom:34px}
 .contact h2{font-size:clamp(28px,4vw,54px)}
-.contact .who{font-size:14px;color:var(--grey);line-height:1.7}
-.contact .who b{color:var(--ink)}
-
-/* ---------- formulaire ---------- */
 .contact .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:start}
 .form{display:grid;gap:18px}
 .field{display:flex;flex-direction:column;gap:6px}
 .field label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);font-weight:700}
-.field input,.field select,.field textarea{
-  background:transparent;border:0;border-bottom:1.5px solid var(--line);
-  padding:9px 2px;font:inherit;font-size:15px;color:var(--ink);border-radius:0;
-  width:100%;min-width:0;box-sizing:border-box;
-}
+.field input,.field select,.field textarea{background:transparent;border:0;border-bottom:1.5px solid var(--line);
+ padding:9px 2px;font:inherit;font-size:15px;color:var(--ink);width:100%;min-width:0}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-bottom-color:var(--red)}
 .field textarea{resize:vertical;min-height:74px}
 .form .row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
-.submit{
-  justify-self:start;background:var(--ink);color:var(--paper);border:0;
-  padding:14px 26px;font:inherit;font-size:14.5px;font-weight:600;border-radius:4px;cursor:pointer;
-  transition:background .15s;
-}
+.submit{justify-self:start;background:var(--ink);color:var(--paper);border:0;padding:14px 26px;
+ font:inherit;font-size:14.5px;font-weight:600;border-radius:4px;cursor:pointer}
 .submit:hover{background:var(--red)}
 .fine{font-size:11.5px;color:var(--grey);max-width:44ch;line-height:1.5}
-@media (max-width:900px){ .contact .grid{grid-template-columns:1fr;gap:32px} }
-
+.who{font-size:14px;color:var(--grey);line-height:1.7}
 footer{border-top:1px solid var(--line);padding:24px 0;font-size:12.5px;color:var(--grey)}
 footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
-
 @media (max-width:900px){
-  .nav{display:none}
-  .door{grid-template-columns:40px 1fr;gap:12px 16px;padding:26px 4px}
-  .door:hover{padding-left:12px;padding-right:12px}
-  .d-price{grid-column:2;text-align:left;margin-top:6px;white-space:normal}
-  .d-price b{display:block;font-size:17px;margin:0 0 2px}
-  .d-arrow{display:none}
-  .inc-grid{grid-template-columns:1fr 1fr}
-  .manif .cols{grid-template-columns:1fr;gap:26px}
-  .hero{padding:48px 0 30px}
+ .nav{display:none}
+ .choix{grid-template-columns:1fr}
+ .porte:first-child{border-right:0}
+ .porte{padding:30px 22px 32px}
+ .inc-grid{grid-template-columns:1fr 1fr}
+ .manif .cols{grid-template-columns:1fr;gap:26px}
+ .contact .grid{grid-template-columns:1fr;gap:32px}
+ .hero{padding:48px 0 10px}
 }
-
-/* garde-fou : les paddings verticaux des sections ne doivent pas annuler
-   les marges latérales de .wrap */
-.wrap{padding-left:24px;padding-right:24px}
-
-@media (max-width:900px){input,select,textarea{font-size:16px}}
 @media (max-width:600px){.form .row2{grid-template-columns:1fr;gap:14px}}
+@media (max-width:900px){input,select,textarea{font-size:16px}}
+
+/* garde-fou : les paddings verticaux des sections ne doivent pas annuler les marges de .wrap */
+.wrap{padding-left:24px!important;padding-right:24px!important}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 </style>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  "name": "Cap Encre",
-  "description": "Création de sites internet pour restaurants et artisans en Vendée, avec réservations sans commission et veille des permis de construire.",
-  "url": "https://capencre.fr/",
-  "telephone": "+33662674414",
-  "email": "Milcent-benjamin@orange.fr",
-  "priceRange": "75 € par mois",
-  "areaServed": { "@type": "AdministrativeArea", "name": "Vendée" },
-  "founder": { "@type": "Person", "name": "Benjamin Milcent" },
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "rue de la Faïencerie",
-    "postalCode": "85540",
-    "addressLocality": "Le Champ-Saint-Père",
-    "addressCountry": "FR"
-  }
-}
-</script>
 </head>
 <body>
 
 <header>
   <div class="wrap bar">
-    <a class="logo" href="#"><i></i>CAP ENCRE</a>
+    <a class="logo" href="/"><i></i><span class="lg"><b>CAP ENCRE</b><span>Vendée</span></span></a>
     <nav class="nav">
-      <a href="/resto/">Restaurateurs</a>
-      <a href="/artisan/">Artisans BTP</a>
-      <a href="/bouche/">Métiers de bouche</a>
+      <a href="/site/">Création de site</a>
+      <a href="/optimisation/">Optimisation</a>
       <a href="#contact">Contact</a>
     </nav>
     <a class="cta" href="#contact">Prendre rendez-vous</a>
   </div>
 </header>
 
-<section class="wrap hero">
-  <div class="kicker">Sites et outils — Vendée</div>
-  <h1>Trois métiers.<br>Trois outils.<br><em>Un seul prix.</em></h1>
-  <p>Un site ne sert à rien s'il ne vous amène pas de clients. On construit celui qui travaille pour vous — et l'outil qui va avec. Un prix par métier, sans option ni supplément caché.</p>
-</section>
-
 <section class="wrap">
-  <div class="doors">
-
-    <a class="door" href="/resto/" id="resto">
-      <div class="d-num">01</div>
-      <div>
-        <div class="d-name">Restaurateurs</div>
-        <div class="d-desc">Réservations sans commission, carte mise à jour par simple mail, site pensé pour le téléphone.</div>
-        <div class="d-tags"><span>Fiche Google</span><span>Zéro commission</span><span>Menu par mail</span><span>Réservation directe</span></div>
-      </div>
-      <div class="d-price"><b>75 € / mois</b>sans frais d'entrée</div>
-      <div class="d-arrow">→</div>
+  <h1 class="sr">Cap Encre, création de site et optimisation opérationnelle et commerciale en Vendée</h1>
+<div class="choix">
+    <a class="porte" href="/site/">
+      <div class="p-num">01</div>
+      <div class="p-name">Création<br>de site</div>
+      <div class="p-desc">Un site pensé pour le téléphone, qui amène des appels et des réservations. Restaurant, artisan, métier de bouche.</div>
+      <div class="p-tags"><span>Réservation directe</span><span>Zéro commission</span><span>Fiche Google</span><span>Carte par mail</span></div>
+      <div class="p-arrow">→</div>
     </a>
-
-    <a class="door" href="/artisan/" id="artisan">
-      <div class="d-num">02</div>
-      <div>
-        <div class="d-name">Artisans BTP</div>
-        <div class="d-desc">Site vitrine et veille des permis de construire détaillés près de chez vous.</div>
-        <div class="d-tags"><span>Fiche Google</span><span>Permis chaque mois</span><span>Tri par type de chantier</span><span>Export CSV</span></div>
-      </div>
-      <div class="d-price"><b>55 € / mois</b>logiciel compris</div>
-      <div class="d-arrow">→</div>
+    <a class="porte" href="/optimisation/">
+      <div class="p-num">02</div>
+      <div class="p-name">Optimisation<br>opérationnelle<br>et commerciale</div>
+      <div class="p-desc">Pour aller chercher les clients et les contrats qui vous échappent. On regarde comment les demandes arrivent, comment elles sont traitées, et où partent les heures.</div>
+      <div class="p-tags"><span>Diagnostic chiffré</span><span>Clients et contrats</span><span>Optimisation des processus</span><span>Indicateurs suivis</span></div>
+      <div class="p-arrow">→</div>
     </a>
-
-    <a class="door" href="/bouche/" id="bouche">
-      <div class="d-num">03</div>
-      <div>
-        <div class="d-name">Métiers de bouche</div>
-        <div class="d-desc">Boulangerie, pâtisserie, boucherie, traiteur : vos produits, vos horaires et vos commandes.</div>
-        <div class="d-tags"><span>Fiche Google</span><span>Carte par mail</span><span>Horaires à jour</span><span>Commandes</span></div>
-      </div>
-      <div class="d-price"><b>75 € / mois</b>sans frais d'entrée</div>
-      <div class="d-arrow">→</div>
-    </a>
-
-
   </div>
 </section>
 
 <section class="wrap incl">
-  <h2>Compris dans les trois.</h2>
+  <h2>Dans les deux cas.</h2>
   <div class="inc-grid">
-    <div class="inc"><b>Le nom de domaine</b><span>Réservé, configuré et renouvelé pour vous.</span></div>
-    <div class="inc"><b>L'hébergement</b><span>Rapide, sécurisé, sauvegardé chaque nuit.</span></div>
-    <div class="inc"><b>Les modifications</b><span>Deux mises à jour par mois incluses.</span></div>
-    <div class="inc"><b>Le support</b><span>Un interlocuteur unique, qui décroche.</span></div>
-  </div>
-</section>
-
-<section class="manif" id="contact">
-  <div class="wrap">
-    <h2>On ne vend pas un site.<br>On vend <em>des clients qui vous trouvent.</em></h2>
-    <div class="cols">
-      <div>
-        <p><strong>Pas de frais d'entrée.</strong> Vous payez chaque mois, et le site reste allumé tant que le travail se fait. Si vous arrêtez, il s'éteint — c'est aussi simple que ça.</p>
-        <p><strong>Pas de commission sur les réservations.</strong> Une table réservée chez vous reste à vous. Les plateformes prennent 3 à 4 € par couvert ; nous, zéro.</p>
-      </div>
-      <div>
-        <p><strong>Un site par métier, pas un modèle recyclé.</strong> Un restaurant n'a pas besoin de la même chose qu'un couvreur. On construit deux outils différents parce que ce sont deux métiers différents.</p>
-        <p><strong>Et un vrai rendez-vous.</strong> On regarde votre activité, vos clients, votre saison. Si le site ne sert à rien, on vous le dit.</p>
-      </div>
-    </div>
+    <div class="inc"><b>Un seul interlocuteur</b><span>La personne qui vend est celle qui livre.</span></div>
+    <div class="inc"><b>Des délais tenus</b><span>Un calendrier écrit, des livraisons chaque semaine.</span></div>
+    <div class="inc"><b>Des indicateurs</b><span>Appels, demandes, heures récupérées. Pas des impressions.</span></div>
+    <div class="inc"><b>La sortie libre</b><span>Vous restez propriétaire de votre site et de vos données.</span></div>
   </div>
 </section>
 
 <section class="wrap contact" id="contact">
-  <div class="box" style="border:0;padding-top:0;margin-bottom:34px">
-    <h2>On en parle ?</h2>
-  </div>
+  <div class="box"><h2>On en parle&nbsp;?</h2></div>
   <div class="grid">
     <form class="form" name="contact" method="POST" action="/merci" data-netlify="true" netlify-honeypot="bot-field">
       <input type="hidden" name="form-name" value="contact">
@@ -266,24 +159,24 @@ footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       </div>
       <div class="row2">
         <div class="field"><label for="e">Courriel</label><input id="e" name="email" type="email" required autocomplete="email"></div>
-        <div class="field"><label for="m">Vous êtes</label>
-          <select id="m" name="metier">
-            <option value="">— choisir —</option>
-            <option>Restaurateurs</option>
-            <option>Artisans BTP</option>
-            <option>Métiers de bouche</option>
-            <option>Autre</option>
+        <div class="field"><label for="m">Vous cherchez</label>
+          <select id="m" name="besoin">
+            <option value="">Choisir</option>
+            <option>Un site</option>
+            <option>Une optimisation</option>
+            <option>Les deux</option>
+            <option>Je ne sais pas encore</option>
           </select>
         </div>
       </div>
       <div class="field"><label for="msg">Votre projet, en deux lignes</label><textarea id="msg" name="message" placeholder="Ce que vous faites, ce que vous cherchez."></textarea></div>
       <button class="submit" type="submit">Envoyer</button>
-      <p class="fine">Réponse sous 48 heures. Vos informations ne servent qu'à vous rappeler — rien d'autre.</p>
+      <p class="fine">Réponse sous 48 heures. Vos informations ne servent qu'à vous rappeler.</p>
     </form>
     <div class="who">
       <b>Cap Encre</b><br>
       06 62 67 44 14<br>
-      Milcent-benjamin@orange.fr<br>
+      contact@capencre.fr<br>
       Vendée et départements limitrophes
     </div>
   </div>
