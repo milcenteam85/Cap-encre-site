@@ -57,9 +57,11 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 0;font-size
  .hide-s{display:none}
  h1{margin-top:22px}
 }
-.voir{background:none;border:1px solid var(--line);border-radius:99px;color:var(--grey);
- font:inherit;font-size:10.5px;padding:1px 7px;margin-left:6px;cursor:pointer;vertical-align:2px}
-.voir:hover{border-color:var(--red);color:var(--red)}
+.voir{display:inline-block;background:#16336b;border:0;border-radius:99px;color:#f3f0e8;
+ font:inherit;font-size:11px;font-weight:600;letter-spacing:.01em;padding:3px 10px;
+ margin:7px 0 0;cursor:pointer}
+.voir:hover{background:#0d2450}
+.voir.ouvert{background:#e8482b}
 .detail td{background:#efece2;padding:0}
 .srcs{padding:4px 8px}
 .src{display:flex;align-items:center;gap:12px;
@@ -238,7 +240,8 @@ function affiche() {
           <a href="${lienPdf(s.fichier)}" target="_blank" rel="noopener">la facture</a>
         </div>`).join("")}</div></td></tr>` : "";
     return `<tr class="ligne">
-      <td><div class="nom">${p.nom[0].toUpperCase() + p.nom.slice(1)} ${lien}</div>
+      <td><div class="nom">${p.nom[0].toUpperCase() + p.nom.slice(1)}</div>
+          ${lien}
           <div class="meta">${etiquettes}${p.fournisseurs.join(" · ")}</div></td>
       <td class="n">${euros(p.dernier)}</td>
       <td class="n">${badge}</td>
