@@ -244,7 +244,13 @@ document.getElementById("formConnexion").addEventListener("submit", async (e) =>
   }
 });
 
-charge(localStorage.getItem(CLE) || "");
+// code passé dans l'adresse : pratique pour entrer en un tap, puis on nettoie l'URL
+const param = new URLSearchParams(location.search).get("code");
+if (param) {
+  history.replaceState({}, "", location.pathname);
+  localStorage.setItem(CLE, param.trim());
+}
+charge(param || localStorage.getItem(CLE) || "");
 </script>
 </body>
 </html>
