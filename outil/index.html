@@ -146,6 +146,13 @@ details.fiche summary{cursor:pointer;font-size:12.5px;color:var(--grey);list-sty
 details.fiche summary::-webkit-details-marker{display:none}
 details.fiche summary::before{content:"▸ ";color:var(--red)}
 details.fiche[open] summary::before{content:"▾ "}
+.champNote{display:flex;flex-direction:column;gap:6px;font-size:11px;letter-spacing:.1em;
+ text-transform:uppercase;color:var(--grey);font-weight:700;margin-bottom:18px}
+.champNote textarea{border:1px solid var(--line);border-radius:8px;padding:11px;font:inherit;font-size:14px;
+ line-height:1.5;color:var(--ink);background:transparent;resize:vertical;text-transform:none;letter-spacing:normal;font-weight:400}
+.ligneIngredient.libre{grid-template-columns:1fr 110px 90px 34px}
+.preparation{margin-top:14px;font-size:13.5px;line-height:1.6;white-space:pre-wrap;color:#3a3a34;
+ border-left:2px solid var(--line);padding-left:14px}
 </style>
 </head>
 <body>
@@ -243,8 +250,16 @@ details.fiche[open] summary::before{content:"▾ "}
       </div>
       <datalist id="listeCategories"></datalist>
       <div id="rLignes"></div>
-      <button id="btnAjouterLigne" class="boutonLeger" type="button">+ Ajouter un ingrédient</button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button id="btnAjouterLigne" class="boutonLeger" type="button">+ Ingrédient des factures</button>
+        <button id="btnAjouterLibre" class="boutonLeger" type="button">+ Ingrédient à la main</button>
+      </div>
       <div id="rTotal" class="totalRecette"></div>
+      <label class="champNote">Préparation, températures, durées
+        <textarea id="rNotes" rows="6" placeholder="Préchauffer le four à 180 °C.
+Mélanger la farine et le beurre, 10 minutes au frais.
+Cuisson 35 minutes, chaleur tournante."></textarea>
+      </label>
       <div class="actionsForm">
         <button id="btnSave" class="boutonPlein" type="button">Enregistrer</button>
         <button id="btnAnnuler" class="boutonLeger" type="button">Annuler</button>
@@ -491,7 +506,7 @@ const prixActuel = (nom) => {
 
 function coutLigne(l) {
   const pa = prixActuel(l.nom);
-  const prix = pa !== null ? pa : (l.prix_kg || 0);
+  const prix = (l.libre || pa === null) ? (l.prix_kg || 0) : pa;
   return (l.qte_g / 1000) * prix;
 }
 
@@ -580,6 +595,7 @@ function renduRecettes() {
           <td class="n">${euros(coutLigne(l))}</td></tr>`).join("")}
         <tr class="totalLigne"><td colspan="3"><b>Coût matière par portion</b></td><td class="n"><b>${euros(c.portion)}</b></td></tr>
         </tbody></table>
+        ${r.notes ? `<div class="preparation">${r.notes.replace(/</g, "&lt;")}</div>` : ""}
       </details>
     </article>`;
   }).join("");
@@ -610,19 +626,45 @@ function ligneIngredient(l = { nom: "", qte_g: 100 }) {
   return d;
 }
 
+function ligneLibre(l = { nom: "", qte_g: 100, prix_kg: 0 }) {
+  const d = document.createElement("div");
+  d.className = "ligneIngredient libre";
+  d.innerHTML = `<input type="text" placeholder="Nom de l'ingrédient" value="${l.nom || ""}" aria-label="nom">
+    <input type="number" min="0" step="0.01" placeholder="€/kg" value="${l.prix_kg || ""}" aria-label="prix au kilo">
+    <input type="number" min="0" step="1" placeholder="g" value="${l.qte_g || ""}" aria-label="quantité">
+    <span class="cout"></span>
+    <button type="button" title="retirer">×</button>`;
+  d.querySelector("button").addEventListener("click", () => { d.remove(); majTotal(); });
+  d.querySelectorAll("input").forEach(e => e.addEventListener("input", majTotal));
+  document.getElementById("rLignes").appendChild(d);
+  return d;
+}
+
+function litLigne(d) {
+  const libre = d.classList.contains("libre");
+  if (libre) {
+    const [nom, prix, qte] = d.querySelectorAll("input");
+    return {
+      nom: nom.value.trim(), qte_g: Number(qte.value) || 0,
+      prix_kg: Number(prix.value) || 0, libre: true,
+    };
+  }
+  const nom = d.querySelector("select").value;
+  const qte = Number(d.querySelector("input").value) || 0;
+  return { nom, qte_g: qte, prix_kg: prixActuel(nom) || 0, libre: false };
+}
+
 function lignesForm() {
-  return [...document.querySelectorAll("#rLignes .ligneIngredient")].map(d => ({
-    nom: d.querySelector("select").value,
-    qte_g: Number(d.querySelector("input").value) || 0,
-  })).filter(l => l.nom);
+  return [...document.querySelectorAll("#rLignes .ligneIngredient")]
+    .map(litLigne).filter(l => l.nom);
 }
 
 function majTotal() {
   document.querySelectorAll("#rLignes .ligneIngredient").forEach(d => {
-    const nom = d.querySelector("select").value;
-    const q = Number(d.querySelector("input").value) || 0;
-    const p = nom ? prixActuel(nom) : null;
-    d.querySelector(".cout").textContent = nom && p !== null ? euros((q / 1000) * p) : "";
+    const l = litLigne(d);
+    const p = l.libre ? l.prix_kg : prixActuel(l.nom);
+    d.querySelector(".cout").textContent =
+      l.nom && p ? euros((l.qte_g / 1000) * p) : "";
   });
   const port = Math.max(1, Number(document.getElementById("rPortions").value) || 1);
   const total = lignesForm().reduce((s, l) => s + coutLigne(l), 0);
@@ -637,6 +679,7 @@ function nouvelleRecette() {
   document.getElementById("rPortions").value = 1;
   document.getElementById("rPrix").value = "";
   document.getElementById("rCategorie").value = "";
+  document.getElementById("rNotes").value = "";
   document.getElementById("rLignes").innerHTML = "";
   ligneIngredient(); ligneIngredient();
   document.getElementById("formRecette").hidden = false;
@@ -653,8 +696,9 @@ function editerRecette(id) {
   document.getElementById("rPortions").value = r.portions;
   document.getElementById("rPrix").value = r.prix_vente || "";
   document.getElementById("rCategorie").value = r.categorie || "";
+  document.getElementById("rNotes").value = r.notes || "";
   document.getElementById("rLignes").innerHTML = "";
-  (r.lignes || []).forEach(l => ligneIngredient(l));
+  (r.lignes || []).forEach(l => l.libre ? ligneLibre(l) : ligneIngredient(l));
   if (!(r.lignes || []).length) ligneIngredient();
   document.getElementById("formRecette").hidden = false;
   majTotal();
@@ -667,7 +711,8 @@ async function sauverRecette() {
     portions: Number(document.getElementById("rPortions").value) || 1,
     prix_vente: Number(document.getElementById("rPrix").value) || 0,
     categorie: document.getElementById("rCategorie").value.trim(),
-    lignes: lignesForm().map(l => ({ nom: l.nom, qte_g: l.qte_g, prix_kg: prixActuel(l.nom) || 0 })),
+    notes: document.getElementById("rNotes").value.trim(),
+    lignes: lignesForm().map(l => ({ nom: l.nom, qte_g: l.qte_g, prix_kg: l.prix_kg || 0, libre: !!l.libre })),
   };
   if (!recette.nom || !recette.lignes.length) return;
   const r = await fetch("/.netlify/functions/prix-recette", {
@@ -710,6 +755,13 @@ details.fiche summary{cursor:pointer;font-size:12.5px;color:var(--grey);list-sty
 details.fiche summary::-webkit-details-marker{display:none}
 details.fiche summary::before{content:"▸ ";color:var(--red)}
 details.fiche[open] summary::before{content:"▾ "}
+.champNote{display:flex;flex-direction:column;gap:6px;font-size:11px;letter-spacing:.1em;
+ text-transform:uppercase;color:var(--grey);font-weight:700;margin-bottom:18px}
+.champNote textarea{border:1px solid var(--line);border-radius:8px;padding:11px;font:inherit;font-size:14px;
+ line-height:1.5;color:var(--ink);background:transparent;resize:vertical;text-transform:none;letter-spacing:normal;font-weight:400}
+.ligneIngredient.libre{grid-template-columns:1fr 110px 90px 34px}
+.preparation{margin-top:14px;font-size:13.5px;line-height:1.6;white-space:pre-wrap;color:#3a3a34;
+ border-left:2px solid var(--line);padding-left:14px}
 </style></head><body>
     <h1>${r.nom}</h1>
     <div class="s">${DATA.client} · ${c.portions} portion${c.portions > 1 ? "s" : ""} · fiche du ${new Date().toLocaleDateString("fr-FR")}</div>
@@ -736,6 +788,7 @@ document.getElementById("btnNouvelle").addEventListener("click", nouvelleRecette
   document.getElementById(id).addEventListener("input", renduRecettes));
 document.getElementById("fCategorie").addEventListener("change", renduRecettes);
 document.getElementById("btnAjouterLigne").addEventListener("click", () => { ligneIngredient(); majTotal(); });
+document.getElementById("btnAjouterLibre").addEventListener("click", () => { ligneLibre(); majTotal(); });
 document.getElementById("rPortions").addEventListener("input", majTotal);
 document.getElementById("btnSave").addEventListener("click", sauverRecette);
 document.getElementById("btnAnnuler").addEventListener("click", () => {

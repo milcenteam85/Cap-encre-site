@@ -72,10 +72,12 @@ exports.handler = async (event) => {
         categorie: String(r.categorie || "").slice(0, 60),
         portions: Number(r.portions) || 1,
         prix_vente: Number(r.prix_vente) || 0,
-        lignes: (r.lignes || []).slice(0, 60).map(l => ({
+        notes: String(r.notes || "").slice(0, 4000),
+        lignes: (r.lignes || []).slice(0, 80).map(l => ({
           nom: String(l.nom).slice(0, 120),
           qte_g: Number(l.qte_g) || 0,
           prix_kg: Number(l.prix_kg) || 0,
+          libre: !!l.libre,
         })),
         maj_le: new Date().toISOString(),
       };
