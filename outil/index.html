@@ -194,6 +194,15 @@ details.fiche[open] summary::before{content:"▾ "}
 .ligneRatio b{color:var(--ink);font-variant-numeric:tabular-nums}
 .ligneRatio b.rouge{color:#b3261e}
 .ligneRatio b.vert{color:#1d7a4c}
+.pertesHaut{display:flex;gap:30px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;margin-bottom:26px}
+.pertesForm{flex:1;min-width:320px}
+.pertesTotal{text-align:right;padding:16px 20px;border:1px solid var(--line);border-radius:12px;background:#fbfaf6;min-width:190px}
+.pertesTotal span{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey)}
+.pertesTotal b{display:block;font-size:26px;font-weight:600;margin:4px 0}
+.perte{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.perte .g{color:var(--grey);font-size:12.5px}
+.perte .d{display:flex;gap:14px;align-items:center;white-space:nowrap}
+.perte button{background:none;border:0;color:var(--grey);cursor:pointer;font-size:15px}
 </style>
 </head>
 <body>
@@ -221,6 +230,7 @@ details.fiche[open] summary::before{content:"▾ "}
     <button class="onglet actif" data-vue="produits" type="button">Produits</button>
     <button class="onglet" data-vue="recettes" type="button">Recettes</button>
     <button class="onglet" data-vue="allergenes" type="button" style="display:none">Allergènes</button>
+    <button class="onglet" data-vue="pertes" type="button" style="display:none">Pertes</button>
     <button class="onglet" data-vue="reglages" type="button">Réglages</button>
   </div>
 
@@ -332,6 +342,37 @@ Cuisson 35 minutes, chaleur tournante."></textarea>
         <button id="btnAnnuler" class="boutonLeger" type="button">Annuler</button>
       </div>
     </div>
+  </section>
+
+  <section id="vuePertes" hidden>
+    <div class="pertesHaut">
+      <div class="pertesForm">
+        <h2 class="titreForm" style="font-size:17px">Déclarer une perte</h2>
+        <div class="champs" style="grid-template-columns:2fr 1fr 1fr">
+          <label>Produit<input id="pNom" type="text" list="listeProduitsPertes" placeholder="Crème fraîche 30 %"></label>
+          <label>Quantité<input id="pQte" type="number" min="0" step="0.01" placeholder="1,5"></label>
+          <label>Unité<select id="pUnite"><option value="kg">kilos</option><option value="piece">pièces</option></select></label>
+        </div>
+        <div class="champs" style="grid-template-columns:1fr 1fr 1fr;margin-top:0">
+          <label>Motif<select id="pMotif">
+            <option value="casse">Casse</option>
+            <option value="date depassee">Date dépassée</option>
+            <option value="erreur">Erreur de préparation</option>
+            <option value="offert">Offert</option>
+            <option value="autre">Autre</option>
+          </select></label>
+          <label>Prix au kilo<input id="pPrix" type="number" min="0" step="0.01" placeholder="rempli tout seul"></label>
+          <label>&nbsp;<button id="pAjouter" class="boutonPlein" type="button">Enregistrer</button></label>
+        </div>
+        <datalist id="listeProduitsPertes"></datalist>
+      </div>
+      <div class="pertesTotal">
+        <span>Pertes du mois</span>
+        <b id="pTotal">—</b>
+        <span id="pNb" class="meta"></span>
+      </div>
+    </div>
+    <div id="listePertes"></div>
   </section>
 
   <section id="vueAllergenes" hidden>
@@ -505,6 +546,7 @@ function init() {
   document.getElementById("entete").innerHTML = `${d.client}<br><span style="opacity:.7">${d.produits.length} produits suivis</span>`;
   SEUIL = typeof d.seuil === "number" ? d.seuil : 5;
   chargeReglages();
+  chargePertes();
 
   const ctl = d.controles || {};
   if ((ctl.ecart || 0) > 0) {
@@ -722,6 +764,7 @@ const MODULES = [
   { id: "factures", nom: "Factures consultables",   txt: "Retrouve le PDF derrière chaque prix.", actif: true },
   { id: "export",   nom: "Export Excel",            txt: "Le tableau complet pour le comptable.", actif: true },
   { id: "prix",        nom: "Prix de vente et marge", txt: "Simulateur de prix et coût matière cible.", actif: true },
+  { id: "pertes",      nom: "Pertes et gaspillage", txt: "Déclarer une casse, une date dépassée, et voir le coût du mois.", actif: true },
   { id: "allergenes",  nom: "Fiche allergènes",     txt: "Les quatorze allergènes, générés depuis les recettes.", actif: true },
   { id: "comparaison", nom: "Comparaison fournisseurs", txt: "Le même produit chez d'autres, dans la zone.", actif: false },
   { id: "rapport",     nom: "Rapport mensuel",      txt: "Un récapitulatif envoyé par mail chaque mois.", actif: false },
@@ -750,6 +793,10 @@ function appliqueModules() {
 
   const simu = document.querySelector(".simu");
   if (simu) simu.style.display = on("prix") ? "" : "none";
+
+  const ongletPertes = document.querySelector('.onglet[data-vue="pertes"]');
+  if (ongletPertes) ongletPertes.style.display = on("pertes") ? "" : "none";
+  if (!on("pertes") && !document.getElementById("vuePertes").hidden) basculeVue("produits");
 
   const ongletAl = document.querySelector('.onglet[data-vue="allergenes"]');
   if (ongletAl) ongletAl.style.display = on("allergenes") ? "" : "none";
@@ -795,6 +842,9 @@ function basculeVue(nom) {
   if (nom === "recettes") {
     if (!SOUS_PRODUITS) SOUS_PRODUITS = sous.textContent;
     sous.textContent = "Coût matière de vos recettes, calculé au dernier prix d'achat connu.";
+  } else if (nom === "pertes") {
+    if (!SOUS_PRODUITS) SOUS_PRODUITS = sous.textContent;
+    sous.textContent = "Ce qui part à la poubelle, chiffré au prix d'achat.";
   } else if (nom === "allergenes") {
     if (!SOUS_PRODUITS) SOUS_PRODUITS = sous.textContent;
     sous.textContent = "Les quatorze allergènes à déclaration obligatoire, recette par recette.";
@@ -808,6 +858,8 @@ function basculeVue(nom) {
   document.getElementById("vueRecettes").hidden = nom !== "recettes";
   document.getElementById("vueReglages").hidden = nom !== "reglages";
   document.getElementById("vueAllergenes").hidden = nom !== "allergenes";
+  document.getElementById("vuePertes").hidden = nom !== "pertes";
+  if (nom === "pertes") renduPertes();
   if (nom === "reglages") renduReglages();
   if (nom === "allergenes") renduAllergenes();
   document.querySelectorAll(".onglet").forEach(o =>
@@ -1111,6 +1163,15 @@ details.fiche[open] summary::before{content:"▾ "}
 .ligneRatio b{color:var(--ink);font-variant-numeric:tabular-nums}
 .ligneRatio b.rouge{color:#b3261e}
 .ligneRatio b.vert{color:#1d7a4c}
+.pertesHaut{display:flex;gap:30px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;margin-bottom:26px}
+.pertesForm{flex:1;min-width:320px}
+.pertesTotal{text-align:right;padding:16px 20px;border:1px solid var(--line);border-radius:12px;background:#fbfaf6;min-width:190px}
+.pertesTotal span{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey)}
+.pertesTotal b{display:block;font-size:26px;font-weight:600;margin:4px 0}
+.perte{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.perte .g{color:var(--grey);font-size:12.5px}
+.perte .d{display:flex;gap:14px;align-items:center;white-space:nowrap}
+.perte button{background:none;border:0;color:var(--grey);cursor:pointer;font-size:15px}
 </style></head><body>
     <h1>${r.nom}</h1>
     <div class="s">${DATA.client} · ${c.portions} portion${c.portions > 1 ? "s" : ""} · fiche du ${new Date().toLocaleDateString("fr-FR")}</div>
@@ -1133,6 +1194,8 @@ async function chargeRecettes() {
 document.querySelectorAll(".onglet").forEach(o =>
   o.addEventListener("click", () => basculeVue(o.dataset.vue)));
 document.getElementById("btnImprimerAllergenes").addEventListener("click", imprimerAllergenes);
+document.getElementById("pAjouter").addEventListener("click", ajoutePerte);
+document.getElementById("pNom").addEventListener("change", prixPerteAuto);
 ["simCout","simMarge","simTva"].forEach(id =>
   document.getElementById(id).addEventListener("input", calculeSimu));
 calculeSimu();
@@ -1222,6 +1285,15 @@ function imprimerAllergenes() {
 .ligneRatio b{color:var(--ink);font-variant-numeric:tabular-nums}
 .ligneRatio b.rouge{color:#b3261e}
 .ligneRatio b.vert{color:#1d7a4c}
+.pertesHaut{display:flex;gap:30px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;margin-bottom:26px}
+.pertesForm{flex:1;min-width:320px}
+.pertesTotal{text-align:right;padding:16px 20px;border:1px solid var(--line);border-radius:12px;background:#fbfaf6;min-width:190px}
+.pertesTotal span{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey)}
+.pertesTotal b{display:block;font-size:26px;font-weight:600;margin:4px 0}
+.perte{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.perte .g{color:var(--grey);font-size:12.5px}
+.perte .d{display:flex;gap:14px;align-items:center;white-space:nowrap}
+.perte button{background:none;border:0;color:var(--grey);cursor:pointer;font-size:15px}
 </style></head><body>
    <h1>Allergènes</h1><div class="s">${DATA.client} · ${new Date().toLocaleDateString("fr-FR")}</div>
    ${t}</body></html>`);
@@ -1260,6 +1332,81 @@ function ratioMatiere(r) {
   if (!c || !r.prix_vente) return null;
   const ht = r.prix_vente / 1.1;
   return (c / ht) * 100;
+}
+
+/* ---------------- pertes ---------------- */
+let PERTES = [];
+
+async function chargePertes() {
+  try {
+    const r = await fetch("/.netlify/functions/prix-perte?code=" + encodeURIComponent(CODE));
+    if (r.ok) PERTES = (await r.json()).pertes || [];
+  } catch {}
+  renduPertes();
+}
+
+const eurosDate = (d) => new Date(d + "T12:00:00").toLocaleDateString("fr-FR", { day: "2-digit", month: "short" });
+
+function renduPertes() {
+  const dl = document.getElementById("listeProduitsPertes");
+  if (dl) dl.innerHTML = (DATA.produits || []).map(p => `<option value="${p.nom}">`).join("");
+
+  const mois = new Date().toISOString().slice(0, 7);
+  const duMois = PERTES.filter(p => String(p.date).startsWith(mois));
+  const total = duMois.reduce((s, p) => s + (Number(p.montant) || 0), 0);
+
+  document.getElementById("pTotal").textContent = euros(total);
+  document.getElementById("pNb").textContent = duMois.length
+    ? `${duMois.length} déclaration${duMois.length > 1 ? "s" : ""} ce mois-ci`
+    : "aucune déclaration ce mois-ci";
+
+  const tri = [...PERTES].sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 40);
+  document.getElementById("listePertes").innerHTML = tri.length
+    ? tri.map(p => `<div class="perte">
+        <div><b>${p.nom}</b> <span class="g">· ${p.motif.replace("date depassee", "date dépassée")} · ${eurosDate(p.date)}</span></div>
+        <div class="d"><span class="g">${String(p.qte).replace(".", ",")} ${p.unite === "piece" ? "pièce(s)" : "kg"}</span>
+        <b>${euros(p.montant)}</b>
+        <button type="button" data-supp="${p.id}" title="retirer">×</button></div>
+      </div>`).join("")
+    : '<p class="meta">Rien de déclaré pour l\'instant.</p>';
+
+  document.querySelectorAll("#listePertes button[data-supp]").forEach(b => {
+    b.addEventListener("click", async () => {
+      await fetch("/.netlify/functions/prix-perte?code=" + encodeURIComponent(CODE) + "&id=" + b.dataset.supp,
+        { method: "DELETE" });
+      chargePertes();
+    });
+  });
+}
+
+async function ajoutePerte() {
+  const nom = document.getElementById("pNom").value.trim();
+  const qte = Number(document.getElementById("pQte").value);
+  if (!nom || !(qte > 0)) { alert("Il manque le produit ou la quantité."); return; }
+
+  let prix = Number(document.getElementById("pPrix").value) || 0;
+  if (!prix) prix = prixActuel(nom) || 0;
+
+  await fetch("/.netlify/functions/prix-perte", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ code: CODE, perte: {
+      nom, qte, prix_kg: prix,
+      unite: document.getElementById("pUnite").value,
+      motif: document.getElementById("pMotif").value,
+    }}),
+  });
+  document.getElementById("pNom").value = "";
+  document.getElementById("pQte").value = "";
+  document.getElementById("pPrix").value = "";
+  chargePertes();
+}
+
+/* le prix se remplit tout seul quand le produit vient des factures */
+function prixPerteAuto() {
+  const nom = document.getElementById("pNom").value.trim();
+  const p = nom ? prixActuel(trouveProduit(nom) || nom) : null;
+  if (p) document.getElementById("pPrix").value = p.toFixed(2);
 }
 
 charge(param || localStorage.getItem(CLE) || "");
