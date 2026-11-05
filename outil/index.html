@@ -171,6 +171,14 @@ details.fiche[open] summary::before{content:"▾ "}
 .inter input:disabled + .piste{background:#e7e3d8}
 .module.avenir{opacity:.55}
 .module.avenir .txt b::after{content:" · bientôt";color:var(--grey);font-weight:400;font-size:12px}
+.tableScroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.tableScroll table{margin:0;min-width:760px}
+.tableScroll th,.tableScroll td{padding:9px 8px;font-size:12.5px;white-space:nowrap}
+.tableScroll th:first-child,.tableScroll td:first-child{position:sticky;left:0;background:var(--paper);z-index:1;white-space:normal}
+.tableScroll td.oui{text-align:center;color:var(--red);font-weight:700}
+.tableScroll td.non{text-align:center;color:#cfc9ba}
+.allergenesListe{font-size:12.5px;color:var(--grey);margin-top:10px}
+.allergenesListe b{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -197,6 +205,7 @@ details.fiche[open] summary::before{content:"▾ "}
   <div class="onglets">
     <button class="onglet actif" data-vue="produits" type="button">Produits</button>
     <button class="onglet" data-vue="recettes" type="button">Recettes</button>
+    <button class="onglet" data-vue="allergenes" type="button" style="display:none">Allergènes</button>
     <button class="onglet" data-vue="reglages" type="button">Réglages</button>
   </div>
 
@@ -289,6 +298,18 @@ Cuisson 35 minutes, chaleur tournante."></textarea>
         <button id="btnAnnuler" class="boutonLeger" type="button">Annuler</button>
       </div>
     </div>
+  </section>
+
+  <section id="vueAllergenes" hidden>
+    <div class="barreRecettes">
+      <button id="btnImprimerAllergenes" class="boutonPlein" type="button">Imprimer le tableau</button>
+      <span class="meta">Les quatorze allergènes à déclaration obligatoire</span>
+    </div>
+    <div id="tableAllergenes" class="tableScroll"></div>
+    <p class="meta" style="margin-top:18px;max-width:70ch">
+      Détection automatique à partir du nom des ingrédients. À vérifier avec les fiches
+      techniques des fournisseurs, un même produit peut changer de composition.
+    </p>
   </section>
 
   <section id="vueReglages" hidden>
@@ -648,7 +669,7 @@ const MODULES = [
   { id: "recettes", nom: "Recettes et coût matière", txt: "Calcule le coût d'un plat, la marge et la fiche produit.", actif: true },
   { id: "factures", nom: "Factures consultables",   txt: "Retrouve le PDF derrière chaque prix.", actif: true },
   { id: "export",   nom: "Export Excel",            txt: "Le tableau complet pour le comptable.", actif: true },
-  { id: "allergenes",  nom: "Fiche allergènes",     txt: "Les quatorze allergènes, générés depuis les recettes.", actif: false },
+  { id: "allergenes",  nom: "Fiche allergènes",     txt: "Les quatorze allergènes, générés depuis les recettes.", actif: true },
   { id: "comparaison", nom: "Comparaison fournisseurs", txt: "Le même produit chez d'autres, dans la zone.", actif: false },
   { id: "rapport",     nom: "Rapport mensuel",      txt: "Un récapitulatif envoyé par mail chaque mois.", actif: false },
   { id: "ouverture",   nom: "Business plan d'ouverture", txt: "Coût matière et point mort avant l'ouverture.", actif: false },
@@ -673,6 +694,10 @@ function appliqueModules() {
 
   const bx = document.getElementById("btnExcel");
   if (bx) bx.style.display = on("export") ? "" : "none";
+
+  const ongletAl = document.querySelector('.onglet[data-vue="allergenes"]');
+  if (ongletAl) ongletAl.style.display = on("allergenes") ? "" : "none";
+  if (!on("allergenes") && !document.getElementById("vueAllergenes").hidden) basculeVue("produits");
 
   const ongletRecettes = document.querySelector('.onglet[data-vue="recettes"]');
   if (ongletRecettes) ongletRecettes.style.display = on("recettes") ? "" : "none";
@@ -708,6 +733,9 @@ function basculeVue(nom) {
   if (nom === "recettes") {
     if (!SOUS_PRODUITS) SOUS_PRODUITS = sous.textContent;
     sous.textContent = "Coût matière de vos recettes, calculé au dernier prix d'achat connu.";
+  } else if (nom === "allergenes") {
+    if (!SOUS_PRODUITS) SOUS_PRODUITS = sous.textContent;
+    sous.textContent = "Les quatorze allergènes à déclaration obligatoire, recette par recette.";
   } else if (nom === "reglages") {
     if (!SOUS_PRODUITS) SOUS_PRODUITS = sous.textContent;
     sous.textContent = "Ce qui s'affiche dans l'outil, module par module.";
@@ -717,7 +745,9 @@ function basculeVue(nom) {
   document.getElementById("vueProduits").hidden = nom !== "produits";
   document.getElementById("vueRecettes").hidden = nom !== "recettes";
   document.getElementById("vueReglages").hidden = nom !== "reglages";
+  document.getElementById("vueAllergenes").hidden = nom !== "allergenes";
   if (nom === "reglages") renduReglages();
+  if (nom === "allergenes") renduAllergenes();
   document.querySelectorAll(".onglet").forEach(o =>
     o.classList.toggle("actif", o.dataset.vue === nom));
   if (nom === "recettes") renduRecettes();
@@ -788,6 +818,11 @@ function renduRecettes() {
           <td class="n">${euros(coutLigne(l))}</td></tr>`; }).join("")}
         <tr class="totalLigne"><td colspan="3"><b>Coût matière par portion</b></td><td class="n"><b>${euros(c.portion)}</b></td></tr>
         </tbody></table>
+        ${(() => {
+          const al = allergenesRecette(r);
+          const noms = ALLERGENES.filter(a => al.includes(a.code)).map(a => a.nom);
+          return `<div class="allergenesListe">Allergènes : <b>${noms.length ? noms.join(", ") : "aucun des quatorze identifié"}</b></div>`;
+        })()}
         ${r.notes ? `<div class="preparation">${r.notes.replace(/</g, "&lt;")}</div>` : ""}
       </details>
     </article>`;
@@ -975,6 +1010,14 @@ details.fiche[open] summary::before{content:"▾ "}
 .inter input:disabled + .piste{background:#e7e3d8}
 .module.avenir{opacity:.55}
 .module.avenir .txt b::after{content:" · bientôt";color:var(--grey);font-weight:400;font-size:12px}
+.tableScroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.tableScroll table{margin:0;min-width:760px}
+.tableScroll th,.tableScroll td{padding:9px 8px;font-size:12.5px;white-space:nowrap}
+.tableScroll th:first-child,.tableScroll td:first-child{position:sticky;left:0;background:var(--paper);z-index:1;white-space:normal}
+.tableScroll td.oui{text-align:center;color:var(--red);font-weight:700}
+.tableScroll td.non{text-align:center;color:#cfc9ba}
+.allergenesListe{font-size:12.5px;color:var(--grey);margin-top:10px}
+.allergenesListe b{color:var(--ink)}
 </style></head><body>
     <h1>${r.nom}</h1>
     <div class="s">${DATA.client} · ${c.portions} portion${c.portions > 1 ? "s" : ""} · fiche du ${new Date().toLocaleDateString("fr-FR")}</div>
@@ -996,6 +1039,7 @@ async function chargeRecettes() {
 
 document.querySelectorAll(".onglet").forEach(o =>
   o.addEventListener("click", () => basculeVue(o.dataset.vue)));
+document.getElementById("btnImprimerAllergenes").addEventListener("click", imprimerAllergenes);
 document.getElementById("btnNouvelle").addEventListener("click", nouvelleRecette);
 ["qRecette", "triRecette", "fCategorie"].forEach(id =>
   document.getElementById(id).addEventListener("input", renduRecettes));
@@ -1009,6 +1053,71 @@ document.getElementById("btnAnnuler").addEventListener("click", () => {
 });
 
 charge(localStorage.getItem(CLE) || "");
+
+/* ---------------- allergènes ---------------- */
+const ALLERGENES = [
+  { code: "gluten",      nom: "Gluten",          mots: ["ble", "farine", "pain", "pate", "semoule", "chapelure", "biscuit", "brioche", "burger", "pizza", "orge", "seigle", "epeautre"] },
+  { code: "crustaces",   nom: "Crustacés",       mots: ["crevette", "crabe", "homard", "langoustine", "ecrevisse", "tourteau"] },
+  { code: "oeuf",        nom: "Œufs",            mots: ["oeuf", "mayonnaise", "meringue", "omelette"] },
+  { code: "poisson",     nom: "Poisson",         mots: ["poisson", "saumon", "thon", "cabillaud", "anchois", "sardine", "maquereau", "colin", "truite"] },
+  { code: "arachide",    nom: "Arachide",        mots: ["cacahuete", "arachide", "cacahouete"] },
+  { code: "soja",        nom: "Soja",            mots: ["soja", "tofu", "edamame"] },
+  { code: "lait",        nom: "Lait",            mots: ["lait", "creme", "beurre", "fromage", "yaourt", "mascarpone", "chantilly"] },
+  { code: "fruits_coque",nom: "Fruits à coque",  mots: ["amande", "noisette", "noix", "pistache", "cajou", "pecan", "macadamia"] },
+  { code: "celeri",      nom: "Céleri",          mots: ["celeri"] },
+  { code: "moutarde",    nom: "Moutarde",        mots: ["moutarde"] },
+  { code: "sesame",      nom: "Sésame",          mots: ["sesame", "tahini", "tahin"] },
+  { code: "sulfites",    nom: "Sulfites",        mots: ["sulfite", "vin blanc", "vin rouge", "vinaigre"] },
+  { code: "lupin",       nom: "Lupin",           mots: ["lupin"] },
+  { code: "mollusques",  nom: "Mollusques",      mots: ["moule", "huitre", "coquille", "calmar", "encornet", "escargot", "palourde", "saint-jacques", "saint jacques", "bulot"] },
+];
+
+function allergenesDe(nom) {
+  const n = normNom(nom);
+  return ALLERGENES.filter(a => a.mots.some(m => n.includes(m))).map(a => a.code);
+}
+
+function allergenesRecette(r) {
+  const set = new Set();
+  (r.lignes || []).forEach(l => {
+    const pl = prixLigne(l);
+    allergenesDe(pl.nom).forEach(c => set.add(c));
+  });
+  return [...set];
+}
+
+function renduAllergenes() {
+  if (!RECETTES.length) {
+    document.getElementById("tableAllergenes").innerHTML =
+      '<p class="meta" style="padding:20px">Aucune recette pour l\'instant.</p>';
+    return;
+  }
+  const entete = ALLERGENES.map(a => `<th style="text-align:center">${a.nom}</th>`).join("");
+  const lignes = RECETTES.map(r => {
+    const dedans = allergenesRecette(r);
+    const cellules = ALLERGENES.map(a =>
+      dedans.includes(a.code) ? '<td class="oui">●</td>' : '<td class="non">·</td>').join("");
+    return `<tr><td><b>${r.nom}</b></td>${cellules}</tr>`;
+  }).join("");
+  document.getElementById("tableAllergenes").innerHTML =
+    `<table><thead><tr><th>Recette</th>${entete}</tr></thead><tbody>${lignes}</tbody></table>`;
+}
+
+function imprimerAllergenes() {
+  const t = document.getElementById("tableAllergenes").innerHTML;
+  const fen = window.open("", "_blank");
+  fen.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Allergènes</title>
+   <style>body{font:12px/1.4 Helvetica,Arial,sans-serif;padding:28px;color:#0f0f0d}
+   h1{font-size:20px;margin:0 0 2px} .s{color:#6d6d63;font-size:11px;margin-bottom:18px}
+   table{width:100%;border-collapse:collapse} th,td{border:1px solid #d6d1c4;padding:6px 5px;font-size:10.5px}
+   th{background:#f3f0e8;text-align:center} th:first-child{text-align:left}
+   td.oui{text-align:center;font-weight:700} td.non{text-align:center;color:#bbb}
+   td:first-child{text-align:left}</style></head><body>
+   <h1>Allergènes</h1><div class="s">${DATA.client} · ${new Date().toLocaleDateString("fr-FR")}</div>
+   ${t}</body></html>`);
+  fen.document.close();
+  setTimeout(() => fen.print(), 400);
+}
 
 charge(param || localStorage.getItem(CLE) || "");
 </script>
