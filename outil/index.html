@@ -180,6 +180,20 @@ details.fiche[open] summary::before{content:"▾ "}
 .tableScroll td.non{text-align:center;color:#cfc9ba}
 .allergenesListe{font-size:12.5px;color:var(--grey);margin-top:10px}
 .allergenesListe b{color:var(--ink)}
+.simu{border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:22px;background:#fbfaf6}
+.simuTitre{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);margin-bottom:14px}
+.simuChamps{display:flex;gap:18px;flex-wrap:wrap}
+.simuChamps label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--grey)}
+.simuChamps input{width:120px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:15px;color:var(--ink);background:#fff}
+.simuSortie{display:flex;gap:32px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.simuSortie div{display:flex;flex-direction:column;gap:3px}
+.simuSortie span{font-size:11px;color:var(--grey)}
+.simuSortie b{font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
+.simuSortie b.bon{color:#1d7a4c}
+.ligneRatio{display:flex;gap:26px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--grey)}
+.ligneRatio b{color:var(--ink);font-variant-numeric:tabular-nums}
+.ligneRatio b.rouge{color:#b3261e}
+.ligneRatio b.vert{color:#1d7a4c}
 </style>
 </head>
 <body>
@@ -256,6 +270,24 @@ details.fiche[open] summary::before{content:"▾ "}
   </div>
 
   <section id="vueRecettes" hidden>
+    <div class="simu">
+      <div class="simuTitre">Simulateur de prix</div>
+      <div class="simuChamps">
+        <label>Coût matière par portion
+          <input id="simCout" type="number" step="0.01" min="0" placeholder="2,40"></label>
+        <label>Marge visée
+          <input id="simMarge" type="number" step="1" min="1" max="95" value="70"></label>
+        <label>TVA
+          <input id="simTva" type="number" step="0.5" min="0" max="20" value="10"></label>
+      </div>
+      <div class="simuSortie">
+        <div><span>Prix affiché</span><b id="simTtc">—</b></div>
+        <div><span>Prix hors taxes</span><b id="simHt">—</b></div>
+        <div><span>Marge par portion</span><b id="simMargeEuro">—</b></div>
+        <div><span>Coefficient</span><b id="simCoef">—</b></div>
+      </div>
+    </div>
+
     <div class="barreRecettes">
       <button id="btnNouvelle" class="boutonPlein" type="button">Nouvelle recette</button>
       <span id="nbRecettes" class="meta"></span>
@@ -280,6 +312,7 @@ details.fiche[open] summary::before{content:"▾ "}
         <label>Nom<input id="rNom" type="text" placeholder="Tarte aux pommes"></label>
         <label>Portions<input id="rPortions" type="number" min="1" step="1" value="1"></label>
         <label>Prix de vente par portion<input id="rPrix" type="number" min="0" step="0.01" placeholder="facultatif"></label>
+        <label>Coût matière cible (%)<input id="rCible" type="number" min="1" max="90" step="1" placeholder="30"></label>
         <label>Catégorie<input id="rCategorie" type="text" list="listeCategories" placeholder="entrée, plat, dessert…"></label>
       </div>
       <datalist id="listeCategories"></datalist>
@@ -302,6 +335,24 @@ Cuisson 35 minutes, chaleur tournante."></textarea>
   </section>
 
   <section id="vueAllergenes" hidden>
+    <div class="simu">
+      <div class="simuTitre">Simulateur de prix</div>
+      <div class="simuChamps">
+        <label>Coût matière par portion
+          <input id="simCout" type="number" step="0.01" min="0" placeholder="2,40"></label>
+        <label>Marge visée
+          <input id="simMarge" type="number" step="1" min="1" max="95" value="70"></label>
+        <label>TVA
+          <input id="simTva" type="number" step="0.5" min="0" max="20" value="10"></label>
+      </div>
+      <div class="simuSortie">
+        <div><span>Prix affiché</span><b id="simTtc">—</b></div>
+        <div><span>Prix hors taxes</span><b id="simHt">—</b></div>
+        <div><span>Marge par portion</span><b id="simMargeEuro">—</b></div>
+        <div><span>Coefficient</span><b id="simCoef">—</b></div>
+      </div>
+    </div>
+
     <div class="barreRecettes">
       <button id="btnImprimerAllergenes" class="boutonPlein" type="button">Imprimer le tableau</button>
       <span class="meta">Les quatorze allergènes à déclaration obligatoire</span>
@@ -670,6 +721,7 @@ const MODULES = [
   { id: "recettes", nom: "Recettes et coût matière", txt: "Calcule le coût d'un plat, la marge et la fiche produit.", actif: true },
   { id: "factures", nom: "Factures consultables",   txt: "Retrouve le PDF derrière chaque prix.", actif: true },
   { id: "export",   nom: "Export Excel",            txt: "Le tableau complet pour le comptable.", actif: true },
+  { id: "prix",        nom: "Prix de vente et marge", txt: "Simulateur de prix et coût matière cible.", actif: true },
   { id: "allergenes",  nom: "Fiche allergènes",     txt: "Les quatorze allergènes, générés depuis les recettes.", actif: true },
   { id: "comparaison", nom: "Comparaison fournisseurs", txt: "Le même produit chez d'autres, dans la zone.", actif: false },
   { id: "rapport",     nom: "Rapport mensuel",      txt: "Un récapitulatif envoyé par mail chaque mois.", actif: false },
@@ -695,6 +747,9 @@ function appliqueModules() {
 
   const bx = document.getElementById("btnExcel");
   if (bx) bx.style.display = on("export") ? "" : "none";
+
+  const simu = document.querySelector(".simu");
+  if (simu) simu.style.display = on("prix") ? "" : "none";
 
   const ongletAl = document.querySelector('.onglet[data-vue="allergenes"]');
   if (ongletAl) ongletAl.style.display = on("allergenes") ? "" : "none";
@@ -909,6 +964,7 @@ function nouvelleRecette() {
   document.getElementById("rPrix").value = "";
   document.getElementById("rCategorie").value = "";
   document.getElementById("rNotes").value = "";
+  document.getElementById("rCible").value = "";
   document.getElementById("rLignes").innerHTML = "";
   ligneIngredient(); ligneIngredient();
   document.getElementById("formRecette").hidden = false;
@@ -926,6 +982,7 @@ function editerRecette(id) {
   document.getElementById("rPrix").value = r.prix_vente || "";
   document.getElementById("rCategorie").value = r.categorie || "";
   document.getElementById("rNotes").value = r.notes || "";
+  document.getElementById("rCible").value = r.cible || "";
   document.getElementById("rLignes").innerHTML = "";
   (r.lignes || []).forEach(l => l.libre ? ligneLibre(l) : ligneIngredient(l));
   if (!(r.lignes || []).length) ligneIngredient();
@@ -941,6 +998,7 @@ async function sauverRecette() {
     prix_vente: Number(document.getElementById("rPrix").value) || 0,
     categorie: document.getElementById("rCategorie").value.trim(),
     notes: document.getElementById("rNotes").value.trim(),
+    cible: Number(document.getElementById("rCible").value) || 0,
     lignes: lignesForm().map(l => {
       const pl = prixLigne(l);
       return { nom: pl.nom, qte_g: l.qte_g, prix_kg: pl.prix || 0, libre: pl.source !== "facture" };
@@ -1020,6 +1078,20 @@ details.fiche[open] summary::before{content:"▾ "}
 .tableScroll td.non{text-align:center;color:#cfc9ba}
 .allergenesListe{font-size:12.5px;color:var(--grey);margin-top:10px}
 .allergenesListe b{color:var(--ink)}
+.simu{border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:22px;background:#fbfaf6}
+.simuTitre{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);margin-bottom:14px}
+.simuChamps{display:flex;gap:18px;flex-wrap:wrap}
+.simuChamps label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--grey)}
+.simuChamps input{width:120px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:15px;color:var(--ink);background:#fff}
+.simuSortie{display:flex;gap:32px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.simuSortie div{display:flex;flex-direction:column;gap:3px}
+.simuSortie span{font-size:11px;color:var(--grey)}
+.simuSortie b{font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
+.simuSortie b.bon{color:#1d7a4c}
+.ligneRatio{display:flex;gap:26px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--grey)}
+.ligneRatio b{color:var(--ink);font-variant-numeric:tabular-nums}
+.ligneRatio b.rouge{color:#b3261e}
+.ligneRatio b.vert{color:#1d7a4c}
 </style></head><body>
     <h1>${r.nom}</h1>
     <div class="s">${DATA.client} · ${c.portions} portion${c.portions > 1 ? "s" : ""} · fiche du ${new Date().toLocaleDateString("fr-FR")}</div>
@@ -1042,6 +1114,9 @@ async function chargeRecettes() {
 document.querySelectorAll(".onglet").forEach(o =>
   o.addEventListener("click", () => basculeVue(o.dataset.vue)));
 document.getElementById("btnImprimerAllergenes").addEventListener("click", imprimerAllergenes);
+["simCout","simMarge","simTva"].forEach(id =>
+  document.getElementById(id).addEventListener("input", calculeSimu));
+calculeSimu();
 document.getElementById("btnNouvelle").addEventListener("click", nouvelleRecette);
 ["qRecette", "triRecette", "fCategorie"].forEach(id =>
   document.getElementById(id).addEventListener("input", renduRecettes));
@@ -1114,11 +1189,58 @@ function imprimerAllergenes() {
    table{width:100%;border-collapse:collapse} th,td{border:1px solid #d6d1c4;padding:6px 5px;font-size:10.5px}
    th{background:#f3f0e8;text-align:center} th:first-child{text-align:left}
    td.oui{text-align:center;font-weight:700} td.non{text-align:center;color:#bbb}
-   td:first-child{text-align:left}</style></head><body>
+   td:first-child{text-align:left}.simu{border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:22px;background:#fbfaf6}
+.simuTitre{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);margin-bottom:14px}
+.simuChamps{display:flex;gap:18px;flex-wrap:wrap}
+.simuChamps label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--grey)}
+.simuChamps input{width:120px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:15px;color:var(--ink);background:#fff}
+.simuSortie{display:flex;gap:32px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.simuSortie div{display:flex;flex-direction:column;gap:3px}
+.simuSortie span{font-size:11px;color:var(--grey)}
+.simuSortie b{font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
+.simuSortie b.bon{color:#1d7a4c}
+.ligneRatio{display:flex;gap:26px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--grey)}
+.ligneRatio b{color:var(--ink);font-variant-numeric:tabular-nums}
+.ligneRatio b.rouge{color:#b3261e}
+.ligneRatio b.vert{color:#1d7a4c}
+</style></head><body>
    <h1>Allergènes</h1><div class="s">${DATA.client} · ${new Date().toLocaleDateString("fr-FR")}</div>
    ${t}</body></html>`);
   fen.document.close();
   setTimeout(() => fen.print(), 400);
+}
+
+/* ---------------- simulateur de prix ---------------- */
+function calculeSimu() {
+  const cout = Number(document.getElementById("simCout").value) || 0;
+  const marge = Math.min(95, Math.max(1, Number(document.getElementById("simMarge").value) || 70));
+  const tva = Number(document.getElementById("simTva").value) || 0;
+
+  const ht = cout / (1 - marge / 100);
+  const ttc = ht * (1 + tva / 100);
+  const euro = ht - cout;
+
+  document.getElementById("simHt").textContent = cout ? euros(ht) : "—";
+  document.getElementById("simTtc").textContent = cout ? euros(ttc) : "—";
+  document.getElementById("simMargeEuro").textContent = cout ? euros(euro) : "—";
+  document.getElementById("simCoef").textContent = cout ? (ttc / cout).toFixed(2).replace(".", ",") : "—";
+}
+
+/* prix conseillé d'une recette, à partir de son coût et de sa cible */
+function prixConseille(r) {
+  const c = coutRecette(r).portion;
+  if (!c) return null;
+  const cible = Number(r.cible) || 0;
+  if (cible > 0) return c / (cible / 100);        // prix HT pour tenir le ratio cible
+  return null;
+}
+
+/* ratio matière réel d'une recette */
+function ratioMatiere(r) {
+  const c = coutRecette(r).portion;
+  if (!c || !r.prix_vente) return null;
+  const ht = r.prix_vente / 1.1;
+  return (c / ht) * 100;
 }
 
 charge(param || localStorage.getItem(CLE) || "");

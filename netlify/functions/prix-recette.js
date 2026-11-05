@@ -73,6 +73,7 @@ exports.handler = async (event) => {
         portions: Number(r.portions) || 1,
         prix_vente: Number(r.prix_vente) || 0,
         notes: String(r.notes || "").slice(0, 4000),
+        cible: Math.max(0, Math.min(90, Number(r.cible) || 0)),
         lignes: (r.lignes || []).slice(0, 80).map(l => ({
           nom: String(l.nom).slice(0, 120),
           qte_g: Number(l.qte_g) || 0,
