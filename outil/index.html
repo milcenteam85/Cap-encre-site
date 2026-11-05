@@ -501,15 +501,49 @@ if (param) {
 /* ---------------- recettes ---------------- */
 let RECETTES = [], RECETTE_EN_COURS = null;
 
+const normNom = (s) => String(s || "")
+  .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  .toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
+// Retrouve un produit des factures à partir d'un nom écrit à la main.
+function trouveProduit(nom) {
+  const n = normNom(nom);
+  if (!n) return null;
+  const produits = DATA.produits || [];
+  let p = produits.find(x => normNom(x.nom) === n);
+  if (p) return p.nom;
+  // « pommes golden » doit retrouver « pomme golden » : on compare sans pluriel
+  const sing = (t) => t.split(" ").map(m => m.replace(/s$/, "")).join(" ");
+  p = produits.find(x => sing(normNom(x.nom)) === sing(n));
+  if (p) return p.nom;
+  if (n.length >= 4) {
+    p = produits.find(x => {
+      const pn = normNom(x.nom);
+      return pn.length >= 4 && (n.includes(pn) || pn.includes(n));
+    });
+    if (p) return p.nom;
+  }
+  return null;
+}
+
+// Prix d'une ligne : celui des factures dès qu'un produit correspond.
+function prixLigne(l) {
+  if (!l.libre) {
+    const p = prixActuel(l.nom);
+    return { prix: p === null ? (l.prix_kg || 0) : p, source: p === null ? "manuel" : "facture", nom: l.nom };
+  }
+  const trouve = trouveProduit(l.nom);
+  if (trouve) return { prix: prixActuel(trouve) || 0, source: "facture", nom: trouve };
+  return { prix: l.prix_kg || 0, source: "manuel", nom: l.nom };
+}
+
 const prixActuel = (nom) => {
   const p = (DATA.produits || []).find(x => x.nom.toLowerCase() === String(nom).toLowerCase());
   return p ? p.dernier : null;
 };
 
 function coutLigne(l) {
-  const pa = prixActuel(l.nom);
-  const prix = (l.libre || pa === null) ? (l.prix_kg || 0) : pa;
-  return (l.qte_g / 1000) * prix;
+  return (l.qte_g / 1000) * prixLigne(l).prix;
 }
 
 function coutRecette(r) {
@@ -650,11 +684,14 @@ function renduRecettes() {
       </div>
       <details class="fiche"><summary>Détail et coût matière</summary>
         <table><thead><tr><th>Ingrédient</th><th class="n">Quantité</th><th class="n">Prix au kilo</th><th class="n">Coût</th></tr></thead>
-        <tbody>${(r.lignes || []).map(l => `<tr>
-          <td>${l.nom}</td>
+        <tbody>${(r.lignes || []).map(l => {
+          const pl = prixLigne(l);
+          const marque = pl.source === "facture" ? `<span class="pill" style="margin-left:6px">facture</span>` : `<span class="pill" style="margin-left:6px">saisi</span>`;
+          return `<tr>
+          <td>${pl.nom}${marque}</td>
           <td class="n">${l.qte_g} g</td>
-          <td class="n">${euros(prixActuel(l.nom) !== null ? prixActuel(l.nom) : l.prix_kg)}</td>
-          <td class="n">${euros(coutLigne(l))}</td></tr>`).join("")}
+          <td class="n">${euros(pl.prix)}</td>
+          <td class="n">${euros(coutLigne(l))}</td></tr>`; }).join("")}
         <tr class="totalLigne"><td colspan="3"><b>Coût matière par portion</b></td><td class="n"><b>${euros(c.portion)}</b></td></tr>
         </tbody></table>
         ${r.notes ? `<div class="preparation">${r.notes.replace(/</g, "&lt;")}</div>` : ""}
@@ -724,9 +761,9 @@ function lignesForm() {
 function majTotal() {
   document.querySelectorAll("#rLignes .ligneIngredient").forEach(d => {
     const l = litLigne(d);
-    const p = l.libre ? l.prix_kg : prixActuel(l.nom);
+    const pl = prixLigne(l);
     d.querySelector(".cout").textContent =
-      l.nom && p ? euros((l.qte_g / 1000) * p) : "";
+      l.nom && pl.prix ? euros((l.qte_g / 1000) * pl.prix) : "";
   });
   const port = Math.max(1, Number(document.getElementById("rPortions").value) || 1);
   const total = lignesForm().reduce((s, l) => s + coutLigne(l), 0);
@@ -774,7 +811,10 @@ async function sauverRecette() {
     prix_vente: Number(document.getElementById("rPrix").value) || 0,
     categorie: document.getElementById("rCategorie").value.trim(),
     notes: document.getElementById("rNotes").value.trim(),
-    lignes: lignesForm().map(l => ({ nom: l.nom, qte_g: l.qte_g, prix_kg: l.prix_kg || 0, libre: !!l.libre })),
+    lignes: lignesForm().map(l => {
+      const pl = prixLigne(l);
+      return { nom: pl.nom, qte_g: l.qte_g, prix_kg: pl.prix || 0, libre: pl.source !== "facture" };
+    }),
   };
   if (!recette.nom || !recette.lignes.length) return;
   const r = await fetch("/.netlify/functions/prix-recette", {
@@ -796,9 +836,8 @@ function imprimerFiche(id) {
   if (!r) return;
   const c = coutRecette(r);
   const fen = window.open("", "_blank");
-  const lignes = (r.lignes || []).map(l => `<tr><td>${l.nom}</td><td>${l.qte_g} g</td>
-     <td>${euros(prixActuel(l.nom) !== null ? prixActuel(l.nom) : l.prix_kg)}</td>
-     <td>${euros(coutLigne(l))}</td></tr>`).join("");
+  const lignes = (r.lignes || []).map(l => { const pl = prixLigne(l); return `<tr><td>${pl.nom}</td><td>${l.qte_g} g</td>
+     <td>${euros(pl.prix)}</td><td>${euros(coutLigne(l))}</td></tr>`; }).join("");
   fen.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>${r.nom}</title>
     <style>body{font:13px/1.5 Helvetica,Arial,sans-serif;padding:36px;color:#0f0f0d}
     h1{font-size:24px;margin:0 0 4px} .s{color:#6d6d63;font-size:12px;margin-bottom:22px}
