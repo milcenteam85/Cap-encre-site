@@ -115,6 +115,21 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 0;font-size
  .ligneIngredient{grid-template-columns:1fr 80px 34px;gap:8px}
  .ligneIngredient .cout{grid-column:2;text-align:right;font-size:12px}
 }
+@media (max-width:760px){
+ .fiche thead{display:none}
+ .fiche table,.fiche tbody{display:block}
+ .fiche tr{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;
+  gap:2px 10px;padding:9px 0;border-bottom:1px solid var(--line)}
+ .fiche td{border:0;padding:0;text-align:left;display:block}
+ .fiche td:nth-child(1){flex:1 1 55%;font-weight:600}
+ .fiche td:nth-child(2){flex:0 0 auto;font-size:12px;color:var(--grey)}
+ .fiche td:nth-child(3){flex:0 0 auto;font-size:12px;color:var(--grey)}
+ .fiche td:nth-child(4){flex:0 0 auto;text-align:right;font-weight:600}
+ .fiche tr.totalLigne{justify-content:space-between;border-bottom:0;padding-top:12px}
+ .fiche tr.totalLigne td:nth-child(1){flex:1 1 auto;font-size:13px}
+ .fiche tr.totalLigne td:nth-child(2){text-align:right;font-size:15px;color:var(--ink)}
+ .fiche tr.totalLigne td:nth-child(2) b{font-weight:800}
+}
 @media print{
  header,.onglets,.barreRecettes,.actionsForm,.boutonLeger,.boutonPlein,#formRecette{display:none!important}
  body{background:#fff;padding:0}
@@ -496,7 +511,7 @@ function renduRecettes() {
           <td class="n">${l.qte_g} g</td>
           <td class="n">${euros(prixActuel(l.nom) !== null ? prixActuel(l.nom) : l.prix_kg)}</td>
           <td class="n">${euros(coutLigne(l))}</td></tr>`).join("")}
-        <tr><td colspan="3"><b>Coût matière par portion</b></td><td class="n"><b>${euros(c.portion)}</b></td></tr>
+        <tr class="totalLigne"><td colspan="3"><b>Coût matière par portion</b></td><td class="n"><b>${euros(c.portion)}</b></td></tr>
         </tbody></table>
       </div>
     </article>`;
