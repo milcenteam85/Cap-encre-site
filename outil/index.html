@@ -501,7 +501,16 @@ function coutRecette(r) {
   return { total, portion: total / portions, portions };
 }
 
+let SOUS_PRODUITS = "";
+
 function basculeVue(nom) {
+  const sous = document.getElementById("sous");
+  if (nom === "recettes") {
+    if (!SOUS_PRODUITS) SOUS_PRODUITS = sous.textContent;
+    sous.textContent = "Coût matière de vos recettes, calculé au dernier prix d'achat connu.";
+  } else if (SOUS_PRODUITS) {
+    sous.textContent = SOUS_PRODUITS;
+  }
   document.getElementById("vueProduits").hidden = nom !== "produits";
   document.getElementById("vueRecettes").hidden = nom !== "recettes";
   document.querySelectorAll(".onglet").forEach(o =>
