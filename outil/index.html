@@ -857,6 +857,17 @@ function renduRecettes() {
           ${m !== null ? `<em>${m.toFixed(0)} % de marge</em>` : ""}
         </div>
       </div>
+      ${(() => {
+        const ratio = ratioMatiere(r);
+        const cible = Number(r.cible) || 0;
+        if (ratio === null && !cible) return "";
+        const conseille = prixConseille(r);
+        const trop = cible && ratio !== null && ratio > cible;
+        return `<div class="ligneRatio">
+          ${ratio !== null ? `<span>Coût matière <b class="${trop ? "rouge" : "vert"}">${ratio.toFixed(1).replace(".", ",")} %</b>${cible ? ` pour une cible de ${cible} %` : ""}</span>` : `<span>Cible ${cible} %</span>`}
+          ${conseille ? `<span>Prix conseillé <b>${euros(conseille * 1.1)}</b></span>` : ""}
+        </div>`;
+      })()}
       <div class="actionsForm">
         <button class="boutonLeger" type="button" onclick="editerRecette('${r.id}')">Modifier</button>
         <button class="boutonLeger" type="button" onclick="imprimerFiche('${r.id}')">Fiche produit</button>
