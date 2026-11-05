@@ -153,6 +153,10 @@ details.fiche[open] summary::before{content:"▾ "}
 .ligneIngredient.libre{grid-template-columns:1fr 110px 90px 34px}
 .preparation{margin-top:14px;font-size:13.5px;line-height:1.6;white-space:pre-wrap;color:#3a3a34;
  border-left:2px solid var(--line);padding-left:14px}
+.reglageSeuil{display:flex;align-items:center;gap:16px;margin:0 0 18px;flex-wrap:wrap}
+.reglageSeuil label{font-size:13.5px;color:var(--grey)}
+.reglageSeuil label b{color:var(--ink);font-variant-numeric:tabular-nums}
+.reglageSeuil input[type=range]{flex:1;min-width:180px;max-width:340px;accent-color:var(--red);height:22px}
 </style>
 </head>
 <body>
@@ -192,6 +196,11 @@ details.fiche[open] summary::before{content:"▾ "}
     <h2>Hausses à surveiller</h2>
     <ul id="listeAlertes"></ul>
   </section>
+
+  <div class="reglageSeuil">
+    <label for="seuil">Alerter à partir de <b id="seuilValeur">5 %</b> de hausse</label>
+    <input id="seuil" type="range" min="1" max="20" step="0.5" value="5">
+  </div>
 
   <div class="outils">
     <input id="q" type="search" placeholder="Chercher un produit : farine, crème, pain burger…" autocomplete="off">
@@ -271,7 +280,7 @@ Cuisson 35 minutes, chaleur tournante."></textarea>
 <footer><div class="wrap" id="pied"></div></footer>
 
 <script>
-let DATA = null, CODE = "", tri = { champ: "variation", sens: -1 };
+let DATA = null, CODE = "", SEUIL = 5, tri = { champ: "variation", sens: -1 };
 
 const euros = v => v.toLocaleString("fr-FR", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €";
 const sansAccent = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -399,10 +408,8 @@ function affiche() {
 function init() {
   const d = DATA;
   document.getElementById("entete").innerHTML = `${d.client}<br><span style="opacity:.7">${d.produits.length} produits suivis</span>`;
-  const n = d.alertes.length;
-  document.getElementById("sous").textContent = n
-    ? `${n} hausse${n > 1 ? "s" : ""} au-dessus de ${d.seuil} % ce mois-ci.`
-    : `Aucune hausse au-dessus de ${d.seuil} % ce mois-ci.`;
+  SEUIL = typeof d.seuil === "number" ? d.seuil : 5;
+  chargeReglages();
 
   const ctl = d.controles || {};
   if ((ctl.ecart || 0) > 0) {
@@ -411,14 +418,6 @@ function init() {
       `<b>${ctl.ecart} facture${ctl.ecart > 1 ? "s" : ""}</b> où la somme des lignes lues ne tombe pas juste ` +
       `avec le total imprimé (écart cumulé ${euros(Math.abs(ctl.total_ecart || 0))}). ` +
       `Les prix de ces factures sont à vérifier avant de s'en servir, souvent une remise ou une ligne non reconnue.`;
-  }
-
-  if (d.alertes.length) {
-    document.getElementById("zoneAlertes").hidden = false;
-    document.getElementById("listeAlertes").innerHTML = d.alertes.slice(0, 6).map(a =>
-      `<li><span>${a.nom[0].toUpperCase() + a.nom.slice(1)}</span>
-       <span><b>${euros(a.avant)}</b> → <b>${euros(a.apres)}</b>
-       <span class="badge up">+${a.variation.toFixed(1)} %</span></span></li>`).join("");
   }
 
   const remplir = (id, valeurs) => {
@@ -445,6 +444,9 @@ function init() {
 
   remplitFactures();
   document.getElementById("btnExcel").addEventListener("click", exportCsv);
+  const sl = document.getElementById("seuil");
+  sl.addEventListener("input", () => changeSeuil(Number(sl.value), false));
+  sl.addEventListener("change", () => changeSeuil(Number(sl.value), true));
   document.getElementById("q").addEventListener("input", affiche);
   ["fFamille", "fCons", "fFour"].forEach(id =>
     document.getElementById(id).addEventListener("change", affiche));
@@ -517,6 +519,66 @@ function coutRecette(r) {
 }
 
 let SOUS_PRODUITS = "";
+
+function calculeAlertes(seuil) {
+  const out = [];
+  (DATA.produits || []).forEach(p => {
+    const mois = Object.keys(p.series || {}).sort();
+    if (mois.length < 2) return;
+    const avant = p.series[mois[mois.length - 2]];
+    const apres = p.series[mois[mois.length - 1]];
+    if (!avant || !apres) return;
+    const v = (apres - avant) / avant * 100;
+    if (v >= seuil) out.push({ nom: p.nom, avant, apres, variation: v, mois: mois[mois.length - 1] });
+  });
+  return out.sort((a, b) => b.variation - a.variation);
+}
+
+function renduAlertes() {
+  const al = calculeAlertes(SEUIL);
+  document.getElementById("seuilValeur").textContent = `${SEUIL.toFixed(1).replace(".0", "").replace(".", ",")} %`;
+  document.getElementById("seuil").value = SEUIL;
+
+  SOUS_PRODUITS = al.length
+    ? `${al.length} hausse${al.length > 1 ? "s" : ""} au-dessus de ${SEUIL} % ce mois-ci.`
+    : `Aucune hausse au-dessus de ${SEUIL} % ce mois-ci.`;
+  if (!document.getElementById("vueProduits").hidden) {
+    document.getElementById("sous").textContent = SOUS_PRODUITS;
+  }
+
+  const zone = document.getElementById("zoneAlertes");
+  zone.hidden = al.length === 0;
+  document.getElementById("listeAlertes").innerHTML = al.slice(0, 8).map(a =>
+    `<li><span>${a.nom[0].toUpperCase() + a.nom.slice(1)}</span>
+     <span><b>${euros(a.avant)}</b> → <b>${euros(a.apres)}</b>
+     <span class="badge up">+${a.variation.toFixed(1)} %</span></span></li>`).join("");
+}
+
+async function chargeReglages() {
+  try {
+    const r = await fetch("/.netlify/functions/prix-reglages?code=" + encodeURIComponent(CODE));
+    if (r.ok) {
+      const d = await r.json();
+      if (typeof d.seuil === "number") SEUIL = d.seuil;
+    }
+  } catch {}
+  renduAlertes();
+}
+
+let minuteurSeuil = null;
+function changeSeuil(v, enregistrer) {
+  SEUIL = Math.round(v * 10) / 10;
+  renduAlertes();
+  if (!enregistrer) return;
+  clearTimeout(minuteurSeuil);
+  minuteurSeuil = setTimeout(() => {
+    fetch("/.netlify/functions/prix-reglages", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ code: CODE, seuil: SEUIL }),
+    }).catch(() => {});
+  }, 600);
+}
 
 function basculeVue(nom) {
   const sous = document.getElementById("sous");
@@ -762,6 +824,10 @@ details.fiche[open] summary::before{content:"▾ "}
 .ligneIngredient.libre{grid-template-columns:1fr 110px 90px 34px}
 .preparation{margin-top:14px;font-size:13.5px;line-height:1.6;white-space:pre-wrap;color:#3a3a34;
  border-left:2px solid var(--line);padding-left:14px}
+.reglageSeuil{display:flex;align-items:center;gap:16px;margin:0 0 18px;flex-wrap:wrap}
+.reglageSeuil label{font-size:13.5px;color:var(--grey)}
+.reglageSeuil label b{color:var(--ink);font-variant-numeric:tabular-nums}
+.reglageSeuil input[type=range]{flex:1;min-width:180px;max-width:340px;accent-color:var(--red);height:22px}
 </style></head><body>
     <h1>${r.nom}</h1>
     <div class="s">${DATA.client} · ${c.portions} portion${c.portions > 1 ? "s" : ""} · fiche du ${new Date().toLocaleDateString("fr-FR")}</div>
