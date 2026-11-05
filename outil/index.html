@@ -690,8 +690,8 @@ async function chargeReglages() {
       const d = await r.json();
       if (typeof d.seuil === "number") SEUIL = d.seuil;
       if (d.modules && typeof d.modules === "object") {
-        Object.keys(ETAT_MODULES).forEach(k => {
-          if (typeof d.modules[k] === "boolean") ETAT_MODULES[k] = d.modules[k];
+        MODULES.filter(m => m.actif).forEach(m => {
+          if (typeof d.modules[m.id] === "boolean") ETAT_MODULES[m.id] = d.modules[m.id];
         });
       }
     }
@@ -760,6 +760,12 @@ function appliqueModules() {
   if (!on("recettes") && !document.getElementById("vueRecettes").hidden) basculeVue("produits");
 }
 
+function modulesActifs() {
+  const o = {};
+  MODULES.filter(m => m.actif).forEach(m => o[m.id] = ETAT_MODULES[m.id] !== false);
+  return o;
+}
+
 function renduReglages() {
   document.getElementById("listeModules").innerHTML = MODULES.map(m => `
     <div class="module ${m.actif ? "" : "avenir"}">
@@ -778,7 +784,7 @@ function renduReglages() {
       fetch("/.netlify/functions/prix-reglages", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ code: CODE, modules: ETAT_MODULES }),
+        body: JSON.stringify({ code: CODE, modules: modulesActifs() }),
       }).catch(() => {});
     });
   });
@@ -811,7 +817,9 @@ function basculeVue(nom) {
 
 function margeRecette(r) {
   const c = coutRecette(r);
-  return r.prix_vente > 0 ? (1 - c.portion / r.prix_vente) * 100 : null;
+  if (!(r.prix_vente > 0)) return null;
+  const ht = r.prix_vente / 1.1;
+  return (1 - c.portion / ht) * 100;
 }
 
 function recettesFiltrees() {
