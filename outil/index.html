@@ -157,6 +157,20 @@ details.fiche[open] summary::before{content:"▾ "}
 .reglageSeuil label{font-size:13.5px;color:var(--grey)}
 .reglageSeuil label b{color:var(--ink);font-variant-numeric:tabular-nums}
 .reglageSeuil input[type=range]{flex:1;min-width:180px;max-width:340px;accent-color:var(--red);height:22px}
+.module{display:flex;justify-content:space-between;align-items:center;gap:20px;
+ padding:16px 0;border-bottom:1px solid var(--line)}
+.module .txt b{display:block;font-size:14.5px;margin-bottom:3px}
+.module .txt span{font-size:13px;color:var(--grey)}
+.inter{position:relative;flex:0 0 46px;height:26px}
+.inter input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.inter .piste{display:block;width:46px;height:26px;border-radius:99px;background:#d9d4c6;transition:background .18s}
+.inter .bille{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;
+ transition:transform .18s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.inter input:checked + .piste{background:#16336b}
+.inter input:checked ~ .bille{transform:translateX(20px)}
+.inter input:disabled + .piste{background:#e7e3d8}
+.module.avenir{opacity:.55}
+.module.avenir .txt b::after{content:" · bientôt";color:var(--grey);font-weight:400;font-size:12px}
 </style>
 </head>
 <body>
@@ -183,6 +197,7 @@ details.fiche[open] summary::before{content:"▾ "}
   <div class="onglets">
     <button class="onglet actif" data-vue="produits" type="button">Produits</button>
     <button class="onglet" data-vue="recettes" type="button">Recettes</button>
+    <button class="onglet" data-vue="reglages" type="button">Réglages</button>
   </div>
 
   <div id="vueProduits">
@@ -274,6 +289,13 @@ Cuisson 35 minutes, chaleur tournante."></textarea>
         <button id="btnAnnuler" class="boutonLeger" type="button">Annuler</button>
       </div>
     </div>
+  </section>
+
+  <section id="vueReglages" hidden>
+    <h2 class="titreForm">Ce que l'outil affiche</h2>
+    <p class="meta" style="margin:0 0 22px;max-width:56ch">
+      Active ce qui vous sert, coupe le reste. Les réglages sont propres à cet établissement.</p>
+    <div id="listeModules"></div>
   </section>
 </main>
 
@@ -594,8 +616,14 @@ async function chargeReglages() {
     if (r.ok) {
       const d = await r.json();
       if (typeof d.seuil === "number") SEUIL = d.seuil;
+      if (d.modules && typeof d.modules === "object") {
+        Object.keys(ETAT_MODULES).forEach(k => {
+          if (typeof d.modules[k] === "boolean") ETAT_MODULES[k] = d.modules[k];
+        });
+      }
     }
   } catch {}
+  appliqueModules();
   renduAlertes();
 }
 
@@ -614,16 +642,82 @@ function changeSeuil(v, enregistrer) {
   }, 600);
 }
 
+const MODULES = [
+  { id: "alertes",  nom: "Alertes de hausse",      txt: "Signale les produits qui augmentent au-delà du seuil.", actif: true },
+  { id: "controle", nom: "Contrôle des factures",   txt: "Compare le total imprimé avec la somme des lignes.", actif: true },
+  { id: "recettes", nom: "Recettes et coût matière", txt: "Calcule le coût d'un plat, la marge et la fiche produit.", actif: true },
+  { id: "factures", nom: "Factures consultables",   txt: "Retrouve le PDF derrière chaque prix.", actif: true },
+  { id: "export",   nom: "Export Excel",            txt: "Le tableau complet pour le comptable.", actif: true },
+  { id: "allergenes",  nom: "Fiche allergènes",     txt: "Les quatorze allergènes, générés depuis les recettes.", actif: false },
+  { id: "comparaison", nom: "Comparaison fournisseurs", txt: "Le même produit chez d'autres, dans la zone.", actif: false },
+  { id: "rapport",     nom: "Rapport mensuel",      txt: "Un récapitulatif envoyé par mail chaque mois.", actif: false },
+  { id: "ouverture",   nom: "Business plan d'ouverture", txt: "Coût matière et point mort avant l'ouverture.", actif: false },
+];
+
+let ETAT_MODULES = {};
+MODULES.forEach(m => ETAT_MODULES[m.id] = m.actif);
+
+function appliqueModules() {
+  const on = (id) => ETAT_MODULES[id] !== false;
+
+  const zoneAlertes = document.getElementById("zoneAlertes");
+  const reglage = document.querySelector(".reglageSeuil");
+  if (zoneAlertes) zoneAlertes.style.display = on("alertes") ? "" : "none";
+  if (reglage) reglage.style.display = on("alertes") ? "" : "none";
+
+  const zc = document.getElementById("zoneControle");
+  if (zc && !on("controle")) zc.hidden = true;
+
+  const bf = document.getElementById("blocFactures");
+  if (bf) bf.style.display = on("factures") ? "" : "none";
+
+  const bx = document.getElementById("btnExcel");
+  if (bx) bx.style.display = on("export") ? "" : "none";
+
+  const ongletRecettes = document.querySelector('.onglet[data-vue="recettes"]');
+  if (ongletRecettes) ongletRecettes.style.display = on("recettes") ? "" : "none";
+  if (!on("recettes") && !document.getElementById("vueRecettes").hidden) basculeVue("produits");
+}
+
+function renduReglages() {
+  document.getElementById("listeModules").innerHTML = MODULES.map(m => `
+    <div class="module ${m.actif ? "" : "avenir"}">
+      <div class="txt"><b>${m.nom}</b><span>${m.txt}</span></div>
+      <label class="inter">
+        <input type="checkbox" data-module="${m.id}" ${ETAT_MODULES[m.id] !== false ? "checked" : ""}
+               ${m.actif ? "" : "disabled"}>
+        <span class="piste"></span><span class="bille"></span>
+      </label>
+    </div>`).join("");
+
+  document.querySelectorAll("#listeModules input[data-module]").forEach(cb => {
+    cb.addEventListener("change", () => {
+      ETAT_MODULES[cb.dataset.module] = cb.checked;
+      appliqueModules();
+      fetch("/.netlify/functions/prix-reglages", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ code: CODE, modules: ETAT_MODULES }),
+      }).catch(() => {});
+    });
+  });
+}
+
 function basculeVue(nom) {
   const sous = document.getElementById("sous");
   if (nom === "recettes") {
     if (!SOUS_PRODUITS) SOUS_PRODUITS = sous.textContent;
     sous.textContent = "Coût matière de vos recettes, calculé au dernier prix d'achat connu.";
+  } else if (nom === "reglages") {
+    if (!SOUS_PRODUITS) SOUS_PRODUITS = sous.textContent;
+    sous.textContent = "Ce qui s'affiche dans l'outil, module par module.";
   } else if (SOUS_PRODUITS) {
     sous.textContent = SOUS_PRODUITS;
   }
   document.getElementById("vueProduits").hidden = nom !== "produits";
   document.getElementById("vueRecettes").hidden = nom !== "recettes";
+  document.getElementById("vueReglages").hidden = nom !== "reglages";
+  if (nom === "reglages") renduReglages();
   document.querySelectorAll(".onglet").forEach(o =>
     o.classList.toggle("actif", o.dataset.vue === nom));
   if (nom === "recettes") renduRecettes();
@@ -867,6 +961,20 @@ details.fiche[open] summary::before{content:"▾ "}
 .reglageSeuil label{font-size:13.5px;color:var(--grey)}
 .reglageSeuil label b{color:var(--ink);font-variant-numeric:tabular-nums}
 .reglageSeuil input[type=range]{flex:1;min-width:180px;max-width:340px;accent-color:var(--red);height:22px}
+.module{display:flex;justify-content:space-between;align-items:center;gap:20px;
+ padding:16px 0;border-bottom:1px solid var(--line)}
+.module .txt b{display:block;font-size:14.5px;margin-bottom:3px}
+.module .txt span{font-size:13px;color:var(--grey)}
+.inter{position:relative;flex:0 0 46px;height:26px}
+.inter input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.inter .piste{display:block;width:46px;height:26px;border-radius:99px;background:#d9d4c6;transition:background .18s}
+.inter .bille{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;
+ transition:transform .18s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.inter input:checked + .piste{background:#16336b}
+.inter input:checked ~ .bille{transform:translateX(20px)}
+.inter input:disabled + .piste{background:#e7e3d8}
+.module.avenir{opacity:.55}
+.module.avenir .txt b::after{content:" · bientôt";color:var(--grey);font-weight:400;font-size:12px}
 </style></head><body>
     <h1>${r.nom}</h1>
     <div class="s">${DATA.client} · ${c.portions} portion${c.portions > 1 ? "s" : ""} · fiche du ${new Date().toLocaleDateString("fr-FR")}</div>

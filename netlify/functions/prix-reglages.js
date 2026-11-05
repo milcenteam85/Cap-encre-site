@@ -54,18 +54,33 @@ exports.handler = async (event) => {
       return {
         statusCode: 200,
         headers: { "content-type": "application/json", "cache-control": "no-store" },
-        body: JSON.stringify({ seuil: typeof r.seuil === "number" ? r.seuil : null }),
+        body: JSON.stringify({
+          seuil: typeof r.seuil === "number" ? r.seuil : null,
+          modules: r.modules && typeof r.modules === "object" ? r.modules : null,
+        }),
       };
     }
     if (event.httpMethod === "POST") {
-      const s = Number(corps.seuil);
-      if (!(s >= 0.5 && s <= 100)) {
-        return { statusCode: 400, body: JSON.stringify({ erreur: "seuil hors limites" }) };
-      }
       const r = (await store.get(k, { type: "json" })) || {};
-      r.seuil = Math.round(s * 10) / 10;
+
+      if (corps.modules && typeof corps.modules === "object") {
+        const propres = {};
+        for (const [cle, valeur] of Object.entries(corps.modules)) {
+          if (/^[a-z0-9_]{2,24}$/.test(cle)) propres[cle] = !!valeur;
+        }
+        r.modules = propres;
+      }
+
+      if (corps.seuil !== undefined) {
+        const s = Number(corps.seuil);
+        if (!(s >= 0.5 && s <= 100)) {
+          return { statusCode: 400, body: JSON.stringify({ erreur: "seuil hors limites" }) };
+        }
+        r.seuil = Math.round(s * 10) / 10;
+      }
+
       await store.setJSON(k, r);
-      return { statusCode: 200, body: JSON.stringify({ ok: true, seuil: r.seuil }) };
+      return { statusCode: 200, body: JSON.stringify({ ok: true, seuil: r.seuil, modules: r.modules }) };
     }
     return { statusCode: 405, body: JSON.stringify({ erreur: "methode inconnue" }) };
   } catch (e) {
