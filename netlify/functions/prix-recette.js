@@ -69,6 +69,7 @@ exports.handler = async (event) => {
       const propre = {
         id,
         nom: String(r.nom).slice(0, 120),
+        categorie: String(r.categorie || "").slice(0, 60),
         portions: Number(r.portions) || 1,
         prix_vente: Number(r.prix_vente) || 0,
         lignes: (r.lignes || []).slice(0, 60).map(l => ({

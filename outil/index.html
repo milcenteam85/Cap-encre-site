@@ -134,6 +134,18 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 0;font-size
  header,.onglets,.barreRecettes,.actionsForm,.boutonLeger,.boutonPlein,#formRecette{display:none!important}
  body{background:#fff;padding:0}
 }
+.outilsRecettes{grid-template-columns:1fr auto auto;margin:0 0 18px}
+@media (max-width:760px){.outilsRecettes{grid-template-columns:1fr 1fr}}
+.enteteRecette{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:12px}
+.enteteRecette h3{margin:0}
+.chiffres{display:flex;flex-direction:column;align-items:flex-end;line-height:1.25;white-space:nowrap}
+.chiffres b{font-size:18px}
+.chiffres span{font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:.08em}
+.chiffres em{font-style:normal;font-size:12px;color:var(--green);margin-top:3px}
+details.fiche summary{cursor:pointer;font-size:12.5px;color:var(--grey);list-style:none;padding:4px 0}
+details.fiche summary::-webkit-details-marker{display:none}
+details.fiche summary::before{content:"▸ ";color:var(--red)}
+details.fiche[open] summary::before{content:"▾ "}
 </style>
 </head>
 <body>
@@ -208,6 +220,17 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 0;font-size
       <span id="nbRecettes" class="meta"></span>
     </div>
 
+    <div class="outils outilsRecettes">
+      <input id="qRecette" type="search" placeholder="Chercher une recette…" autocomplete="off">
+      <select id="fCategorie"><option value="">Toutes les catégories</option></select>
+      <select id="triRecette">
+        <option value="nom">Nom, A à Z</option>
+        <option value="cout">Coût matière décroissant</option>
+        <option value="marge">Marge décroissante</option>
+        <option value="maj">Modifiées récemment</option>
+      </select>
+    </div>
+
     <div id="listeRecettes"></div>
 
     <div id="formRecette" hidden>
@@ -216,7 +239,9 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 0;font-size
         <label>Nom<input id="rNom" type="text" placeholder="Tarte aux pommes"></label>
         <label>Portions<input id="rPortions" type="number" min="1" step="1" value="1"></label>
         <label>Prix de vente par portion<input id="rPrix" type="number" min="0" step="0.01" placeholder="facultatif"></label>
+        <label>Catégorie<input id="rCategorie" type="text" list="listeCategories" placeholder="entrée, plat, dessert…"></label>
       </div>
+      <datalist id="listeCategories"></datalist>
       <div id="rLignes"></div>
       <button id="btnAjouterLigne" class="boutonLeger" type="button">+ Ajouter un ingrédient</button>
       <div id="rTotal" class="totalRecette"></div>
@@ -484,27 +509,60 @@ function basculeVue(nom) {
   if (nom === "recettes") renduRecettes();
 }
 
+function margeRecette(r) {
+  const c = coutRecette(r);
+  return r.prix_vente > 0 ? (1 - c.portion / r.prix_vente) * 100 : null;
+}
+
+function recettesFiltrees() {
+  const q = sansAccent((document.getElementById("qRecette").value || "").trim());
+  const cat = document.getElementById("fCategorie").value;
+  let l = RECETTES.filter(r => {
+    if (q && !sansAccent(r.nom).includes(q)) return false;
+    if (cat && (r.categorie || "") !== cat) return false;
+    return true;
+  });
+  const tri = document.getElementById("triRecette").value;
+  l.sort((a, b) => {
+    if (tri === "cout") return coutRecette(b).total - coutRecette(a).total;
+    if (tri === "marge") {
+      const ma = margeRecette(a), mb = margeRecette(b);
+      return (mb === null ? -1e9 : mb) - (ma === null ? -1e9 : ma);
+    }
+    if (tri === "maj") return String(b.maj_le || "").localeCompare(String(a.maj_le || ""));
+    return a.nom.localeCompare(b.nom, "fr");
+  });
+  return l;
+}
+
 function renduRecettes() {
+  const liste = recettesFiltrees();
   document.getElementById("nbRecettes").textContent =
-    RECETTES.length ? `${RECETTES.length} recette${RECETTES.length > 1 ? "s" : ""}` : "aucune recette pour l'instant";
-  document.getElementById("listeRecettes").innerHTML = RECETTES.map(r => {
+    RECETTES.length === 0 ? "aucune recette pour l'instant"
+      : (liste.length === RECETTES.length
+          ? `${RECETTES.length} recette${RECETTES.length > 1 ? "s" : ""}`
+          : `${liste.length} sur ${RECETTES.length}`);
+
+  document.getElementById("listeRecettes").innerHTML = liste.map(r => {
     const c = coutRecette(r);
-    const marge = r.prix_vente > 0 ? (1 - c.portion / r.prix_vente) * 100 : null;
+    const m = margeRecette(r);
     return `<article class="carteRecette">
-      <h3>${r.nom}</h3>
-      <div class="ligneCout">
-        <span>Coût matière total <b>${euros(c.total)}</b></span>
-        <span>Par portion <b>${euros(c.portion)}</b></span>
-        ${r.prix_vente > 0 ? `<span>Vente ${euros(r.prix_vente)}</span>` : ""}
-        ${marge !== null ? `<span>Marge <b>${marge.toFixed(0)} %</b></span>` : ""}
-        <span>${c.portions} portion${c.portions > 1 ? "s" : ""}</span>
+      <div class="enteteRecette">
+        <div>
+          <h3>${r.nom}</h3>
+          <div class="meta">${[r.categorie, `${c.portions} portion${c.portions > 1 ? "s" : ""}`].filter(Boolean).join(" · ")}</div>
+        </div>
+        <div class="chiffres">
+          <b>${euros(c.portion)}</b><span>par portion</span>
+          ${m !== null ? `<em>${m.toFixed(0)} % de marge</em>` : ""}
+        </div>
       </div>
-      <div class="actionsForm" style="margin-bottom:6px">
+      <div class="actionsForm">
         <button class="boutonLeger" type="button" onclick="editerRecette('${r.id}')">Modifier</button>
         <button class="boutonLeger" type="button" onclick="imprimerFiche('${r.id}')">Fiche produit</button>
         <button class="boutonLeger" type="button" onclick="supprimerRecette('${r.id}')">Supprimer</button>
       </div>
-      <div class="fiche">
+      <details class="fiche"><summary>Détail et coût matière</summary>
         <table><thead><tr><th>Ingrédient</th><th class="n">Quantité</th><th class="n">Prix au kilo</th><th class="n">Coût</th></tr></thead>
         <tbody>${(r.lignes || []).map(l => `<tr>
           <td>${l.nom}</td>
@@ -513,9 +571,18 @@ function renduRecettes() {
           <td class="n">${euros(coutLigne(l))}</td></tr>`).join("")}
         <tr class="totalLigne"><td colspan="3"><b>Coût matière par portion</b></td><td class="n"><b>${euros(c.portion)}</b></td></tr>
         </tbody></table>
-      </div>
+      </details>
     </article>`;
   }).join("");
+
+  // catégories disponibles
+  const cats = [...new Set(RECETTES.map(r => r.categorie).filter(Boolean))].sort((a, b) => a.localeCompare(b, "fr"));
+  const sel = document.getElementById("fCategorie");
+  const garde = sel.value;
+  sel.innerHTML = '<option value="">Toutes les catégories</option>' +
+    cats.map(c => `<option value="${c}" ${c === garde ? "selected" : ""}>${c}</option>`).join("");
+  document.getElementById("listeCategories").innerHTML =
+    cats.map(c => `<option value="${c}">`).join("");
 }
 
 function ligneIngredient(l = { nom: "", qte_g: 100 }) {
@@ -560,6 +627,7 @@ function nouvelleRecette() {
   document.getElementById("rNom").value = "";
   document.getElementById("rPortions").value = 1;
   document.getElementById("rPrix").value = "";
+  document.getElementById("rCategorie").value = "";
   document.getElementById("rLignes").innerHTML = "";
   ligneIngredient(); ligneIngredient();
   document.getElementById("formRecette").hidden = false;
@@ -575,6 +643,7 @@ function editerRecette(id) {
   document.getElementById("rNom").value = r.nom;
   document.getElementById("rPortions").value = r.portions;
   document.getElementById("rPrix").value = r.prix_vente || "";
+  document.getElementById("rCategorie").value = r.categorie || "";
   document.getElementById("rLignes").innerHTML = "";
   (r.lignes || []).forEach(l => ligneIngredient(l));
   if (!(r.lignes || []).length) ligneIngredient();
@@ -588,6 +657,7 @@ async function sauverRecette() {
     nom: document.getElementById("rNom").value.trim(),
     portions: Number(document.getElementById("rPortions").value) || 1,
     prix_vente: Number(document.getElementById("rPrix").value) || 0,
+    categorie: document.getElementById("rCategorie").value.trim(),
     lignes: lignesForm().map(l => ({ nom: l.nom, qte_g: l.qte_g, prix_kg: prixActuel(l.nom) || 0 })),
   };
   if (!recette.nom || !recette.lignes.length) return;
@@ -619,7 +689,19 @@ function imprimerFiche(id) {
     table{width:100%;border-collapse:collapse} th,td{padding:7px 4px;border-bottom:1px solid #d6d1c4;text-align:left}
     th{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#6d6d63}
     td:not(:first-child),th:not(:first-child){text-align:right}
-    .tot{margin-top:18px;font-size:15px}</style></head><body>
+    .tot{margin-top:18px;font-size:15px}.outilsRecettes{grid-template-columns:1fr auto auto;margin:0 0 18px}
+@media (max-width:760px){.outilsRecettes{grid-template-columns:1fr 1fr}}
+.enteteRecette{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:12px}
+.enteteRecette h3{margin:0}
+.chiffres{display:flex;flex-direction:column;align-items:flex-end;line-height:1.25;white-space:nowrap}
+.chiffres b{font-size:18px}
+.chiffres span{font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:.08em}
+.chiffres em{font-style:normal;font-size:12px;color:var(--green);margin-top:3px}
+details.fiche summary{cursor:pointer;font-size:12.5px;color:var(--grey);list-style:none;padding:4px 0}
+details.fiche summary::-webkit-details-marker{display:none}
+details.fiche summary::before{content:"▸ ";color:var(--red)}
+details.fiche[open] summary::before{content:"▾ "}
+</style></head><body>
     <h1>${r.nom}</h1>
     <div class="s">${DATA.client} · ${c.portions} portion${c.portions > 1 ? "s" : ""} · fiche du ${new Date().toLocaleDateString("fr-FR")}</div>
     <table><thead><tr><th>Ingrédient</th><th>Quantité</th><th>Prix au kilo</th><th>Coût</th></tr></thead>
@@ -641,6 +723,9 @@ async function chargeRecettes() {
 document.querySelectorAll(".onglet").forEach(o =>
   o.addEventListener("click", () => basculeVue(o.dataset.vue)));
 document.getElementById("btnNouvelle").addEventListener("click", nouvelleRecette);
+["qRecette", "triRecette", "fCategorie"].forEach(id =>
+  document.getElementById(id).addEventListener("input", renduRecettes));
+document.getElementById("fCategorie").addEventListener("change", renduRecettes);
 document.getElementById("btnAjouterLigne").addEventListener("click", () => { ligneIngredient(); majTotal(); });
 document.getElementById("rPortions").addEventListener("input", majTotal);
 document.getElementById("btnSave").addEventListener("click", sauverRecette);
