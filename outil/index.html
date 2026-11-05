@@ -102,6 +102,12 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 0;font-size
   <h1>Le prix réel de vos achats</h1>
   <div class="sub" id="sous">&nbsp;</div>
 
+  <section class="alertes" id="zoneControle" hidden
+           style="background:#fdf3e2;border-color:#efd3a3">
+    <h2 style="color:#a86a12">Contrôle des factures</h2>
+    <p id="texteControle" style="margin:0;font-size:14px"></p>
+  </section>
+
   <section class="alertes" id="zoneAlertes" hidden>
     <h2>Hausses à surveiller</h2>
     <ul id="listeAlertes"></ul>
@@ -171,6 +177,9 @@ function remplitFactures() {
     <li style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px">
       <span>${f.date.split("-").reverse().join("/")} · ${f.fournisseur}</span>
       <span style="display:flex;gap:14px;align-items:center">
+        ${f.verif === "ecart"
+          ? `<span class="badge up" title="Total imprimé ${euros(f.total_doc || 0)}">écart ${(f.ecart || 0) > 0 ? "+" : ""}${euros(f.ecart || 0)}</span>`
+          : (f.verif === "ok" ? `<span class="badge flat">vérifié</span>` : `<span class="badge flat">non vérifié</span>`)}
         <b>${euros(f.montant)}</b>
         <a href="${lienPdf(f.fichier)}" target="_blank" rel="noopener" style="color:#16336b;font-weight:600">ouvrir</a>
       </span>
@@ -267,6 +276,15 @@ function init() {
   document.getElementById("sous").textContent = n
     ? `${n} hausse${n > 1 ? "s" : ""} au-dessus de ${d.seuil} % ce mois-ci.`
     : `Aucune hausse au-dessus de ${d.seuil} % ce mois-ci.`;
+
+  const ctl = d.controles || {};
+  if ((ctl.ecart || 0) > 0) {
+    document.getElementById("zoneControle").hidden = false;
+    document.getElementById("texteControle").innerHTML =
+      `<b>${ctl.ecart} facture${ctl.ecart > 1 ? "s" : ""}</b> où la somme des lignes lues ne tombe pas juste ` +
+      `avec le total imprimé (écart cumulé ${euros(Math.abs(ctl.total_ecart || 0))}). ` +
+      `Les prix de ces factures sont à vérifier avant de s'en servir, souvent une remise ou une ligne non reconnue.`;
+  }
 
   if (d.alertes.length) {
     document.getElementById("zoneAlertes").hidden = false;
