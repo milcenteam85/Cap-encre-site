@@ -441,6 +441,200 @@ if (param) {
   history.replaceState({}, "", location.pathname);
   localStorage.setItem(CLE, param.trim());
 }
+/* ---------------- recettes ---------------- */
+let RECETTES = [], RECETTE_EN_COURS = null;
+
+const prixActuel = (nom) => {
+  const p = (DATA.produits || []).find(x => x.nom.toLowerCase() === String(nom).toLowerCase());
+  return p ? p.dernier : null;
+};
+
+function coutLigne(l) {
+  const pa = prixActuel(l.nom);
+  const prix = pa !== null ? pa : (l.prix_kg || 0);
+  return (l.qte_g / 1000) * prix;
+}
+
+function coutRecette(r) {
+  const total = (r.lignes || []).reduce((s, l) => s + coutLigne(l), 0);
+  const portions = Math.max(1, r.portions || 1);
+  return { total, portion: total / portions, portions };
+}
+
+function basculeVue(nom) {
+  document.getElementById("vueProduits").hidden = nom !== "produits";
+  document.getElementById("vueRecettes").hidden = nom !== "recettes";
+  document.querySelectorAll(".onglet").forEach(o =>
+    o.classList.toggle("actif", o.dataset.vue === nom));
+  if (nom === "recettes") renduRecettes();
+}
+
+function renduRecettes() {
+  document.getElementById("nbRecettes").textContent =
+    RECETTES.length ? `${RECETTES.length} recette${RECETTES.length > 1 ? "s" : ""}` : "aucune recette pour l'instant";
+  document.getElementById("listeRecettes").innerHTML = RECETTES.map(r => {
+    const c = coutRecette(r);
+    const marge = r.prix_vente > 0 ? (1 - c.portion / r.prix_vente) * 100 : null;
+    return `<article class="carteRecette">
+      <h3>${r.nom}</h3>
+      <div class="ligneCout">
+        <span>Coût matière total <b>${euros(c.total)}</b></span>
+        <span>Par portion <b>${euros(c.portion)}</b></span>
+        ${r.prix_vente > 0 ? `<span>Vente ${euros(r.prix_vente)}</span>` : ""}
+        ${marge !== null ? `<span>Marge <b>${marge.toFixed(0)} %</b></span>` : ""}
+        <span>${c.portions} portion${c.portions > 1 ? "s" : ""}</span>
+      </div>
+      <div class="actionsForm" style="margin-bottom:6px">
+        <button class="boutonLeger" type="button" onclick="editerRecette('${r.id}')">Modifier</button>
+        <button class="boutonLeger" type="button" onclick="imprimerFiche('${r.id}')">Fiche produit</button>
+        <button class="boutonLeger" type="button" onclick="supprimerRecette('${r.id}')">Supprimer</button>
+      </div>
+      <div class="fiche">
+        <table><thead><tr><th>Ingrédient</th><th class="n">Quantité</th><th class="n">Prix au kilo</th><th class="n">Coût</th></tr></thead>
+        <tbody>${(r.lignes || []).map(l => `<tr>
+          <td>${l.nom}</td>
+          <td class="n">${l.qte_g} g</td>
+          <td class="n">${euros(prixActuel(l.nom) !== null ? prixActuel(l.nom) : l.prix_kg)}</td>
+          <td class="n">${euros(coutLigne(l))}</td></tr>`).join("")}
+        <tr><td colspan="3"><b>Coût matière par portion</b></td><td class="n"><b>${euros(c.portion)}</b></td></tr>
+        </tbody></table>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+function ligneIngredient(l = { nom: "", qte_g: 100 }) {
+  const options = ['<option value="">Choisir un ingrédient</option>']
+    .concat(DATA.produits.map(p => `<option value="${p.nom}" ${p.nom === l.nom ? "selected" : ""}>${p.nom} (${euros(p.dernier)}/kg)</option>`))
+    .join("");
+  const d = document.createElement("div");
+  d.className = "ligneIngredient";
+  d.innerHTML = `<select>${options}</select>
+    <input type="number" min="0" step="1" value="${l.qte_g}" aria-label="quantité en grammes">
+    <span class="cout"></span>
+    <button type="button" title="retirer">×</button>`;
+  d.querySelector("button").addEventListener("click", () => { d.remove(); majTotal(); });
+  d.querySelectorAll("select,input").forEach(e => e.addEventListener("input", majTotal));
+  document.getElementById("rLignes").appendChild(d);
+  return d;
+}
+
+function lignesForm() {
+  return [...document.querySelectorAll("#rLignes .ligneIngredient")].map(d => ({
+    nom: d.querySelector("select").value,
+    qte_g: Number(d.querySelector("input").value) || 0,
+  })).filter(l => l.nom);
+}
+
+function majTotal() {
+  document.querySelectorAll("#rLignes .ligneIngredient").forEach(d => {
+    const nom = d.querySelector("select").value;
+    const q = Number(d.querySelector("input").value) || 0;
+    const p = nom ? prixActuel(nom) : null;
+    d.querySelector(".cout").textContent = nom && p !== null ? euros((q / 1000) * p) : "";
+  });
+  const port = Math.max(1, Number(document.getElementById("rPortions").value) || 1);
+  const total = lignesForm().reduce((s, l) => s + coutLigne(l), 0);
+  document.getElementById("rTotal").innerHTML =
+    `Coût matière <b>${euros(total)}</b> &nbsp;·&nbsp; par portion <b>${euros(total / port)}</b>`;
+}
+
+function nouvelleRecette() {
+  RECETTE_EN_COURS = null;
+  document.getElementById("titreForm").textContent = "Nouvelle recette";
+  document.getElementById("rNom").value = "";
+  document.getElementById("rPortions").value = 1;
+  document.getElementById("rPrix").value = "";
+  document.getElementById("rLignes").innerHTML = "";
+  ligneIngredient(); ligneIngredient();
+  document.getElementById("formRecette").hidden = false;
+  majTotal();
+  document.getElementById("rNom").focus();
+}
+
+function editerRecette(id) {
+  const r = RECETTES.find(x => x.id === id);
+  if (!r) return;
+  RECETTE_EN_COURS = r;
+  document.getElementById("titreForm").textContent = "Modifier la recette";
+  document.getElementById("rNom").value = r.nom;
+  document.getElementById("rPortions").value = r.portions;
+  document.getElementById("rPrix").value = r.prix_vente || "";
+  document.getElementById("rLignes").innerHTML = "";
+  (r.lignes || []).forEach(l => ligneIngredient(l));
+  if (!(r.lignes || []).length) ligneIngredient();
+  document.getElementById("formRecette").hidden = false;
+  majTotal();
+}
+
+async function sauverRecette() {
+  const recette = {
+    id: RECETTE_EN_COURS ? RECETTE_EN_COURS.id : undefined,
+    nom: document.getElementById("rNom").value.trim(),
+    portions: Number(document.getElementById("rPortions").value) || 1,
+    prix_vente: Number(document.getElementById("rPrix").value) || 0,
+    lignes: lignesForm().map(l => ({ nom: l.nom, qte_g: l.qte_g, prix_kg: prixActuel(l.nom) || 0 })),
+  };
+  if (!recette.nom || !recette.lignes.length) return;
+  const r = await fetch("/.netlify/functions/prix-recette", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ code: CODE, recette }),
+  });
+  if (r.ok) { document.getElementById("formRecette").hidden = true; await chargeRecettes(); }
+}
+
+async function supprimerRecette(id) {
+  if (!confirm("Supprimer cette recette ?")) return;
+  await fetch(`/.netlify/functions/prix-recette?code=${encodeURIComponent(CODE)}&id=${encodeURIComponent(id)}`, { method: "DELETE" });
+  await chargeRecettes();
+}
+
+function imprimerFiche(id) {
+  const r = RECETTES.find(x => x.id === id);
+  if (!r) return;
+  const c = coutRecette(r);
+  const fen = window.open("", "_blank");
+  const lignes = (r.lignes || []).map(l => `<tr><td>${l.nom}</td><td>${l.qte_g} g</td>
+     <td>${euros(prixActuel(l.nom) !== null ? prixActuel(l.nom) : l.prix_kg)}</td>
+     <td>${euros(coutLigne(l))}</td></tr>`).join("");
+  fen.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>${r.nom}</title>
+    <style>body{font:13px/1.5 Helvetica,Arial,sans-serif;padding:36px;color:#0f0f0d}
+    h1{font-size:24px;margin:0 0 4px} .s{color:#6d6d63;font-size:12px;margin-bottom:22px}
+    table{width:100%;border-collapse:collapse} th,td{padding:7px 4px;border-bottom:1px solid #d6d1c4;text-align:left}
+    th{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#6d6d63}
+    td:not(:first-child),th:not(:first-child){text-align:right}
+    .tot{margin-top:18px;font-size:15px}</style></head><body>
+    <h1>${r.nom}</h1>
+    <div class="s">${DATA.client} · ${c.portions} portion${c.portions > 1 ? "s" : ""} · fiche du ${new Date().toLocaleDateString("fr-FR")}</div>
+    <table><thead><tr><th>Ingrédient</th><th>Quantité</th><th>Prix au kilo</th><th>Coût</th></tr></thead>
+    <tbody>${lignes}</tbody></table>
+    <div class="tot">Coût matière total <b>${euros(c.total)}</b><br>
+    Coût par portion <b>${euros(c.portion)}</b>${r.prix_vente > 0 ? `<br>Prix de vente ${euros(r.prix_vente)} · marge ${((1 - c.portion / r.prix_vente) * 100).toFixed(0)} %` : ""}</div>
+    </body></html>`);
+  fen.document.close();
+  setTimeout(() => fen.print(), 400);
+}
+
+async function chargeRecettes() {
+  try {
+    const r = await fetch("/.netlify/functions/prix-recette?code=" + encodeURIComponent(CODE));
+    if (r.ok) { RECETTES = (await r.json()).recettes || []; renduRecettes(); }
+  } catch {}
+}
+
+document.querySelectorAll(".onglet").forEach(o =>
+  o.addEventListener("click", () => basculeVue(o.dataset.vue)));
+document.getElementById("btnNouvelle").addEventListener("click", nouvelleRecette);
+document.getElementById("btnAjouterLigne").addEventListener("click", () => { ligneIngredient(); majTotal(); });
+document.getElementById("rPortions").addEventListener("input", majTotal);
+document.getElementById("btnSave").addEventListener("click", sauverRecette);
+document.getElementById("btnAnnuler").addEventListener("click", () => {
+  document.getElementById("formRecette").hidden = true;
+});
+
+charge(localStorage.getItem(CLE) || "");
+
 charge(param || localStorage.getItem(CLE) || "");
 </script>
 </body>
