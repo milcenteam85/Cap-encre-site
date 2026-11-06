@@ -214,6 +214,16 @@ details.fiche[open] summary::before{content:"▾ "}
 .barreMois i.zero{background:#e8482b}
 .barreMois span{font-size:10.5px;color:var(--grey)}
 .alerteRemise{margin-top:12px;padding:10px 12px;border-left:3px solid var(--red);background:#fdf3f0;font-size:13px}
+.hintScroll{display:none;margin:10px 0 0;font-size:12px;color:var(--grey)}
+@media (max-width:760px){.hintScroll{display:block}}
+.rec{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
+.rec .g{color:var(--grey);font-size:12.5px}
+.rec .mont{font-variant-numeric:tabular-nums;white-space:nowrap}
+.etat{font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:99px;white-space:nowrap}
+.etat.ok{background:#e6f3ea;color:#1d7a4c}
+.etat.ecart{background:#fdeceb;color:#b3261e}
+.etat.absent{background:#fdeceb;color:#b3261e}
+.etat.attente{background:#f0eee6;color:#6d6d63}
 </style>
 </head>
 <body>
@@ -243,6 +253,7 @@ details.fiche[open] summary::before{content:"▾ "}
     <button class="onglet" data-vue="allergenes" type="button" style="display:none">Allergènes</button>
     <button class="onglet" data-vue="pertes" type="button" style="display:none">Pertes</button>
     <button class="onglet" data-vue="remises" type="button" style="display:none">Remises</button>
+    <button class="onglet" data-vue="reception" type="button" style="display:none">Réception</button>
     <button class="onglet" data-vue="reglages" type="button">Réglages</button>
   </div>
 
@@ -356,6 +367,29 @@ Cuisson 35 minutes, chaleur tournante."></textarea>
     </div>
   </section>
 
+  <section id="vueReception" hidden>
+    <div class="pertesHaut">
+      <div class="pertesForm">
+        <h2 class="titreForm" style="font-size:17px">Enregistrer un bon de livraison</h2>
+        <div class="champs" style="grid-template-columns:1.4fr 1fr 1fr">
+          <label>Fournisseur<select id="rcFour"></select></label>
+          <label>Date<input id="rcDate" type="date"></label>
+          <label>Montant du bon<input id="rcMontant" type="number" min="0" step="0.01" placeholder="324,50"></label>
+        </div>
+        <div class="champs" style="grid-template-columns:1fr 1fr 1fr;margin-top:0">
+          <label>Colis<input id="rcColis" type="number" min="0" step="1" placeholder="facultatif"></label>
+          <label>&nbsp;<button id="rcAjouter" class="boutonPlein" type="button">Enregistrer</button></label>
+        </div>
+      </div>
+      <div class="pertesTotal">
+        <span>Écarts ce mois</span>
+        <b id="rcEcart">—</b>
+        <span id="rcNb" class="meta"></span>
+      </div>
+    </div>
+    <div id="listeReceptions"></div>
+  </section>
+
   <section id="vueRemises" hidden>
     <div id="resumeRemises"></div>
     <div id="detailRemises"></div>
@@ -398,6 +432,7 @@ Cuisson 35 minutes, chaleur tournante."></textarea>
       <span class="meta">Les quatorze allergènes à déclaration obligatoire</span>
     </div>
     <div id="tableAllergenes" class="tableScroll"></div>
+    <p class="hintScroll">Faites glisser le tableau vers la droite pour voir les autres allergènes.</p>
     <p class="meta" style="margin-top:18px;max-width:70ch">
       Détection automatique à partir du nom des ingrédients. À vérifier avec les fiches
       techniques des fournisseurs, un même produit peut changer de composition.
@@ -546,6 +581,7 @@ function init() {
   SEUIL = typeof d.seuil === "number" ? d.seuil : 5;
   chargeReglages();
   chargePertes();
+  chargeReceptions();
 
   const ctl = d.controles || {};
   if ((ctl.ecart || 0) > 0) {
@@ -768,6 +804,7 @@ const MODULES = [
   { id: "factures", nom: "Factures consultables",   txt: "Retrouve le PDF derrière chaque prix.", actif: true },
   { id: "export",   nom: "Export Excel",            txt: "Le tableau complet pour le comptable.", actif: true },
   { id: "prix",        nom: "Prix de vente et marge", txt: "Simulateur de prix et coût matière cible.", actif: true },
+  { id: "reception",   nom: "Contrôle à la réception", txt: "Le bon de livraison rapproché de la facture, écart signalé.", actif: true },
   { id: "remises",     nom: "Suivi des remises",   txt: "Le taux obtenu chez chaque fournisseur, mois par mois.", actif: true },
   { id: "pertes",      nom: "Pertes et gaspillage", txt: "Déclarer une casse, une date dépassée, et voir le coût du mois.", actif: true },
   { id: "allergenes",  nom: "Fiche allergènes",     txt: "Les quatorze allergènes, générés depuis les recettes.", actif: true },
@@ -798,6 +835,10 @@ function appliqueModules() {
 
   const simu = document.querySelector(".simu");
   if (simu) simu.style.display = on("prix") ? "" : "none";
+
+  const ongletRec = document.querySelector('.onglet[data-vue="reception"]');
+  if (ongletRec) ongletRec.style.display = on("reception") ? "" : "none";
+  if (!on("reception") && !document.getElementById("vueReception").hidden) basculeVue("produits");
 
   const ongletRem = document.querySelector('.onglet[data-vue="remises"]');
   if (ongletRem) ongletRem.style.display = on("remises") ? "" : "none";
@@ -851,6 +892,9 @@ function basculeVue(nom) {
   if (nom === "recettes") {
     if (!SOUS_PRODUITS) SOUS_PRODUITS = sous.textContent;
     sous.textContent = "Coût matière de vos recettes, calculé au dernier prix d'achat connu.";
+  } else if (nom === "reception") {
+    if (!SOUS_PRODUITS) SOUS_PRODUITS = sous.textContent;
+    sous.textContent = "Ce qui est livré, ce qui est facturé, et l'écart entre les deux.";
   } else if (nom === "remises") {
     if (!SOUS_PRODUITS) SOUS_PRODUITS = sous.textContent;
     sous.textContent = "Ce que vous obtenez vraiment chez chaque fournisseur.";
@@ -872,6 +916,8 @@ function basculeVue(nom) {
   document.getElementById("vueAllergenes").hidden = nom !== "allergenes";
   document.getElementById("vuePertes").hidden = nom !== "pertes";
   document.getElementById("vueRemises").hidden = nom !== "remises";
+  document.getElementById("vueReception").hidden = nom !== "reception";
+  if (nom === "reception") renduReceptions();
   if (nom === "remises") renduRemises();
   if (nom === "pertes") renduPertes();
   if (nom === "reglages") renduReglages();
@@ -1220,6 +1266,7 @@ document.querySelectorAll(".onglet").forEach(o =>
   o.addEventListener("click", () => basculeVue(o.dataset.vue)));
 document.getElementById("btnImprimerAllergenes").addEventListener("click", imprimerAllergenes);
 document.getElementById("pAjouter").addEventListener("click", ajoutePerte);
+document.getElementById("rcAjouter").addEventListener("click", ajouteReception);
 document.getElementById("pNom").addEventListener("change", prixPerteAuto);
 ["simCout","simMarge","simTva"].forEach(id =>
   document.getElementById(id).addEventListener("input", calculeSimu));
@@ -1503,6 +1550,118 @@ function renduRemises() {
           <td class="n">${String(f.taux).replace(".", ",")} %</td></tr>`).join("")}
         </tbody></table></details>`
     : "";
+}
+
+/* ---------------- contrôle à la réception ---------------- */
+let RECEPTIONS = [];
+
+const jourNum = (d) => Math.floor(new Date(String(d).slice(0, 10) + "T12:00:00").getTime() / 86400000);
+const ecartJours = (a, b) => Math.abs(jourNum(a) - jourNum(b));
+
+async function chargeReceptions() {
+  try {
+    const r = await fetch("/.netlify/functions/prix-reception?code=" + encodeURIComponent(CODE));
+    if (r.ok) RECEPTIONS = (await r.json()).receptions || [];
+  } catch {}
+  renduReceptions();
+}
+
+/* rapproche chaque bon de la facture la plus proche du même fournisseur */
+function rapprochements() {
+  const factures = (DATA.factures || []).map((f, i) => ({ ...f, i, pris: false }));
+  const out = [];
+
+  [...RECEPTIONS].sort((a, b) => String(a.date).localeCompare(String(b.date))).forEach(r => {
+    const cands = factures
+      .filter(f => !f.pris && f.fournisseur === r.fournisseur && ecartJours(f.date, r.date) <= 4)
+      .sort((a, b) => ecartJours(a.date, r.date) - ecartJours(b.date, r.date));
+
+    if (!cands.length) {
+      const age = jourNum(new Date().toISOString().slice(0, 10)) - jourNum(r.date);
+      out.push({ rec: r, etat: age >= 6 ? "absent" : "attente", facture: null });
+      return;
+    }
+
+    const f = cands[0];
+    f.pris = true;
+    const tol = Math.max(1, r.montant * 0.005);
+    const d = Math.round((f.montant - r.montant) * 100) / 100;
+    out.push({
+      rec: r,
+      facture: f,
+      ecart: d,
+      etat: Math.abs(d) <= tol ? "ok" : "ecart",
+    });
+  });
+
+  out.sort((a, b) => String(b.rec.date).localeCompare(String(a.rec.date)));
+  return { lignes: out, sansBon: factures.filter(f => !f.pris) };
+}
+
+function renduReceptions() {
+  const sel = document.getElementById("rcFour");
+  if (sel && !sel.options.length) {
+    sel.innerHTML = (DATA.fournisseurs || []).map(f => `<option>${f}</option>`).join("");
+  }
+  if (document.getElementById("rcDate") && !document.getElementById("rcDate").value) {
+    document.getElementById("rcDate").value = new Date().toISOString().slice(0, 10);
+  }
+
+  const { lignes, sansBon } = rapprochements();
+  const mois = new Date().toISOString().slice(0, 7);
+  const duMois = lignes.filter(l => String(l.rec.date).startsWith(mois));
+  const totalEcart = duMois.filter(l => l.etat === "ecart").reduce((s, l) => s + Math.abs(l.ecart || 0), 0);
+
+  document.getElementById("rcEcart").textContent = totalEcart ? euros(totalEcart) : "0 €";
+  const nbEcart = duMois.filter(l => l.etat === "ecart").length;
+  const nbAbsent = duMois.filter(l => l.etat === "absent").length;
+  document.getElementById("rcNb").textContent = duMois.length
+    ? `${duMois.length} bon${duMois.length > 1 ? "s" : ""} · ${nbEcart} écart${nbEcart > 1 ? "s" : ""} · ${nbAbsent} sans facture`
+    : "aucun bon ce mois-ci";
+
+  const libelle = { ok: "rapproché", ecart: "écart", absent: "sans facture", attente: "en attente" };
+
+  document.getElementById("listeReceptions").innerHTML = lignes.length
+    ? lignes.slice(0, 40).map(l => `<div class="rec">
+        <div>
+          <b>${l.rec.fournisseur}</b>
+          <span class="g"> · ${l.rec.date.split("-").reverse().slice(0, 2).join("/")}
+          ${l.rec.colis ? ` · ${l.rec.colis} colis` : ""}
+          ${l.etat === "ecart" ? ` · facture ${euros(l.facture.montant)}` : ""}
+          ${l.etat === "ok" ? ` · facture ${euros(l.facture.montant)}` : ""}</span>
+        </div>
+        <div class="mont">
+          <span class="etat ${l.etat}">${libelle[l.etat]}</span>
+          <b style="margin-left:10px">${euros(l.rec.montant)}</b>
+          ${l.etat === "ecart" ? `<span class="g" style="margin-left:8px">${l.ecart > 0 ? "+" : ""}${euros(l.ecart)}</span>` : ""}
+        </div>
+      </div>`).join("")
+    : '<p class="meta">Aucun bon enregistré pour l\'instant.</p>';
+
+  if (sansBon.length) {
+    document.getElementById("listeReceptions").innerHTML +=
+      `<p class="meta" style="margin-top:16px">${sansBon.length} facture${sansBon.length > 1 ? "s" : ""} sans bon de livraison enregistré. Ce n'est pas anormal pour un dépannage, ça mérite un coup d'œil pour le reste.</p>`;
+  }
+}
+
+async function ajouteReception() {
+  const fournisseur = document.getElementById("rcFour").value;
+  const montant = Number(document.getElementById("rcMontant").value);
+  if (!(montant > 0)) { alert("Il manque le montant du bon."); return; }
+
+  await fetch("/.netlify/functions/prix-reception", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ code: CODE, reception: {
+      fournisseur,
+      date: document.getElementById("rcDate").value,
+      montant,
+      colis: Number(document.getElementById("rcColis").value) || 0,
+    }}),
+  });
+  document.getElementById("rcMontant").value = "";
+  document.getElementById("rcColis").value = "";
+  chargeReceptions();
 }
 
 charge(param || localStorage.getItem(CLE) || "");
