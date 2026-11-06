@@ -8,6 +8,7 @@
 
 const crypto = require("crypto");
 const { getStore } = require("@netlify/blobs");
+const { bloque } = require("./_garde");
 
 function magasin() {
   // Sur Netlify, le contexte est fourni automatiquement. En cas de doute,
@@ -48,6 +49,9 @@ exports.handler = async (event) => {
   for (const e of liste) if (fourni && identiques(fourni, e.code)) trouve = e;
 
   if (!trouve) {
+    if (await bloque(event)) {
+      return { statusCode: 429, headers: { "retry-after": "900" }, body: JSON.stringify({ erreur: "trop d'essais" }) };
+    }
     await new Promise((r) => setTimeout(r, 400));
     return {
       statusCode: 401,

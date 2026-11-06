@@ -5,6 +5,7 @@
 
 const crypto = require("crypto");
 const { getStore } = require("@netlify/blobs");
+const { bloque } = require("./_garde");
 
 function magasin() {
   const siteID = process.env.BLOBS_SITE_ID || process.env.SITE_ID;
@@ -43,7 +44,12 @@ exports.handler = async (event) => {
   }
   const code = corps.code || q.code || headers["x-prix-code"] || "";
   const nom = client(code);
-  if (!nom) return { statusCode: 401, body: JSON.stringify({ erreur: "code invalide" }) };
+  if (!nom) {
+    if (await bloque(event)) {
+      return { statusCode: 429, headers: { "retry-after": "900" }, body: JSON.stringify({ erreur: "trop d'essais" }) };
+    }
+    return { statusCode: 401, body: JSON.stringify({ erreur: "code invalide" }) };
+  }
 
   const store = magasin();
   const k = `reglages/${cle(nom)}`;

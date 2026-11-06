@@ -8,6 +8,7 @@
 
 const crypto = require("crypto");
 const { getStore } = require("@netlify/blobs");
+const { bloque } = require("./_garde");
 
 function magasin() {
   const siteID = process.env.BLOBS_SITE_ID || process.env.SITE_ID;
@@ -71,6 +72,9 @@ exports.handler = async (event) => {
   for (const c of codes()) if (fourni && identiques(fourni, c.code)) client = c.nom || c.code;
 
   if (!client || !q.fichier) {
+    if (await bloque(event)) {
+      return { statusCode: 429, headers: { "retry-after": "900" }, body: JSON.stringify({ erreur: "trop d'essais" }) };
+    }
     return { statusCode: 401, body: JSON.stringify({ erreur: "acces refuse" }) };
   }
 
@@ -82,7 +86,7 @@ exports.handler = async (event) => {
       statusCode: 200,
       headers: {
         "content-type": "application/pdf",
-        "content-disposition": `inline; filename="${q.fichier}"`,
+        "content-disposition": `inline; filename="${String(q.fichier).replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80)}"`,
         "cache-control": "private, max-age=600",
       },
       body: Buffer.from(data).toString("base64"),
