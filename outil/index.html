@@ -857,12 +857,6 @@ function appliqueModules() {
   if (!on("recettes") && !document.getElementById("vueRecettes").hidden) basculeVue("produits");
 }
 
-function modulesActifs() {
-  const o = {};
-  MODULES.filter(m => m.actif).forEach(m => o[m.id] = ETAT_MODULES[m.id] !== false);
-  return o;
-}
-
 function renduReglages() {
   document.getElementById("listeModules").innerHTML = MODULES.map(m => `
     <div class="module ${m.actif ? "" : "avenir"}">
@@ -881,7 +875,7 @@ function renduReglages() {
       fetch("/.netlify/functions/prix-reglages", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ code: CODE, modules: modulesActifs() }),
+        body: JSON.stringify({ code: CODE, modules: { [cb.dataset.module]: cb.checked } }),
       }).catch(() => {});
     });
   });
@@ -1585,7 +1579,8 @@ function rapprochements() {
     const f = cands[0];
     f.pris = true;
     const tol = Math.max(1, r.montant * 0.005);
-    const d = Math.round((f.montant - r.montant) * 100) / 100;
+    const paye = f.paye !== undefined && f.paye !== null ? f.paye : f.montant;
+    const d = Math.round((paye - r.montant) * 100) / 100;
     out.push({
       rec: r,
       facture: f,
@@ -1627,8 +1622,7 @@ function renduReceptions() {
           <b>${l.rec.fournisseur}</b>
           <span class="g"> · ${l.rec.date.split("-").reverse().slice(0, 2).join("/")}
           ${l.rec.colis ? ` · ${l.rec.colis} colis` : ""}
-          ${l.etat === "ecart" ? ` · facture ${euros(l.facture.montant)}` : ""}
-          ${l.etat === "ok" ? ` · facture ${euros(l.facture.montant)}` : ""}</span>
+          ${l.facture ? ` · facture ${euros(l.facture.paye !== undefined ? l.facture.paye : l.facture.montant)}` : ""}</span>
         </div>
         <div class="mont">
           <span class="etat ${l.etat}">${libelle[l.etat]}</span>

@@ -64,11 +64,11 @@ exports.handler = async (event) => {
       const r = (await store.get(k, { type: "json" })) || {};
 
       if (corps.modules && typeof corps.modules === "object") {
-        const propres = {};
+        const fusion = { ...(r.modules || {}) };
         for (const [cle, valeur] of Object.entries(corps.modules)) {
-          if (/^[a-z0-9_]{2,24}$/.test(cle)) propres[cle] = !!valeur;
+          if (/^[a-z0-9_]{2,24}$/.test(cle)) fusion[cle] = !!valeur;
         }
-        r.modules = propres;
+        r.modules = fusion;
       }
 
       if (corps.seuil !== undefined) {
