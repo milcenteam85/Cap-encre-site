@@ -1464,6 +1464,9 @@ function prixPerteAuto() {
 }
 
 /* ---------------- remises ---------------- */
+const MOIS_LONGS = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const moisLong = (m) => MOIS_LONGS[Number(String(m).slice(5, 7)) - 1] || m;
+
 function renduRemises() {
   const r = (DATA.remises || { fournisseurs: [], factures: [] });
   const fours = r.fournisseurs || [];
@@ -1479,9 +1482,8 @@ function renduRemises() {
   const totalBrut = fours.reduce((s, f) => s + (f.brut || 0), 0);
 
   const cartes = fours.map(f => {
-    const max = Math.max(1, ...f.mois.map(m => m.taux));
     const barres = f.mois.map(m => {
-      const h = Math.max(2, (m.taux / max) * 100);
+      const h = m.taux === 0 ? 2 : Math.min(100, Math.max(6, (m.taux / 5) * 100));
       return `<div class="barreMois" title="${m.mois} : ${m.taux} %">
         <i class="${m.taux === 0 ? "zero" : ""}" style="height:${h}%"></i>
         <span>${m.mois.slice(5)}</span></div>`;
@@ -1489,13 +1491,13 @@ function renduRemises() {
 
     const nuls = f.mois.filter(m => m.taux === 0 && m.mois !== f.mois[0].mois);
     const alerte = nuls.length
-      ? `<div class="alerteRemise">Aucune remise en ${nuls.map(m => m.mois.slice(5).replace("01","janvier").replace("02","février").replace("03","mars").replace("04","avril").replace("05","mai").replace("06","juin").replace("07","juillet").replace("08","août").replace("09","septembre").replace("10","octobre").replace("11","novembre").replace("12","décembre")).join(", ")}. Elle était appliquée avant.</div>`
+      ? `<div class="alerteRemise">Aucune remise en ${nuls.map(m => moisLong(m.mois)).join(", ")}. Elle était appliquée avant.</div>`
       : "";
 
     return `<div class="carteRemise">
       <h3>${f.fournisseur}</h3>
       <div class="grand">${String(f.dernier_taux).replace(".", ",")} %</div>
-      <div class="sub">en ${f.dernier_mois.slice(5)} · moyenne ${String(f.moyenne_taux).replace(".", ",")} % ·
+      <div class="sub">en ${moisLong(f.dernier_mois)} · moyenne ${String(f.moyenne_taux).replace(".", ",")} % ·
         ${euros(f.remise)} sur ${euros(f.brut)} d'achats</div>
       <div class="barres">${barres}</div>
       ${alerte}
