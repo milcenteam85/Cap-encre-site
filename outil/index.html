@@ -376,9 +376,9 @@ Cuisson 35 minutes, chaleur tournante."></textarea>
           <label>Date<input id="rcDate" type="date"></label>
           <label>Montant du bon<input id="rcMontant" type="number" min="0" step="0.01" placeholder="324,50"></label>
         </div>
-        <div class="champs" style="grid-template-columns:1fr 1fr 1fr;margin-top:0">
+        <div class="champs" style="grid-template-columns:1fr 1.4fr;margin-top:0">
           <label>Colis<input id="rcColis" type="number" min="0" step="1" placeholder="facultatif"></label>
-          <label>&nbsp;<button id="rcAjouter" class="boutonPlein" type="button">Enregistrer</button></label>
+          <label>&nbsp;<button id="rcAjouter" class="boutonPlein" type="button">Enregistrer le bon</button></label>
         </div>
       </div>
       <div class="pertesTotal">
@@ -1627,7 +1627,7 @@ function renduReceptions() {
         <div class="mont">
           <span class="etat ${l.etat}">${libelle[l.etat]}</span>
           <b style="margin-left:10px">${euros(l.rec.montant)}</b>
-          ${l.etat === "ecart" ? `<span class="g" style="margin-left:8px">${l.ecart > 0 ? "+" : ""}${euros(l.ecart)}</span>` : ""}
+          ${l.etat === "ecart" ? `<span class="g" style="margin-left:8px">${Math.abs(l.ecart).toFixed(2).replace(".", ",")} € de ${l.ecart > 0 ? "plus" : "moins"}</span>` : ""}
         </div>
       </div>`).join("")
     : '<p class="meta">Aucun bon enregistré pour l\'instant.</p>';
