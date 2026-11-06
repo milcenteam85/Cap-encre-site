@@ -204,6 +204,16 @@ details.fiche[open] summary::before{content:"▾ "}
 .perte .g{color:var(--grey);font-size:12.5px}
 .perte .d{display:flex;gap:14px;align-items:center;white-space:nowrap}
 .perte button{background:none;border:0;color:var(--grey);cursor:pointer;font-size:15px}
+.carteRemise{border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:16px;background:#fbfaf6}
+.carteRemise h3{margin:0 0 4px;font-size:16px}
+.carteRemise .grand{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums}
+.carteRemise .sub{font-size:12.5px;color:var(--grey);margin-top:4px}
+.barres{display:flex;align-items:flex-end;gap:10px;height:64px;margin-top:16px}
+.barreMois{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%}
+.barreMois i{display:block;width:100%;max-width:54px;background:#16336b;border-radius:3px 3px 0 0;min-height:2px}
+.barreMois i.zero{background:#e8482b}
+.barreMois span{font-size:10.5px;color:var(--grey)}
+.alerteRemise{margin-top:12px;padding:10px 12px;border-left:3px solid var(--red);background:#fdf3f0;font-size:13px}
 </style>
 </head>
 <body>
@@ -232,6 +242,7 @@ details.fiche[open] summary::before{content:"▾ "}
     <button class="onglet" data-vue="recettes" type="button">Recettes</button>
     <button class="onglet" data-vue="allergenes" type="button" style="display:none">Allergènes</button>
     <button class="onglet" data-vue="pertes" type="button" style="display:none">Pertes</button>
+    <button class="onglet" data-vue="remises" type="button" style="display:none">Remises</button>
     <button class="onglet" data-vue="reglages" type="button">Réglages</button>
   </div>
 
@@ -343,6 +354,11 @@ Cuisson 35 minutes, chaleur tournante."></textarea>
         <button id="btnAnnuler" class="boutonLeger" type="button">Annuler</button>
       </div>
     </div>
+  </section>
+
+  <section id="vueRemises" hidden>
+    <div id="resumeRemises"></div>
+    <div id="detailRemises"></div>
   </section>
 
   <section id="vuePertes" hidden>
@@ -553,9 +569,14 @@ function init() {
   if ((ctl.ecart || 0) > 0) {
     document.getElementById("zoneControle").hidden = false;
     document.getElementById("texteControle").innerHTML =
-      `<b>${ctl.ecart} facture${ctl.ecart > 1 ? "s" : ""}</b> où la somme des lignes lues ne tombe pas juste ` +
-      `avec le total imprimé (écart cumulé ${euros(Math.abs(ctl.total_ecart || 0))}). ` +
-      `Les prix de ces factures sont à vérifier avant de s'en servir, souvent une remise ou une ligne non reconnue.`;
+      `<b>${ctl.ecart} facture${ctl.ecart > 1 ? "s" : ""}</b> où le total imprimé dépasse la somme des lignes lues ` +
+      `(écart cumulé ${euros(Math.abs(ctl.total_ecart || 0))}). Frais de transport, consigne, ou ligne non reconnue : ` +
+      `à vérifier avant de se servir de ces prix.`;
+  } else if ((ctl.remise || 0) > 0) {
+    document.getElementById("zoneControle").hidden = false;
+    document.getElementById("texteControle").innerHTML =
+      `<b>${ctl.remise} facture${ctl.remise > 1 ? "s" : ""}</b> avec remise, ` +
+      `${euros(ctl.total_remise || 0)} obtenus. Le détail est dans l'onglet Remises.`;
   }
 
   const remplir = (id, valeurs) => {
@@ -765,6 +786,7 @@ const MODULES = [
   { id: "factures", nom: "Factures consultables",   txt: "Retrouve le PDF derrière chaque prix.", actif: true },
   { id: "export",   nom: "Export Excel",            txt: "Le tableau complet pour le comptable.", actif: true },
   { id: "prix",        nom: "Prix de vente et marge", txt: "Simulateur de prix et coût matière cible.", actif: true },
+  { id: "remises",     nom: "Suivi des remises",   txt: "Le taux obtenu chez chaque fournisseur, mois par mois.", actif: true },
   { id: "pertes",      nom: "Pertes et gaspillage", txt: "Déclarer une casse, une date dépassée, et voir le coût du mois.", actif: true },
   { id: "allergenes",  nom: "Fiche allergènes",     txt: "Les quatorze allergènes, générés depuis les recettes.", actif: true },
   { id: "comparaison", nom: "Comparaison fournisseurs", txt: "Le même produit chez d'autres, dans la zone.", actif: false },
@@ -794,6 +816,10 @@ function appliqueModules() {
 
   const simu = document.querySelector(".simu");
   if (simu) simu.style.display = on("prix") ? "" : "none";
+
+  const ongletRem = document.querySelector('.onglet[data-vue="remises"]');
+  if (ongletRem) ongletRem.style.display = on("remises") ? "" : "none";
+  if (!on("remises") && !document.getElementById("vueRemises").hidden) basculeVue("produits");
 
   const ongletPertes = document.querySelector('.onglet[data-vue="pertes"]');
   if (ongletPertes) ongletPertes.style.display = on("pertes") ? "" : "none";
@@ -843,6 +869,9 @@ function basculeVue(nom) {
   if (nom === "recettes") {
     if (!SOUS_PRODUITS) SOUS_PRODUITS = sous.textContent;
     sous.textContent = "Coût matière de vos recettes, calculé au dernier prix d'achat connu.";
+  } else if (nom === "remises") {
+    if (!SOUS_PRODUITS) SOUS_PRODUITS = sous.textContent;
+    sous.textContent = "Ce que vous obtenez vraiment chez chaque fournisseur.";
   } else if (nom === "pertes") {
     if (!SOUS_PRODUITS) SOUS_PRODUITS = sous.textContent;
     sous.textContent = "Ce qui part à la poubelle, chiffré au prix d'achat.";
@@ -860,6 +889,8 @@ function basculeVue(nom) {
   document.getElementById("vueReglages").hidden = nom !== "reglages";
   document.getElementById("vueAllergenes").hidden = nom !== "allergenes";
   document.getElementById("vuePertes").hidden = nom !== "pertes";
+  document.getElementById("vueRemises").hidden = nom !== "remises";
+  if (nom === "remises") renduRemises();
   if (nom === "pertes") renduPertes();
   if (nom === "reglages") renduReglages();
   if (nom === "allergenes") renduAllergenes();
@@ -1174,6 +1205,16 @@ details.fiche[open] summary::before{content:"▾ "}
 .perte .g{color:var(--grey);font-size:12.5px}
 .perte .d{display:flex;gap:14px;align-items:center;white-space:nowrap}
 .perte button{background:none;border:0;color:var(--grey);cursor:pointer;font-size:15px}
+.carteRemise{border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:16px;background:#fbfaf6}
+.carteRemise h3{margin:0 0 4px;font-size:16px}
+.carteRemise .grand{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums}
+.carteRemise .sub{font-size:12.5px;color:var(--grey);margin-top:4px}
+.barres{display:flex;align-items:flex-end;gap:10px;height:64px;margin-top:16px}
+.barreMois{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%}
+.barreMois i{display:block;width:100%;max-width:54px;background:#16336b;border-radius:3px 3px 0 0;min-height:2px}
+.barreMois i.zero{background:#e8482b}
+.barreMois span{font-size:10.5px;color:var(--grey)}
+.alerteRemise{margin-top:12px;padding:10px 12px;border-left:3px solid var(--red);background:#fdf3f0;font-size:13px}
 </style></head><body>
     <h1>${r.nom}</h1>
     <div class="s">${DATA.client} · ${c.portions} portion${c.portions > 1 ? "s" : ""} · fiche du ${new Date().toLocaleDateString("fr-FR")}</div>
@@ -1297,6 +1338,16 @@ function imprimerAllergenes() {
 .perte .g{color:var(--grey);font-size:12.5px}
 .perte .d{display:flex;gap:14px;align-items:center;white-space:nowrap}
 .perte button{background:none;border:0;color:var(--grey);cursor:pointer;font-size:15px}
+.carteRemise{border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:16px;background:#fbfaf6}
+.carteRemise h3{margin:0 0 4px;font-size:16px}
+.carteRemise .grand{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums}
+.carteRemise .sub{font-size:12.5px;color:var(--grey);margin-top:4px}
+.barres{display:flex;align-items:flex-end;gap:10px;height:64px;margin-top:16px}
+.barreMois{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%}
+.barreMois i{display:block;width:100%;max-width:54px;background:#16336b;border-radius:3px 3px 0 0;min-height:2px}
+.barreMois i.zero{background:#e8482b}
+.barreMois span{font-size:10.5px;color:var(--grey)}
+.alerteRemise{margin-top:12px;padding:10px 12px;border-left:3px solid var(--red);background:#fdf3f0;font-size:13px}
 </style></head><body>
    <h1>Allergènes</h1><div class="s">${DATA.client} · ${new Date().toLocaleDateString("fr-FR")}</div>
    ${t}</body></html>`);
@@ -1410,6 +1461,64 @@ function prixPerteAuto() {
   const nom = document.getElementById("pNom").value.trim();
   const p = nom ? prixActuel(trouveProduit(nom) || nom) : null;
   if (p) document.getElementById("pPrix").value = p.toFixed(2);
+}
+
+/* ---------------- remises ---------------- */
+function renduRemises() {
+  const r = (DATA.remises || { fournisseurs: [], factures: [] });
+  const fours = r.fournisseurs || [];
+  const zone = document.getElementById("resumeRemises");
+
+  if (!fours.length) {
+    zone.innerHTML = '<p class="meta">Aucune remise identifiée pour l\'instant.</p>';
+    document.getElementById("detailRemises").innerHTML = "";
+    return;
+  }
+
+  const totalRemise = fours.reduce((s, f) => s + (f.remise || 0), 0);
+  const totalBrut = fours.reduce((s, f) => s + (f.brut || 0), 0);
+
+  const cartes = fours.map(f => {
+    const max = Math.max(1, ...f.mois.map(m => m.taux));
+    const barres = f.mois.map(m => {
+      const h = Math.max(2, (m.taux / max) * 100);
+      return `<div class="barreMois" title="${m.mois} : ${m.taux} %">
+        <i class="${m.taux === 0 ? "zero" : ""}" style="height:${h}%"></i>
+        <span>${m.mois.slice(5)}</span></div>`;
+    }).join("");
+
+    const nuls = f.mois.filter(m => m.taux === 0 && m.mois !== f.mois[0].mois);
+    const alerte = nuls.length
+      ? `<div class="alerteRemise">Aucune remise en ${nuls.map(m => m.mois.slice(5).replace("01","janvier").replace("02","février").replace("03","mars").replace("04","avril").replace("05","mai").replace("06","juin").replace("07","juillet").replace("08","août").replace("09","septembre").replace("10","octobre").replace("11","novembre").replace("12","décembre")).join(", ")}. Elle était appliquée avant.</div>`
+      : "";
+
+    return `<div class="carteRemise">
+      <h3>${f.fournisseur}</h3>
+      <div class="grand">${String(f.dernier_taux).replace(".", ",")} %</div>
+      <div class="sub">en ${f.dernier_mois.slice(5)} · moyenne ${String(f.moyenne_taux).replace(".", ",")} % ·
+        ${euros(f.remise)} sur ${euros(f.brut)} d'achats</div>
+      <div class="barres">${barres}</div>
+      ${alerte}
+    </div>`;
+  }).join("");
+
+  zone.innerHTML = `<p class="meta" style="margin:0 0 16px">${euros(totalRemise)} obtenus sur ${euros(totalBrut)} d'achats,
+    soit ${totalBrut ? (totalRemise / totalBrut * 100).toFixed(2).replace(".", ",") : "0"} %.</p>${cartes}`;
+
+  const factures = [...(r.factures || [])].sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 24);
+  document.getElementById("detailRemises").innerHTML = factures.length
+    ? `<details class="fiche"><summary>Facture par facture</summary>
+        <table><thead><tr><th>Date</th><th>Fournisseur</th><th class="n">Brut</th>
+        <th class="n">Payé</th><th class="n">Remise</th><th class="n">Taux</th></tr></thead>
+        <tbody>${factures.map(f => `<tr>
+          <td>${f.date.split("-").reverse().slice(0, 2).join("/")}</td>
+          <td>${f.fournisseur}</td>
+          <td class="n">${euros(f.brut)}</td>
+          <td class="n">${euros(f.net)}</td>
+          <td class="n">${f.remise ? euros(f.remise) : "—"}</td>
+          <td class="n">${String(f.taux).replace(".", ",")} %</td></tr>`).join("")}
+        </tbody></table></details>`
+    : "";
 }
 
 charge(param || localStorage.getItem(CLE) || "");
