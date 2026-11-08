@@ -224,6 +224,12 @@ details.fiche[open] summary::before{content:"▾ "}
 .etat.ecart{background:#fdeceb;color:#b3261e}
 .etat.absent{background:#fdeceb;color:#b3261e}
 .etat.attente{background:#f0eee6;color:#6d6d63}
+.tabFamilles{width:100%;margin-top:18px;border-collapse:collapse}
+.tabFamilles th{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);text-align:left;
+ padding:0 0 8px;border-bottom:1px solid var(--line);font-weight:700}
+.tabFamilles td{font-size:13px;padding:7px 0;border-bottom:1px solid #eeeae0}
+.tabFamilles td.n,.tabFamilles th.n{text-align:right;font-variant-numeric:tabular-nums}
+@media (max-width:760px){.tabFamilles td{font-size:12.5px}}
 </style>
 </head>
 <body>
@@ -639,8 +645,12 @@ function init() {
 
 const CLE = "prix-code";
 
+// En local, les données viennent d'un fichier : on peut tout voir sans rien déployer.
+const LOCAL = ["localhost", "127.0.0.1"].includes(location.hostname);
+const API = (nom) => LOCAL ? `${nom}.json` : `/.netlify/functions/${nom}`;
+
 async function charge(code) {
-  const r = await fetch("/.netlify/functions/prix-data", {
+  const r = await fetch(LOCAL ? "data.json" : "/.netlify/functions/prix-data", {
     headers: code ? { "x-prix-code": code } : {},
   });
   if (r.status !== 200) {
@@ -1487,6 +1497,14 @@ function prixPerteAuto() {
 }
 
 /* ---------------- remises ---------------- */
+const NOMS_FAMILLES = {
+  "epicerie": "Épicerie", "boulangerie": "Boulangerie", "cremerie": "Crémerie",
+  "viande": "Viande", "boisson": "Boissons", "fruits et legumes": "Fruits et légumes",
+  "surgeles": "Surgelés", "poisson": "Poisson", "non classe": "Non classé",
+};
+const nomFamille = (f) => NOMS_FAMILLES[String(f).toLowerCase()] ||
+  (String(f).charAt(0).toUpperCase() + String(f).slice(1));
+
 const MOIS_LONGS = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
 const moisLong = (m) => MOIS_LONGS[Number(String(m).slice(5, 7)) - 1] || m;
 
@@ -1524,6 +1542,14 @@ function renduRemises() {
         ${euros(f.remise)} sur ${euros(f.brut)} d'achats</div>
       <div class="barres">${barres}</div>
       ${alerte}
+      ${(f.familles && f.familles.length) ? `<table class="tabFamilles">
+        <thead><tr><th>Type de produit</th><th class="n">Achats</th><th class="n">Remise</th><th class="n">Taux</th></tr></thead>
+        <tbody>${f.familles.map(x => `<tr>
+          <td>${nomFamille(x.famille)}</td>
+          <td class="n">${euros(x.brut)}</td>
+          <td class="n">${x.remise ? euros(x.remise) : "—"}</td>
+          <td class="n">${String(x.taux).replace(".", ",")} %</td></tr>`).join("")}</tbody>
+      </table>` : ""}
     </div>`;
   }).join("");
 
