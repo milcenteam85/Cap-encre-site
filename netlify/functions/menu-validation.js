@@ -14,6 +14,14 @@ function escape(value) {
   return String(value || "").replace(/[&<>\"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+function itemText(item) {
+  if (typeof item === "string") return item;
+  if (!item || typeof item !== "object") return "";
+  const name = item.name || item.title || item.nom || item.label || "";
+  const price = item.price || item.prix || item.priceText || "";
+  return [name, price].filter(Boolean).join(" · ");
+}
+
 function page(title, content) {
   return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(title)} · Cap Encre</title><style>body{margin:0;background:#f8f3eb;color:#24352f;font:16px Arial,sans-serif}main{max-width:720px;margin:0 auto;padding:48px 22px}h1,h2{font-family:Georgia,serif;font-weight:400}h1{font-size:42px}h2{color:#a7643d;border-bottom:1px solid #d9cbbb;padding-bottom:8px;margin-top:36px}li{padding:7px 0}.bandeau{background:#a7643d;color:white;padding:12px;text-align:center;letter-spacing:.1em;text-transform:uppercase;font-size:12px}.actions{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap}button{border:0;border-radius:5px;padding:14px 22px;font-size:16px;cursor:pointer}.ok{background:#24352f;color:white}.non{background:white;color:#a7643d;border:1px solid #a7643d}</style></head><body><div class="bandeau">Validation de votre carte</div><main>${content}</main></body></html>`;
 }
@@ -48,7 +56,7 @@ exports.handler = async (event) => {
     return { statusCode: 200, headers: { "content-type": "text/html; charset=utf-8" }, body: page("Carte validée", "<h1>Carte validée</h1><p>Merci. La nouvelle carte a été enregistrée avec succès.</p>") };
   }
 
-  const groups = draft.menuGroups.map((group) => `<h2>${escape(group.title)}</h2><ul>${(group.items || []).map((item) => `<li>${escape(item)}</li>`).join("")}</ul>`).join("");
+  const groups = draft.menuGroups.map((group) => `<h2>${escape(group.title)}</h2><ul>${(group.items || []).map((item) => `<li>${escape(itemText(item))}</li>`).join("")}</ul>`).join("");
   const base = `?token=${encodeURIComponent(token)}`;
   return { statusCode: 200, headers: { "content-type": "text/html; charset=utf-8" }, body: page(draft.client, `<h1>${escape(draft.client)}</h1><p>Merci de vérifier cette nouvelle carte.</p>${groups}<div class="actions"><a href="${base}&decision=approve"><button class="ok">Valider la carte</button></a><a href="${base}&decision=reject"><button class="non">Refuser la carte</button></a></div><p><small>Ce lien expire le ${escape(new Date(draft.expiresAt).toLocaleString("fr-FR"))}.</small></p>`) };
 };

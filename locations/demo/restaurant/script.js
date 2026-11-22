@@ -10,6 +10,71 @@
 (function () {
   "use strict";
 
+  /* --------------------------------------------------------- 0. CARTE VALIDEE --
+     Le gabarit garde son HTML de secours. Si une carte validée existe dans
+     Netlify Blobs, seuls les groupes, plats et prix sont remplacés : le CSS,
+     les polices et la mise en page restent ceux du restaurant. */
+  function chargerCarteValidee() {
+    var cible = document.getElementById("menu-dynamique");
+    if (!cible) return;
+
+    fetch("/.netlify/functions/menu-public?client=Le%20Petit%20Exemple", { cache: "no-store" })
+      .then(function (reponse) {
+        if (!reponse.ok) throw new Error("Aucune carte validée");
+        return reponse.json();
+      })
+      .then(function (menu) {
+        if (!Array.isArray(menu.menuGroups) || !menu.menuGroups.length) return;
+        var colonnes = [document.createElement("div"), document.createElement("div")];
+        colonnes.forEach(function (colonne) { colonne.className = "carte-colonne"; });
+
+        menu.menuGroups.forEach(function (groupe, index) {
+          if (!groupe || !groupe.title) return;
+          var titre = document.createElement("h3");
+          titre.className = "carte-groupe";
+          titre.textContent = groupe.title;
+          var liste = document.createElement("ul");
+          liste.className = "plats";
+
+          (Array.isArray(groupe.items) ? groupe.items : []).forEach(function (item) {
+            var donnees;
+            if (typeof item === "string") {
+              var morceaux = item.split(/\s·\s/);
+              donnees = morceaux.length > 1
+                ? { name: morceaux.slice(0, -1).join(" · "), price: morceaux[morceaux.length - 1] }
+                : { name: item };
+            } else {
+              donnees = item || {};
+            }
+            var ligne = document.createElement("li");
+            var plat = document.createElement("span");
+            plat.className = "plat";
+            plat.textContent = donnees.name || donnees.title || donnees.nom || donnees.label || "";
+            var points = document.createElement("span");
+            points.className = "points";
+            var prix = document.createElement("span");
+            prix.className = "prix";
+            prix.textContent = donnees.price || donnees.prix || donnees.priceText || "";
+            ligne.appendChild(plat);
+            ligne.appendChild(points);
+            ligne.appendChild(prix);
+            liste.appendChild(ligne);
+          });
+
+          colonnes[index % 2].appendChild(titre);
+          colonnes[index % 2].appendChild(liste);
+        });
+
+        cible.replaceChildren(colonnes[0], colonnes[1]);
+      })
+      .catch(function () {
+        /* En cas de premier déploiement ou d'absence de carte, le contenu HTML
+           de démonstration reste visible. */
+      });
+  }
+
+  chargerCarteValidee();
+
   /* La classe « js » commande l'affichage de l'ouverture et du zoom eventuel.
      Sans JavaScript, elle n'est jamais posee, et l'ouverture reste invisible :
      le visiteur voit le site directement. */
