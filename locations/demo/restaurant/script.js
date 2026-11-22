@@ -37,7 +37,15 @@
           liste.className = "plats";
 
           (Array.isArray(groupe.items) ? groupe.items : []).forEach(function (item) {
-            var donnees = typeof item === "string" ? { name: item } : (item || {});
+            var donnees;
+            if (typeof item === "string") {
+              var morceaux = item.split(/\s·\s/);
+              donnees = morceaux.length > 1
+                ? { name: morceaux.slice(0, -1).join(" · "), price: morceaux[morceaux.length - 1] }
+                : { name: item };
+            } else {
+              donnees = item || {};
+            }
             var ligne = document.createElement("li");
             var plat = document.createElement("span");
             plat.className = "plat";
