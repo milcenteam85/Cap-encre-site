@@ -147,6 +147,31 @@ h2{font-size:clamp(28px,3.8vw,46px)}
 .tailor-grid b{display:block;font-size:15.5px;margin-bottom:6px}
 .tailor-grid span{font-size:14px;color:var(--grey)}
 
+/* offre */
+.offer{padding:56px 24px 80px}
+.offer-card{display:grid;grid-template-columns:1.02fr .98fr;gap:52px;align-items:center;
+  border:1px solid var(--line);border-radius:8px;padding:44px;background:#fff;
+  box-shadow:0 36px 70px -60px rgba(21,25,24,.45)}
+.offer h2{font-size:clamp(30px,4.2vw,50px)}
+.offer .lead{color:var(--grey);margin-top:16px;max-width:42ch;font-size:16.5px}
+.guarantee{margin:26px 0 0;border-left:3px solid var(--coral);padding-left:16px;
+  font-size:14.5px;color:#3C443F;max-width:44ch}
+.inclus{list-style:none;padding:0;margin:0;display:grid;gap:13px}
+.inclus li{position:relative;padding-left:28px;font-size:15.5px}
+.inclus li::before{content:"\2713";position:absolute;left:0;top:0;color:var(--accent);font-weight:700}
+.offer .btn{margin-top:26px}
+
+/* parrainage */
+.referral{background:var(--paper-2);padding:78px 0}
+.referral .section-head{max-width:62ch;margin-bottom:34px}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line)}
+.tier{background:#fff;padding:30px 22px;text-align:center}
+.tier b{display:block;font-family:var(--serif);font-weight:400;font-size:clamp(34px,4vw,50px);
+  line-height:1;color:var(--accent)}
+.tier span{display:block;margin-top:12px;font-size:14px;color:var(--grey)}
+.referral .note{margin-top:26px;font-size:14px;color:var(--grey);max-width:58ch}
+
 /* final */
 .final{background:var(--ink);color:#fff;padding:82px 0;text-align:center}
 .final h2{color:#fff;font-size:clamp(30px,4.4vw,54px);max-width:20ch;margin:0 auto}
@@ -174,6 +199,9 @@ footer a{text-decoration:underline;text-underline-offset:2px}
 }
 @media (max-width:920px){
   .hero{padding:44px 24px 40px}
+  .offer{padding:56px 24px}
+  .offer-card{grid-template-columns:1fr;padding:30px 26px;gap:30px}
+  .tiers{grid-template-columns:1fr}
   .hero-photo{aspect-ratio:4/3}
   .hero-grid,.split,.booksplit,.gift-grid{grid-template-columns:1fr;gap:36px}
   .cards{grid-template-columns:1fr}
@@ -347,6 +375,45 @@ footer a{text-decoration:underline;text-underline-offset:2px}
     <div><b>Vos couleurs et vos polices</b><span>On repart de votre enseigne, de votre façade, de votre carte. Le site doit ressembler à votre salle, pas à mon portfolio.</span></div>
     <div><b>Le téléphone d'abord</b><span>La plupart de vos clients vous cherchent depuis leur téléphone, souvent dans la voiture. La version mobile est dessinée en premier, l'ordinateur vient après.</span></div>
     <div><b>Simple à faire évoluer</b><span>Un plat qui part, une fermeture annuelle, un nouveau menu : vous me le dites, c'est en ligne. Pas de panneau d'administration à apprendre.</span></div>
+  </div>
+</section>
+
+<section class="offer">
+  <div class="wrap">
+    <div class="offer-card">
+      <div>
+        <div class="kicker">L'offre</div>
+        <h2>74 €/mois, <em>tout compris.</em></h2>
+        <p class="lead">Un prix fixe, sans frais cachés, pour avoir un site professionnel et les outils essentiels de votre restaurant.</p>
+        <p class="guarantee">Si vous trouvez une offre équivalente moins chère, nous vous remboursons la différence.</p>
+      </div>
+      <div>
+        <ul class="inclus">
+          <li>site internet sur mesure ;</li>
+          <li>hébergement ;</li>
+          <li>nom de domaine ;</li>
+          <li>mise à jour de la carte ;</li>
+          <li>système de réservation ;</li>
+          <li>outil pratique de suivi des prix et coûts matières.</li>
+        </ul>
+        <a class="btn warm" href="mailto:contact@capencre.fr?subject=Mon%20restaurant">Demander une démo</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="referral">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Parrainez un restaurateur.</h2>
+      <p>Pour chaque restaurateur que vous nous présentez et qui devient client, vous bénéficiez de 10 % de réduction sur votre abonnement.</p>
+    </div>
+    <div class="tiers">
+      <div class="tier"><b>10 %</b><span>pour 1 client parrainé</span></div>
+      <div class="tier"><b>20 %</b><span>pour 2 clients parrainés</span></div>
+      <div class="tier"><b>30 %</b><span>pour 3 clients parrainés</span></div>
+    </div>
+    <p class="note">Un filleul, un palier. Pas de formulaire à imprimer, pas de conditions en petits caractères au dos de la facture.</p>
   </div>
 </section>
 
