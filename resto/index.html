@@ -3,188 +3,291 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sites et réservations pour restaurants — Cap Encre</title>
-<meta name="description" content="Un site pour votre restaurant, les réservations sans commission et la carte mise à jour par simple mail.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f3f0e8'/%3E%3Crect x='9' y='9' width='14' height='14' fill='%231e4a3c' transform='rotate(45 16 16)'/%3E%3C/svg%3E">
+<title>Site internet pour restaurant en Vendée — Cap Encre</title>
+<meta name="description" content="Un site sur mesure pour votre restaurant : une carte mise à jour par simple PDF, des réservations que vous validez, des cartes cadeaux. Basé à Saint-Jean-de-Monts.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f7f2e7'/%3E%3Crect x='9' y='9' width='14' height='14' fill='%23a8412a' transform='rotate(45 16 16)'/%3E%3C/svg%3E">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="4d385258-635b-476a-b26a-f96fae2d3959"></script>
 <style>
 :root{
-  --ink:#0f0f0d;
-  --paper:#f3f0e8;
-  --accent:#1e4a3c;
-  --accent-2:#2c6a55;
-  --soft:#dde6e0;
-  --grey:#6d6d63;
-  --line:#d6d1c4;
+  --ink:#17150f;
+  --paper:#f7f2e7;
+  --paper-2:#efe7d6;
+  --accent:#a8412a;
+  --accent-2:#c2603f;
+  --gold:#b98a34;
+  --grey:#6f6a5e;
+  --line:#ddd3be;
+  --serif:Georgia,"Times New Roman",serif;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;overflow-x:hidden;background:var(--paper);color:var(--ink);font:16px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.035em;line-height:1.03}
+body{margin:0;overflow-x:hidden;background:var(--paper);color:var(--ink);
+  font:16px/1.6 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;font-family:var(--serif);font-weight:400;letter-spacing:-.02em;line-height:1.06}
+h1 em,h2 em{font-style:italic;color:var(--accent)}
 a{color:inherit;text-decoration:none}
-.wrap{max-width:1220px;margin:0 auto;padding:0 24px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.kicker{display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:22px}
+.kicker::before{content:"";width:26px;height:2px;background:var(--accent)}
 
-header{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(243,240,232,.93);backdrop-filter:blur(8px);z-index:20}
-.bar{display:flex;align-items:center;justify-content:space-between;height:64px}
-.logo{font-weight:800;letter-spacing:-.04em;font-size:19px;display:flex;align-items:center;gap:9px;white-space:nowrap}
-.logo i{width:10px;height:10px;background:var(--accent);border-radius:2px;transform:rotate(45deg);display:inline-block}
+/* header */
+header{position:sticky;top:0;z-index:20;background:rgba(247,242,231,.94);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;height:66px}
+.logo{font-weight:800;letter-spacing:-.03em;font-size:18px;display:flex;align-items:center;gap:9px}
+.logo i{width:9px;height:9px;background:var(--accent);border-radius:2px;transform:rotate(45deg);display:inline-block}
 .back{font-size:13.5px;color:var(--grey)}
-.cta{background:var(--ink);color:var(--paper);padding:11px 18px;border-radius:4px;font-size:14px;font-weight:600}
-.cta:hover{background:var(--accent)}
+.back:hover{color:var(--accent)}
+.head-right{display:flex;align-items:center;gap:16px}
+.tel{font-size:14px;font-weight:600;border-bottom:1px solid transparent}
+.tel:hover{border-color:var(--accent);color:var(--accent)}
+.btn{display:inline-block;background:var(--ink);color:var(--paper);padding:13px 22px;border-radius:3px;
+  font-size:14.5px;font-weight:600;transition:background .18s ease,transform .18s ease}
+.btn:hover{background:var(--accent);transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--paper)}
+.btn.warm{background:var(--accent)}
+.btn.warm:hover{background:var(--accent-2)}
 
 /* hero */
-.hero{padding-top:64px;padding-bottom:20px}
-.k{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:24px}
-.k::before{content:"";width:26px;height:2px;background:var(--accent)}
-.hero h1{font-size:clamp(36px,5.6vw,72px);max-width:17ch}
-.hero h1 em{font-style:normal;color:var(--accent)}
-.hero p{font-size:clamp(16px,1.6vw,19px);color:var(--grey);max-width:54ch;margin:24px 0 0}
-.actions{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
-.ghost{border:1.5px solid var(--line);padding:11px 18px;border-radius:4px;font-size:14px;font-weight:600}
-.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.hero{padding:72px 24px 64px}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
+h1{font-size:clamp(40px,6.4vw,78px);max-width:15ch}
+.hero p{font-size:clamp(16px,1.7vw,19.5px);color:var(--grey);max-width:48ch;margin:26px 0 0}
+.actions{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap}
+.hero-note{margin-top:22px;font-size:13px;color:var(--grey);display:flex;align-items:center;gap:8px}
+.dot{width:7px;height:7px;border-radius:50%;background:#4a7c59;display:inline-block;flex:0 0 7px}
 
-/* bandeau coût */
-.cost{margin-top:56px;background:var(--ink);color:var(--paper);padding:52px 0}
-.cost h2{font-size:clamp(22px,2.6vw,32px);max-width:26ch;margin-bottom:28px}
-.cost em{font-style:normal;color:#e8482b}
-.calc{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid #33332d}
-.calc div{padding:18px 20px 0 0}
-.calc b{display:block;font-size:clamp(22px,2.6vw,34px);font-weight:800;letter-spacing:-.03em}
-.calc span{font-size:13px;color:#a8a599}
-.calc .total b{color:#e8482b}
+.menu-card{background:#fffdf8;border:1px solid var(--line);border-radius:2px;padding:30px 28px;
+  box-shadow:0 30px 60px -40px rgba(23,21,15,.55);transform:rotate(-1.4deg);position:relative}
+.menu-card::after{content:"";position:absolute;inset:10px;border:1px solid #ece2cd;pointer-events:none}
+.menu-card .top{font-family:var(--serif);font-size:15px;letter-spacing:.32em;text-transform:uppercase;
+  text-align:center;color:var(--gold);margin-bottom:18px}
+.menu-card .dish{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px dotted #e2d7c0}
+.menu-card .dish:last-of-type{border-bottom:0}
+.menu-card .dish span{font-size:14.5px}
+.menu-card .dish b{font-size:14.5px;font-weight:600;white-space:nowrap}
+.menu-card .sub{font-size:11.5px;color:var(--grey);display:block;margin-top:1px}
+.menu-card .foot{margin-top:16px;text-align:center;font-size:10.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--grey)}
 
-/* inclus */
-.incl{padding:66px 0 0}
-.incl h2{font-size:clamp(24px,3vw,38px);margin-bottom:34px;max-width:20ch}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;border-top:1px solid var(--line)}
-.g{padding-top:20px}
-.g b{display:block;font-size:15.5px;margin-bottom:6px}
-.g span{font-size:13.8px;color:var(--grey)}
-.g .n{font-size:11px;letter-spacing:.14em;color:var(--accent);font-weight:700;display:block;margin-bottom:12px}
+/* sections */
+.section{padding:76px 24px}
+.section-head{max-width:56ch;margin-bottom:44px}
+h2{font-size:clamp(28px,3.8vw,46px)}
+.section-head p{margin-top:14px;color:var(--grey);font-size:16.5px}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.card{background:var(--paper);padding:34px 30px 32px;display:flex;flex-direction:column;gap:10px;min-height:210px}
+.card .n{font-size:11px;letter-spacing:.18em;color:var(--accent);font-weight:700}
+.card h3{font-size:23px}
+.card p{color:var(--grey);font-size:15px;margin:0}
+.card .more{margin-top:auto;font-size:13px;font-weight:600;color:var(--accent)}
 
-/* carte par mail */
-.mail{padding:72px 0 0}
-.mailbox{display:grid;grid-template-columns:1.05fr .95fr;gap:54px;align-items:center}
-.mail h2{font-size:clamp(24px,3.2vw,40px);margin-bottom:18px}
-.mail p{color:var(--grey);max-width:46ch}
-.steps3{margin-top:26px;display:grid;gap:16px}
-.step3{display:flex;gap:14px;align-items:flex-start}
-.step3 i{flex:0 0 26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
-.step3 b{display:block;font-size:14.5px}
-.step3 span{font-size:13.5px;color:var(--grey)}
-.demo-mail{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px;box-shadow:0 18px 40px -30px rgba(0,0,0,.5)}
-.demo-mail .from{font-size:12px;color:var(--grey);border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:14px;display:flex;justify-content:space-between}
-.demo-mail .obj{font-size:14px;font-weight:700;margin-bottom:6px}
-.demo-mail .att{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--grey);background:var(--paper);border:1px dashed var(--line);border-radius:6px;padding:10px}
-.demo-mail .ok{margin-top:14px;font-size:12.5px;color:var(--accent);font-weight:600}
+/* carte pdf */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.split p{color:var(--grey)}
+.pull{border-left:2px solid var(--gold);padding:2px 0 2px 18px;margin:26px 0;
+  font-family:var(--serif);font-size:19.5px;line-height:1.35;color:var(--ink)}
+.steps{display:grid;gap:18px;margin-top:28px}
+.step{display:flex;gap:14px;align-items:flex-start}
+.step i{flex:0 0 28px;height:28px;border-radius:50%;background:var(--paper-2);border:1px solid var(--line);
+  color:var(--accent);font-style:normal;font-family:var(--serif);font-size:14px;
+  display:flex;align-items:center;justify-content:center;margin-top:1px}
+.step b{display:block;font-size:15.5px;margin-bottom:2px}
+.step span{font-size:14px;color:var(--grey)}
+.mailbox{background:#fff;border:1px solid var(--line);border-radius:6px;padding:20px;
+  box-shadow:0 26px 50px -40px rgba(23,21,15,.6)}
+.mailbox .from{font-size:12px;color:var(--grey);border-bottom:1px solid var(--line);
+  padding-bottom:11px;margin-bottom:14px;display:flex;justify-content:space-between;gap:10px}
+.mailbox .obj{font-size:14.5px;font-weight:700;margin-bottom:10px}
+.mailbox .att{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--grey);
+  background:var(--paper);border:1px dashed var(--line);border-radius:4px;padding:11px}
+.mailbox .ok{margin-top:14px;font-size:12.5px;color:#4a7c59;font-weight:600}
 
 /* réservation */
-.book{background:var(--accent);color:var(--paper);padding:72px 0;margin-top:72px}
-.book .head{max-width:52ch;margin-bottom:34px}
-.book h2{font-size:clamp(24px,3.2vw,40px);color:#fff}
-.book p{color:#c7d6cf;margin-top:14px}
-.booking{background:var(--paper);color:var(--ink);border-radius:12px;padding:26px;max-width:720px}
+.book{background:var(--ink);color:var(--paper);padding:80px 0}
+.book h2{color:var(--paper)}
+.book h2 em{color:#e0906a}
+.book .head{max-width:54ch;margin-bottom:38px}
+.book .head p{color:#c9c2b2;margin-top:15px}
+.booksplit{display:grid;grid-template-columns:1.02fr .98fr;gap:48px;align-items:start}
+.booking{background:var(--paper);color:var(--ink);border-radius:6px;padding:26px}
 .booking .row{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:14px}
-.booking label{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);font-weight:700;margin-bottom:6px}
-.booking input,.booking select{width:100%;background:#fff;border:1px solid var(--line);border-radius:6px;padding:11px 12px;font:inherit;font-size:16px;color:var(--ink)}
+.booking label{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--grey);font-weight:700;margin-bottom:6px}
+.booking input,.booking select{width:100%;background:#fff;border:1px solid var(--line);border-radius:4px;
+  padding:12px;font:inherit;font-size:16px;color:var(--ink)}
 .booking input:focus,.booking select:focus{outline:none;border-color:var(--accent)}
-.booking button{margin-top:18px;width:100%;background:var(--accent);color:#fff;border:0;padding:14px;border-radius:6px;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.booking button{margin-top:18px;width:100%;background:var(--accent);color:#fff;border:0;padding:15px;
+  border-radius:4px;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
 .booking button:hover{background:var(--accent-2)}
-.booking .retour{margin-top:14px;font-size:13.5px;color:var(--accent);font-weight:600;display:none}
-.booking .note{font-size:12px;color:var(--grey);margin-top:12px}
-.booksplit{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
-.booksplit ul{list-style:none;padding:0;margin:0;display:grid;gap:12px}
-.booksplit li{font-size:14.5px;color:#dfe9e4;padding-left:22px;position:relative}
-.booksplit li::before{content:"→";position:absolute;left:0;color:#9fc3b3}
+.booking .retour{margin-top:14px;font-size:13.5px;color:#4a7c59;font-weight:600;display:none}
+.booking .note{font-size:12px;color:var(--grey);margin-top:12px;margin-bottom:0}
+.booklist{list-style:none;padding:0;margin:0;display:grid;gap:16px}
+.booklist li{font-size:15px;color:#ded7c8;padding-left:24px;position:relative}
+.booklist li::before{content:"—";position:absolute;left:0;color:var(--gold)}
 
-/* prix */
-.price{padding:76px 0}
-.price .box{display:flex;justify-content:space-between;align-items:center;gap:40px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:34px}
-.price h2{font-size:clamp(26px,3.6vw,46px)}
-.price .num{font-size:clamp(40px,6vw,80px);font-weight:800;letter-spacing:-.045em;line-height:1}
-.price .num small{font-size:15px;font-weight:600;letter-spacing:0;color:var(--grey)}
-.price ul{list-style:none;padding:0;margin:0;display:grid;gap:8px;font-size:14px;color:var(--grey)}
+/* cadeaux */
+.gift{background:var(--paper-2);padding:78px 0}
+.gift-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+.ticket{background:#fffdf8;border:1px solid var(--line);padding:26px;position:relative;border-radius:2px}
+.ticket::before,.ticket::after{content:"";position:absolute;width:16px;height:16px;background:var(--paper-2);
+  border-radius:50%;top:50%;transform:translateY(-50%)}
+.ticket::before{left:-9px}
+.ticket::after{right:-9px}
+.ticket .t-top{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.ticket .t-title{font-family:var(--serif);font-size:26px;line-height:1.15;margin-bottom:6px}
+.ticket .t-sub{font-size:13.5px;color:var(--grey)}
+.ticket .t-line{border-top:1px dashed var(--line);margin:18px 0}
+.ticket .t-code{font-family:"Courier New",monospace;font-size:15px;letter-spacing:.16em}
+.ticket .t-stamp{position:absolute;right:20px;bottom:18px;font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);padding:4px 7px;border-radius:2px}
+.gift ul{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:10px}
+.gift li{font-size:15px;color:#4f4a40;padding-left:22px;position:relative}
+.gift li::before{content:"·";position:absolute;left:8px;color:var(--accent);font-weight:700}
+.honest{margin-top:24px;font-size:13.5px;color:var(--grey);border-left:2px solid var(--line);padding-left:14px}
 
-footer{border-top:1px solid var(--line);padding:24px 0;font-size:12.5px;color:var(--grey)}
+/* sur mesure */
+.tailor{padding:80px 24px}
+.tailor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);margin-top:40px}
+.tailor-grid div{background:var(--paper);padding:28px 24px}
+.tailor-grid b{display:block;font-size:15.5px;margin-bottom:6px}
+.tailor-grid span{font-size:14px;color:var(--grey)}
+
+/* final */
+.final{background:var(--accent);color:#fff;padding:82px 0;text-align:center}
+.final h2{color:#fff;font-size:clamp(30px,4.4vw,54px);max-width:20ch;margin:0 auto}
+.final p{color:#f6dccf;margin:20px auto 0;max-width:46ch;font-size:16.5px}
+.final .actions{justify-content:center}
+.final .btn{background:#fff;color:var(--accent)}
+.final .btn:hover{background:var(--ink);color:var(--paper)}
+.final .btn.ghost{border-color:rgba(255,255,255,.6);color:#fff;background:transparent}
+.final .btn.ghost:hover{background:#fff;color:var(--accent)}
+.final .sig{margin-top:30px;font-size:13px;color:#f0c9b8}
+
+footer{border-top:1px solid var(--line);padding:26px 0;font-size:12.5px;color:var(--grey)}
 footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer a{text-decoration:underline;text-underline-offset:2px}
 
-@media (max-width:900px){
-  .calc{grid-template-columns:1fr 1fr;gap:0}
-  .calc div{padding:14px 12px 14px 0}
-  .grid4,.mailbox,.booksplit{grid-template-columns:1fr;gap:28px}
-  .booking .row{grid-template-columns:1fr}
-  .hero{padding-top:44px;padding-bottom:10px}
-  .back{display:none}
-  .cta{padding:10px 13px;font-size:13px;white-space:nowrap}
+.lbl-short{display:none}
+@media (max-width:640px){
+  .lbl-long{display:none}
+  .lbl-short{display:inline}
+  .head-right .btn{padding:10px 14px;font-size:13px}
+  .hero .actions{flex-direction:column;align-items:stretch}
+  .hero .actions .btn{text-align:center}
+  .logo{font-size:16px}
+  .bar{gap:10px}
 }
-
-/* garde-fou : les paddings verticaux des sections ne doivent pas annuler
-   les marges latérales de .wrap */
-.wrap{padding-left:24px;padding-right:24px}
-
-@media (max-width:900px){input,select,textarea{font-size:16px}}
+@media (max-width:920px){
+  .hero{padding:44px 24px 40px}
+  .hero-grid,.split,.booksplit,.gift-grid{grid-template-columns:1fr;gap:36px}
+  .menu-card{transform:none;max-width:420px;margin:0 auto}
+  .cards{grid-template-columns:1fr}
+  .tailor-grid{grid-template-columns:1fr}
+  .section,.tailor{padding:56px 24px}
+  .gift{padding:56px 0}
+  .book,.final{padding:60px 0}
+  .bar{height:60px}
+  .back{display:none}
+  .tel{display:none}
+  .booking .row{grid-template-columns:1fr}
+  h1{max-width:100%}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 
 <header>
   <div class="wrap bar">
-    <div style="display:flex;align-items:center;gap:20px">
+    <div style="display:flex;align-items:center;gap:22px">
       <a class="logo" href="/"><i></i>CAP ENCRE</a>
       <a class="back" href="/">← Tous nos métiers</a>
     </div>
-    <a class="cta" href="tel:+33662674414">06 62 67 44 14</a>
+    <div class="head-right">
+      <a class="tel" href="tel:+33662674414">06 62 67 44 14</a>
+      <a class="btn" href="mailto:contact@capencre.fr?subject=Mon%20restaurant"><span class="lbl-long">Parler de mon restaurant</span><span class="lbl-short">Me contacter</span></a>
+    </div>
   </div>
 </header>
 
 <section class="wrap hero">
-  <div class="k">Restaurants</div>
-  <h1>Vos tables.<br><em>Sans commission.</em></h1>
-  <p>Un site qui vous ressemble, des réservations qui vous appartiennent, et une carte qui se met à jour d'un simple mail.</p>
-  <div class="actions">
-    <a class="cta" href="#essai">Demander une démo</a>
-    <a class="ghost" href="#reservation">Voir la réservation</a>
-  </div>
-</section>
+  <div class="hero-grid">
+    <div>
+      <div class="kicker">Restaurants · Vendée</div>
+      <h1>Votre restaurant mérite un site qui <em>donne faim.</em></h1>
+      <p>Un site fait pour votre salle, pas pour un modèle. Une carte que je mets à jour pour vous. Des réservations que vous validez vous-même. Et quelqu'un qui décroche quand vous appelez.</p>
+      <div class="actions">
+        <a class="btn warm" href="https://capencre.fr/locations/demo/restaurant/" target="_blank" rel="noopener">Voir un exemple</a>
+        <a class="btn ghost" href="mailto:contact@capencre.fr?subject=Mon%20restaurant">Parler de mon restaurant</a>
+      </div>
+      <div class="hero-note"><span class="dot"></span> Basé à Saint-Jean-de-Monts, je me déplace en Vendée.</div>
+    </div>
 
-<section class="cost">
-  <div class="wrap">
-    <h2>Le vrai coût n'est pas la commission.</h2>
-    <div class="calc">
-      <div><b>Le client</b><span>La plateforme garde son nom, son mail, son historique. Vous, vous avez servi la table — et vous ne pouvez pas le recontacter.</span></div>
-      <div><b>Le classement</b><span>Pour rester visible dans les résultats, il faut payer davantage. Celui qui paie plus passe devant vous.</span></div>
-      <div><b>La sortie</b><span>Le jour où vous arrêtez, les réservations s'arrêtent le même jour. Vous repartez de zéro.</span></div>
-      <div class="total"><b>Un site à vous</b><span>garde vos clients, vos réservations et votre place. Et personne ne peut vous déclasser.</span></div>
+    <div class="menu-card" aria-hidden="true">
+      <div class="top">Le menu</div>
+      <div class="dish"><span>Huîtres de Noirmoutier<span class="sub">citron, beurre demi-sel</span></span><b>9 €</b></div>
+      <div class="dish"><span>Tartare de dorade<span class="sub">huile d'olive, cébette</span></span><b>14 €</b></div>
+      <div class="dish"><span>Friture de la baie<span class="sub">aïoli maison</span></span><b>17 €</b></div>
+      <div class="dish"><span>Tarte au citron<span class="sub">meringue brûlée</span></span><b>8 €</b></div>
+      <div class="foot">Carte du jour</div>
     </div>
   </div>
 </section>
 
-<section class="wrap incl">
-  <h2>Tout est compris.</h2>
-  <div class="grid4">
-    <div class="g"><span class="n">01</span><b>Le site</b><span>Une page qui donne faim, pensée d'abord pour le téléphone.</span></div>
-    <div class="g"><span class="n">02</span><b>La réservation</b><span>Le client demande, vous validez, il reçoit sa confirmation.</span></div>
-    <div class="g"><span class="n">03</span><b>La carte</b><span>Vous envoyez le PDF, il est en ligne dans l'heure.</span></div>
-    <div class="g"><span class="n">04</span><b>Le reste</b><span>Nom de domaine, hébergement, fiche Google, deux modifications par mois.</span></div>
+<section class="wrap section">
+  <div class="section-head">
+    <h2>Quatre choses, <em>bien faites.</em></h2>
+    <p>Pas de liste à rallonge. Ce qui compte pour un restaurant tient en quatre points, et chacun est fait sérieusement.</p>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <span class="n">01</span>
+      <h3>Le site sur mesure</h3>
+      <p>Vos couleurs, vos polices, vos photos, vos mots. On part de votre salle et de votre carte, pas d'un thème acheté.</p>
+      <span class="more">Pensé d'abord pour le téléphone</span>
+    </div>
+    <div class="card">
+      <span class="n">02</span>
+      <h3>La carte, sans y penser</h3>
+      <p>Vous m'envoyez le PDF de votre imprimeur, ou une photo. Le lendemain, les plats et les prix sont en ligne. Le design ne bouge pas.</p>
+      <span class="more">Un lien pour vérifier avant publication</span>
+    </div>
+    <div class="card">
+      <span class="n">03</span>
+      <h3>Les réservations</h3>
+      <p>Le client choisit son jour, son heure et son nombre de couverts. Vous recevez la demande, vous confirmez. Vous gardez la main.</p>
+      <span class="more">Sans commission sur les couverts</span>
+    </div>
+    <div class="card">
+      <span class="n">04</span>
+      <h3>Les cartes cadeaux</h3>
+      <p>Un menu, un montant libre, ou une soirée complète. De quoi remplir janvier, quand personne ne pense à sortir.</p>
+      <span class="more">Disponible en démonstration</span>
+    </div>
   </div>
 </section>
 
-<section class="wrap mail">
-  <div class="mailbox">
+<section class="wrap section">
+  <div class="split">
     <div>
-      <h2>Changer sa carte ne devrait pas prendre une soirée.</h2>
-      <p>Vous nous envoyez votre menu en PDF ou en photo, comme vous l'envoyez à votre imprimeur. Il est en ligne avant le service.</p>
-      <div class="steps3">
-        <div class="step3"><i>1</i><div><b>Vous envoyez</b><span>Un mail, une pièce jointe. Rien d'autre.</span></div></div>
-        <div class="step3"><i>2</i><div><b>On publie</b><span>Le fichier remplace l'ancienne carte, sans retouche.</span></div></div>
-        <div class="step3"><i>3</i><div><b>Vous vérifiez</b><span>Un lien pour voir le résultat, et c'est tout.</span></div></div>
+      <div class="kicker">La carte</div>
+      <h2>Un changement de prix ne devrait pas demander un diplôme en informatique.</h2>
+      <div class="pull">Vous m'envoyez votre carte. Je la mets en ligne. Vous vérifiez. C'est tout.</div>
+      <div class="steps">
+        <div class="step"><i>1</i><div><b>Vous envoyez</b><span>Le PDF de l'imprimeur, ou une photo prise au téléphone. Pas de logiciel, pas de formation.</span></div></div>
+        <div class="step"><i>2</i><div><b>Je publie</b><span>Les plats et les prix sont mis à jour le lendemain matin. Le design du site reste exactement le même.</span></div></div>
+        <div class="step"><i>3</i><div><b>Vous vérifiez</b><span>Je vous envoie un lien. Un coup d'œil, et c'est validé. Si une faute s'est glissée, je corrige.</span></div></div>
       </div>
     </div>
-    <div class="demo-mail">
-      <div class="from"><span>À : carte@capencre.fr</span><span>aujourd'hui</span></div>
+    <div class="mailbox" aria-hidden="true">
+      <div class="from"><span>À : contact@capencre.fr</span><span>aujourd'hui, 22 h 41</span></div>
       <div class="obj">Nouvelle carte — automne</div>
       <div class="att">📎 carte-automne.pdf · 1,2 Mo</div>
-      <div class="ok">✓ Publiée sur votre site à 11 h 04</div>
+      <div class="ok">✓ En ligne demain à 9 h 00</div>
     </div>
   </div>
 </section>
@@ -192,8 +295,8 @@ footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <section class="book" id="reservation">
   <div class="wrap">
     <div class="head">
-      <h2>Une réservation, trois secondes.</h2>
-      <p>Le client choisit son jour, son heure et son nombre de couverts. Vous recevez un mail, vous cliquez pour valider, il reçoit sa confirmation. Aucun compte à créer, aucune application.</p>
+      <h2>Les réservations, <em>chez&nbsp;vous.</em></h2>
+      <p>Le client choisit une date, une heure et un nombre de couverts. Vous recevez un mail, vous validez, il reçoit sa confirmation. Rien n'est confirmé sans vous.</p>
     </div>
     <div class="booksplit">
       <form class="booking" id="bk" onsubmit="return demoResa(event)">
@@ -210,39 +313,69 @@ footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <div class="retour" id="ret">✓ Demande envoyée au restaurant. Vous recevrez la confirmation par mail.</div>
         <p class="note">Démonstration — aucune réservation n'est réellement enregistrée.</p>
       </form>
-      <ul>
-        <li>Le restaurant garde la main : rien n'est confirmé sans son accord.</li>
-        <li>Les demandes arrivent par mail, avec un lien pour valider en un clic.</li>
-        <li>Le client reçoit une confirmation claire, à son nom.</li>
-        <li>Zéro commission, zéro intermédiaire, zéro client captif.</li>
+      <ul class="booklist">
+        <li>Le client réserve en trois clics, sans créer de compte.</li>
+        <li>La demande arrive par mail, avec un lien pour confirmer ou refuser.</li>
+        <li>Le restaurant garde la main : rien n'est bloqué sans son accord.</li>
+        <li>Les coordonnées du client restent les vôtres, pas celles d'une plateforme.</li>
       </ul>
     </div>
   </div>
 </section>
 
-<section class="wrap price" id="essai">
-  <div class="box">
+<section class="gift">
+  <div class="wrap gift-grid">
     <div>
-      <h2>Tout compris.</h2>
-      <p style="color:var(--grey);margin-top:14px;max-width:34ch">Sans frais d'entrée, sans commission sur les couverts, sans engagement de volume.</p>
-    </div>
-    <div>
-      
-      <ul style="margin-top:18px">
-        <li>· Site, réservation, carte par mail</li>
-        <li>· Nom de domaine et hébergement inclus</li>
-        <li>· Deux modifications par mois</li>
-        <li>· Un interlocuteur qui décroche</li>
+      <div class="kicker">Cartes cadeaux</div>
+      <h2>Offrir un repas, <em>pas un bon d'achat.</em></h2>
+      <p style="color:var(--grey);margin-top:14px">Un client veut offrir votre table pour un anniversaire. Il choisit un menu, un montant ou une soirée complète, paie en ligne, et reçoit une carte à son nom. Vous, vous la retrouvez dans votre tableau, avec le code.</p>
+      <ul>
+        <li>Un menu précis, un montant libre, ou une expérience</li>
+        <li>Une carte à son nom, envoyée par mail</li>
+        <li>Validée au restaurant avec un code court</li>
+        <li>Un bon prétexte pour revenir en février</li>
       </ul>
-      <a class="cta" style="display:inline-block;margin-top:22px" href="mailto:contact@capencre.fr?subject=D%C3%A9mo%20restaurant">Demander une démo</a>
+      <p class="honest">Aujourd'hui, je vous la montre en démonstration : le parcours complet se clique, le paiement se branche ensuite selon votre banque et votre logiciel de caisse.</p>
     </div>
+    <div class="ticket" aria-hidden="true">
+      <div class="t-top">Carte cadeau</div>
+      <div class="t-title">Un dîner pour deux</div>
+      <div class="t-sub">Valable un an, du mardi au samedi</div>
+      <div class="t-line"></div>
+      <div class="t-code">CE-4F7A-2K</div>
+      <div class="t-stamp">Offert</div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap tailor">
+  <div class="section-head">
+    <h2>Le sur-mesure, <em>sans la séance d'essayage.</em></h2>
+    <p>Promis, je ne vais pas vous demander de choisir entre bleu nuit et bleu presque nuit pendant 45 minutes. Deux ou trois questions, une maquette, et on ajuste.</p>
+  </div>
+  <div class="tailor-grid">
+    <div><b>Vos couleurs et vos polices</b><span>On repart de votre enseigne, de votre façade, de votre carte. Le site doit ressembler à votre salle, pas à mon portfolio.</span></div>
+    <div><b>Le téléphone d'abord</b><span>La plupart de vos clients vous cherchent depuis leur téléphone, souvent dans la voiture. La version mobile est dessinée en premier, l'ordinateur vient après.</span></div>
+    <div><b>Simple à faire évoluer</b><span>Un plat qui part, une fermeture annuelle, un nouveau menu : vous me le dites, c'est en ligne. Pas de panneau d'administration à apprendre.</span></div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2>Parlons de votre restaurant.</h2>
+    <p>Dites-moi en deux lignes ce que vous faites et ce qui vous manque. Je vous réponds moi-même, depuis Saint-Jean-de-Monts.</p>
+    <div class="actions">
+      <a class="btn" href="mailto:contact@capencre.fr?subject=Mon%20restaurant">Écrire à contact@capencre.fr</a>
+      <a class="btn ghost" href="tel:+33662674414">06 62 67 44 14</a>
+    </div>
+    <div class="sig">Réponse sous 24 heures, même le lundi.</div>
   </div>
 </section>
 
 <footer>
   <div class="wrap f">
-    <span>© 2026 Cap Encre — <a href="/mentions-legales" style="text-decoration:underline">Mentions légales</a></span>
-    <span>06 62 67 44 14 · contact@capencre.fr</span>
+    <span>© 2026 Cap Encre — <a href="/mentions-legales">Mentions légales</a></span>
+    <span>06 62 67 44 14 · contact@capencre.fr · Saint-Jean-de-Monts</span>
   </div>
 </footer>
 
