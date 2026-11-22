@@ -147,41 +147,51 @@ h2{font-size:clamp(28px,3.8vw,46px)}
 .tailor-grid b{display:block;font-size:15.5px;margin-bottom:6px}
 .tailor-grid span{font-size:14px;color:var(--grey)}
 
-/* offre */
-.offer{padding:56px 24px 80px}
-.offer-card{display:grid;grid-template-columns:1.02fr .98fr;gap:52px;align-items:center;
-  border:1px solid var(--line);border-radius:8px;padding:44px;background:#fff;
-  box-shadow:0 36px 70px -60px rgba(21,25,24,.45)}
-.offer h2{font-size:clamp(30px,4.2vw,50px)}
-.offer .lead{color:var(--grey);margin-top:16px;max-width:42ch;font-size:16.5px}
+/* offre : bloc sombre */
+.offer{background:#111614;color:#F7F7F2;padding:84px 24px 64px}
+.offer .kicker{color:#7FC0AA}
+.offer .kicker::before{background:#7FC0AA}
+.offer-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:56px;align-items:start}
+.offer h2{color:#F7F7F2;font-size:clamp(26px,3.2vw,36px);line-height:1.1}
+.prix{font-family:var(--serif);font-weight:400;font-size:clamp(62px,8.4vw,100px);
+  line-height:.95;letter-spacing:-.03em;color:#F7F7F2}
+.per{display:inline-block;margin-left:12px;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size:clamp(15px,1.6vw,19px);font-weight:600;letter-spacing:0;color:#9FB3AC;
+  vertical-align:baseline}
+.offer .lead{color:#C6D3CE;margin-top:22px;max-width:40ch;font-size:16.5px}
 .guarantee{margin:26px 0 0;border-left:3px solid var(--coral);padding-left:16px;
-  font-size:14.5px;color:#3C443F;max-width:44ch}
-.inclus{list-style:none;padding:0;margin:0;display:grid;gap:13px}
-.inclus li{position:relative;padding-left:28px;font-size:15.5px}
-.inclus li::before{content:"\2713";position:absolute;left:0;top:0;color:var(--accent);font-weight:700}
-.offer .btn{margin-top:26px}
+  font-size:14.5px;color:#E4ECE8;max-width:46ch}
+.inclus{list-style:none;padding:0;margin:0;display:grid;gap:14px}
+.inclus li{position:relative;padding-left:30px;font-size:15.5px;color:#E8F0EB}
+.inclus li::before{content:"\2713";position:absolute;left:0;top:0;color:#6FBFA3;font-weight:700}
+.offer .btn-coral{display:inline-block;margin-top:30px;background:var(--coral);color:#12100F;
+  padding:15px 26px;border-radius:4px;font-size:15px;font-weight:700;
+  transition:background .18s ease,transform .18s ease}
+.offer .btn-coral:hover{background:#fff;color:#111614;transform:translateY(-1px)}
 
-/* parrainage */
-.referral{background:var(--paper-2);padding:78px 0}
-.referral .section-head{max-width:62ch;margin-bottom:34px}
-.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
-  border:1px solid var(--line)}
-.tier{background:#fff;padding:30px 22px;text-align:center}
-.tier b{display:block;font-family:var(--serif);font-weight:400;font-size:clamp(34px,4vw,50px);
-  line-height:1;color:var(--accent)}
-.tier span{display:block;margin-top:12px;font-size:14px;color:var(--grey)}
-.referral .note{margin-top:26px;font-size:14px;color:var(--grey);max-width:58ch}
+/* parrainage, encadre dans le bloc sombre */
+.reco{margin-top:58px;border:1px solid #26332E;border-radius:8px;padding:36px;background:#151D19}
+.reco h3{font-family:var(--serif);font-weight:400;font-size:clamp(22px,2.6vw,30px);
+  color:#F7F7F2;line-height:1.15}
+.reco p{color:#C6D3CE;margin-top:12px;max-width:62ch;font-size:15.5px}
+.paliers{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#26332E;
+  border:1px solid #26332E;margin-top:26px}
+.palier{background:#151D19;padding:24px 18px;text-align:center}
+.palier b{display:block;font-family:var(--serif);font-weight:400;font-size:clamp(28px,3.4vw,40px);
+  color:#F06449;line-height:1}
+.palier span{display:block;margin-top:9px;font-size:13.5px;color:#A9BDB6}
+.reco .astuce{margin-top:22px;font-size:13.5px;color:#8FA7A0}
 
 /* final */
-.final{background:var(--ink);color:#fff;padding:82px 0;text-align:center}
+.final{background:var(--accent);color:#fff;padding:82px 0;text-align:center}
 .final h2{color:#fff;font-size:clamp(30px,4.4vw,54px);max-width:20ch;margin:0 auto}
-.final p{color:#C9D6D1;margin:20px auto 0;max-width:46ch;font-size:16.5px}
+.final p{color:#D5E7E0;margin:20px auto 0;max-width:46ch;font-size:16.5px}
 .final .actions{justify-content:center}
-.final .btn{background:var(--coral);color:#12100F}
-.final .btn:hover{background:#fff;color:var(--ink)}
-.final .btn.ghost{border-color:rgba(255,255,255,.45);color:#fff;background:transparent}
-.final .btn.ghost:hover{background:#fff;color:var(--ink)}
-.final .sig{margin-top:30px;font-size:13px;color:#9FB3AC}
+.final .btn{background:#fff;color:var(--accent)}
+.final .btn:hover{background:var(--ink);color:#fff}
+.final .btn.ghost{border-color:rgba(255,255,255,.55);color:#fff;background:transparent}
+.final .btn.ghost:hover{background:#fff;color:var(--accent)}
+.final .sig{margin-top:30px;font-size:13px;color:#BCD6CC}
 
 footer{border-top:1px solid var(--line);padding:26px 0;font-size:12.5px;color:var(--grey)}
 footer .f{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
@@ -200,8 +210,9 @@ footer a{text-decoration:underline;text-underline-offset:2px}
 @media (max-width:920px){
   .hero{padding:44px 24px 40px}
   .offer{padding:56px 24px}
-  .offer-card{grid-template-columns:1fr;padding:30px 26px;gap:30px}
-  .tiers{grid-template-columns:1fr}
+  .offer-grid{grid-template-columns:1fr;gap:34px}
+  .reco{padding:26px 22px;margin-top:40px}
+  .paliers{grid-template-columns:1fr}
   .hero-photo{aspect-ratio:4/3}
   .hero-grid,.split,.booksplit,.gift-grid{grid-template-columns:1fr;gap:36px}
   .cards{grid-template-columns:1fr}
@@ -378,12 +389,12 @@ footer a{text-decoration:underline;text-underline-offset:2px}
   </div>
 </section>
 
-<section class="offer">
+<section class="offer" id="offre">
   <div class="wrap">
-    <div class="offer-card">
+    <div class="offer-grid">
       <div>
         <div class="kicker">L'offre</div>
-        <h2>74 €/mois, <em>tout compris.</em></h2>
+        <h2><span class="prix">74 €</span><span class="per">/mois, </span><br>tout compris.</h2>
         <p class="lead">Un prix fixe, sans frais cachés, pour avoir un site professionnel et les outils essentiels de votre restaurant.</p>
         <p class="guarantee">Si vous trouvez une offre équivalente moins chère, nous vous remboursons la différence.</p>
       </div>
@@ -394,26 +405,22 @@ footer a{text-decoration:underline;text-underline-offset:2px}
           <li>nom de domaine ;</li>
           <li>mise à jour de la carte ;</li>
           <li>système de réservation ;</li>
-          <li>outil pratique de suivi des prix et coûts matières.</li>
+          <li>outil de suivi des prix et coûts matières.</li>
         </ul>
-        <a class="btn warm" href="mailto:contact@capencre.fr?subject=Mon%20restaurant">Demander une démo</a>
+        <a class="btn-coral" href="mailto:contact@capencre.fr?subject=Mon%20restaurant">Demander une démo</a>
       </div>
     </div>
-  </div>
-</section>
 
-<section class="referral">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Parrainez un restaurateur.</h2>
+    <div class="reco">
+      <h3>Parrainez un restaurateur.</h3>
       <p>Pour chaque restaurateur que vous nous présentez et qui devient client, vous bénéficiez de 10 % de réduction sur votre abonnement.</p>
+      <div class="paliers">
+        <div class="palier"><b>10 %</b><span>1 client parrainé</span></div>
+        <div class="palier"><b>20 %</b><span>2 clients parrainés</span></div>
+        <div class="palier"><b>30 %</b><span>3 clients parrainés</span></div>
+      </div>
+      <p class="astuce">Un filleul, un palier. Pas de formulaire à imprimer, pas de conditions en petits caractères au dos de la facture.</p>
     </div>
-    <div class="tiers">
-      <div class="tier"><b>10 %</b><span>pour 1 client parrainé</span></div>
-      <div class="tier"><b>20 %</b><span>pour 2 clients parrainés</span></div>
-      <div class="tier"><b>30 %</b><span>pour 3 clients parrainés</span></div>
-    </div>
-    <p class="note">Un filleul, un palier. Pas de formulaire à imprimer, pas de conditions en petits caractères au dos de la facture.</p>
   </div>
 </section>
 
